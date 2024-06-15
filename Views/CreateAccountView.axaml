@@ -1,0 +1,55 @@
+<UserControl xmlns="https://github.com/avaloniaui"
+             xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
+             xmlns:d="http://schemas.microsoft.com/expression/blend/2008"
+             xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
+             xmlns:sukiUi="clr-namespace:SukiUI.Controls;assembly=SukiUI"
+             xmlns:theme="clr-namespace:SukiUI.Theme;assembly=SukiUI"
+             xmlns:vm="using:Shoebill.ViewModels"
+             x:DataType="vm:CreateAccountViewModel"
+             mc:Ignorable="d" d:DesignWidth="800" d:DesignHeight="450"
+             x:Class="Shoebill.Views.CreateAccountView">
+      <Design.DataContext>
+        <vm:CreateAccountViewModel/>
+      </Design.DataContext>
+    <Grid>
+        <Grid.ColumnDefinitions>
+            <ColumnDefinition Width="*"/>
+            <ColumnDefinition Width="2*"/>
+            <ColumnDefinition Width="*"/>
+        </Grid.ColumnDefinitions>
+        <sukiUi:BusyArea BusyText="Entering" IsBusy="{Binding IsEntering}" Grid.Column="1" Width="800">
+            <StackPanel Orientation="Vertical" Spacing="35">
+                <TextBlock Text="{Binding Headline}" FontSize="25" FontWeight="Bold"/>
+                <StackPanel Orientation="Vertical">
+                    <TextBlock Text="Enter server name:"/>
+                    <TextBox Text="{Binding ServerName}"/>
+                </StackPanel>
+                <StackPanel Orientation="Vertical">
+                    <TextBlock Text="Enter URL:"/>
+                    <TextBox Text="{Binding ServerUrl}" theme:TextBoxExtensions.Prefix="http://" Watermark="example.com"/>
+                </StackPanel>
+                <StackPanel Orientation="Vertical">
+                    <TextBlock Text="Enter API key:"/>
+                    <TextBox Classes="revealPasswordButton" PasswordChar="*" Text="{Binding ServerApiKey}"/>
+                </StackPanel>
+                <StackPanel Orientation="Vertical">
+                    <TextBlock Text="Chose API type"/>
+                    <RadioButton Content="Client" GroupName="ApiType" IsChecked="{Binding IsClientSelected}"/>
+                    <RadioButton Content="Application" GroupName="ApiType" IsChecked="{Binding IsApplicationSelected}" IsEnabled="false"/> 
+                </StackPanel>
+                <StackPanel Orientation="Horizontal">
+                    <Button Classes="Flat" 
+                            Content="Submit" 
+                            Command="{Binding EnterCommand}" 
+                            theme:ButtonExtensions.ShowProgress="{Binding IsEntering}" 
+                            HorizontalAlignment="Center" 
+                            VerticalAlignment="Bottom" 
+                            Margin="0,0,0,7" 
+                            IsEnabled="{Binding CanEnter}"> 
+                    </Button>
+                    <Button Content="Cancel" Command="{Binding CancelCommand}"/> 
+                </StackPanel>
+            </StackPanel>
+        </sukiUi:BusyArea>
+    </Grid>
+</UserControl>
