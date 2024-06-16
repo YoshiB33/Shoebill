@@ -10,5 +10,6 @@ public static class ServiceCollectionExtensions {
         collection.AddTransient<MainWindowViewModel>();
         collection.AddTransient<ViewModelBase, AccountsViewModel>();
         collection.AddTransient<ViewModelBase, SettingsViewModel>();
+        collection.AddTransient<ViewModelBase, ServerOverviewViewModel>();
     }
 }

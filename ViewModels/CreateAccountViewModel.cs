@@ -16,7 +16,7 @@ public class CreateAccountViewModel : ViewModelBase
     private string _headline = "Add new api key";
     private bool _isClientSelected = false;
     private bool _isApplicationSelected = false;
-    private readonly ObservableAsPropertyHelper<bool> _canEnter;
+    private readonly ObservableAsPropertyHelper<bool> _canCreateAccount;
     private ISettingsService _settingsService;
 
     public ReactiveCommand<Unit, Unit> EnterCommand { get; }
@@ -60,12 +60,13 @@ public class CreateAccountViewModel : ViewModelBase
         get => _headline;
         set => this.RaiseAndSetIfChanged(ref _headline, value);
     }
-    public bool CanEnter => _canEnter.Value;
+    public bool CanCreateAccount => _canCreateAccount.Value;
     public ApiKey? ApiKey { get; set; }
     public CreateAccountViewModel(ISettingsService settingsService, ApiKey? editApiKey = null)
     {
         var apiKeys = settingsService.GetAllApiKeys();
         _settingsService = settingsService;
+        
 #pragma warning disable CS8602 // Dereference of a possibly null reference.
         var canCreateUser = this.WhenAnyValue(
             x => x.ServerUrl, x => x.ServerApiKey, x => x.IsClientSelected, x => x.IsApplicationSelected,
@@ -75,7 +76,7 @@ public class CreateAccountViewModel : ViewModelBase
                     !apiKeys.Exists(x => x.Key == key) &&
                     !apiKeys.Exists(x => x.Name == name) &&
                     (applicationSelected || clientSelected))
-            .ToProperty(this, x => x.CanEnter, out _canEnter);
+            .ToProperty(this, x => x.CanCreateAccount, out _canCreateAccount);
 #pragma warning restore CS8602 // Dereference of a possibly null reference.
 
         EnterCommand = ReactiveCommand.Create(Enter);
