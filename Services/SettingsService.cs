@@ -40,7 +40,7 @@ public class SettingsService : ISettingsService
         return JsonSerializer.Deserialize<SettingsModel>(File.ReadAllText(SettingsPath))?.ApiKeys;
     }
 
-    public async Task<List<ApiKey>>? GetAllApiKeysAsync()
+    public async Task<List<ApiKey>> GetAllApiKeysAsync()
     {
         using var fs = File.Open(SettingsPath, FileMode.OpenOrCreate);
         var settings = await JsonSerializer.DeserializeAsync<SettingsModel>(fs);

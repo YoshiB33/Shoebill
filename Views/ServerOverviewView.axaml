@@ -20,6 +20,18 @@
                         <Button Content="Settings" HorizontalAlignment="Right" Command="{Binding NavigateSettingsCommand}"/>
                     </DockPanel>
                 </sukiui:GroupBox.Header>
+                <StackPanel Orientation="Vertical" Spacing="5">
+                    <sukiui:Loading IsVisible="{Binding IsLoading}"/>
+                    <ItemsControl ItemsSource="{Binding Servers}">
+                        <ItemsControl.ItemTemplate>
+                            <DataTemplate>
+                                <Button>
+                                    <TextBlock Text="{Binding attributes.name}"/>
+                                </Button>
+                            </DataTemplate>
+                        </ItemsControl.ItemTemplate>
+                    </ItemsControl>
+                </StackPanel>
             </sukiui:GroupBox>
         </sukiui:GlassCard>
     </Grid>

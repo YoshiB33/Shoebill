@@ -1,20 +1,48 @@
-﻿using System.Reactive;
+﻿using System.Collections.ObjectModel;
+using System.Reactive;
 using ReactiveUI;
+using Shoebill.Models.Api.ListApiModel;
 using Shoebill.Services;
 
 namespace Shoebill.ViewModels;
 
 public class ServerOverviewViewModel : ViewModelBase
 {
+    private bool _isLoading = false;
     public ReactiveCommand<Unit, Unit> NavigateBackCommand { get; set; }
     public ReactiveCommand<Unit, Unit> NavigateSettingsCommand { get; set; }
+    public ObservableCollection<Datum> Servers { get; set; } = [];
     private readonly INavigationService _navigationService;
-    public ServerOverviewViewModel(INavigationService navigationService)
+    private readonly IApiService _apiService;
+    public bool IsLoading
+    {
+        get => _isLoading;
+        set => this.RaiseAndSetIfChanged(ref _isLoading, value);
+    }
+    public ServerOverviewViewModel(INavigationService navigationService, IApiService apiService)
     {
         _navigationService = navigationService;
+        _apiService = apiService;
+
+        navigationService.NavigationRequested += OnNavigatedTo;
 
         NavigateBackCommand = ReactiveCommand.Create(NavigateBack);
         NavigateSettingsCommand = ReactiveCommand.Create(NavigateSettings);
+    }
+
+    private async void OnNavigatedTo(System.Type page)
+    {
+        Servers.Clear();
+        IsLoading = true;
+        if (page == typeof(ServerOverviewViewModel))
+        {
+            var servers = await _apiService.GetServersAsync() ?? throw new System.Exception("Servers is null");
+            foreach (var server in servers.data)
+            {
+                Servers.Add(server);
+            }
+            IsLoading = false;
+        }
     }
 
     private void NavigateBack() =>

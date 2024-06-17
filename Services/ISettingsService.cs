@@ -11,7 +11,7 @@ public interface ISettingsService
     public void WriteEmptySettings();
     public Task WriteEmptySettingsAsync();
     public List<ApiKey>? GetAllApiKeys();
-    public Task<List<ApiKey>>? GetAllApiKeysAsync();
+    public Task<List<ApiKey>> GetAllApiKeysAsync();
     public void WriteApiKey(ApiKey apiKey);
     public Task WriteApiKeyAsync(ApiKey apiKey);
     public void RemoveApiKey(ApiKey apiKey);
