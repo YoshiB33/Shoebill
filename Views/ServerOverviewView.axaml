@@ -25,8 +25,11 @@
                     <ItemsControl ItemsSource="{Binding Servers}">
                         <ItemsControl.ItemTemplate>
                             <DataTemplate>
-                                <Button>
-                                    <TextBlock Text="{Binding attributes.name}"/>
+                                <Button Margin="0,5,0,0">
+                                    <StackPanel Orientation="Horizontal">
+                                        <TextBlock Text="{Binding attributes.name}"/>
+                                        <TextBlock Text="{Binding attributes.status}"/>
+                                    </StackPanel> 
                                 </Button>
                             </DataTemplate>
                         </ItemsControl.ItemTemplate>

@@ -20,7 +20,7 @@ public record Attributes(
    string docker_image,
    IReadOnlyList<string> egg_features,
    FeatureLimits feature_limits,
-   object status,
+   string? status,
    bool is_suspended,
    bool is_installing,
    bool is_transferring,
