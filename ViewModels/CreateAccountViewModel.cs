@@ -66,17 +66,33 @@ public class CreateAccountViewModel : ViewModelBase
     {
         var apiKeys = settingsService.GetAllApiKeys();
         _settingsService = settingsService;
+        if (editApiKey is not null)
+        {
+            var canCreateUser = this.WhenAnyValue(
+                x => x.ServerUrl, x => x.ServerName, x => x.ServerApiKey, x => x.IsClientSelected, x => x.IsApplicationSelected,
+                    (url, name, key, clientSelected, applicationSelected) => 
+                        !string.IsNullOrWhiteSpace(name) && 
+                        !string.IsNullOrWhiteSpace(key) &&
+                        !string.IsNullOrWhiteSpace(url) &&
+                        (applicationSelected || clientSelected))
+                .ToProperty(this, x => x.CanEnter, out _canEnter);
+        }
+        else
+        {
 #pragma warning disable CS8602 // Dereference of a possibly null reference.
-        var canCreateUser = this.WhenAnyValue(
-            x => x.ServerUrl, x => x.ServerApiKey, x => x.IsClientSelected, x => x.IsApplicationSelected,
-                (name, key, clientSelected, applicationSelected) => 
-                    !string.IsNullOrWhiteSpace(name) && 
-                    !string.IsNullOrWhiteSpace(key) &&
-                    !apiKeys.Exists(x => x.Key == key) &&
-                    !apiKeys.Exists(x => x.Name == name) &&
-                    (applicationSelected || clientSelected))
-            .ToProperty(this, x => x.CanEnter, out _canEnter);
+            var canCreateUser = this.WhenAnyValue(
+                x => x.ServerUrl, x => x.ServerName, x => x.ServerApiKey, x => x.IsClientSelected, x => x.IsApplicationSelected,
+                    (url, name, key, clientSelected, applicationSelected) => 
+                        !string.IsNullOrWhiteSpace(name) && 
+                        !string.IsNullOrWhiteSpace(key) &&
+                        !string.IsNullOrWhiteSpace(url) &&
+                        !apiKeys.Exists(x => x.Key == key) &&
+                        !apiKeys.Exists(x => x.Name == name) &&
+                        (applicationSelected || clientSelected))
+                .ToProperty(this, x => x.CanEnter, out _canEnter);
 #pragma warning restore CS8602 // Dereference of a possibly null reference.
+        }
+
 
         EnterCommand = ReactiveCommand.Create(Enter);
         CancelCommand = ReactiveCommand.Create(Cancel);
