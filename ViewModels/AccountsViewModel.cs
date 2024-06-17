@@ -1,4 +1,6 @@
-﻿using System.Collections.ObjectModel;
+﻿using System;
+using System.Collections.ObjectModel;
+using System.ComponentModel.DataAnnotations;
 using System.Linq;
 using System.Reactive;
 using ReactiveUI;
@@ -11,22 +13,26 @@ namespace Shoebill.ViewModels;
 public class AccountsViewModel : ViewModelBase
 {
     public ReactiveCommand<Unit, Unit> OpenDialogCommand { get; set; }
-    public ReactiveCommand<string, Unit> RemoveApiCommand { get; set; }
     public ReactiveCommand<Unit, Unit> OpenSettingsCommand { get; set; }
+    public ReactiveCommand<string, Unit> EnterOverviewCommand { get; set; }
     private readonly INavigationService _navigationService;
     private readonly ISettingsService _settingsService;
+    private readonly IApiService _apiService;
 
-    public ObservableCollection<ApiKey> ApiKeys { get; set; }
-    public AccountsViewModel(INavigationService navigationService, ISettingsService settingsService)
+    public ObservableCollection<ApiKey> ApiKeys { get; set; } = [];
+
+    public AccountsViewModel(INavigationService navigationService, ISettingsService settingsService, IApiService apiService)
     {
         _navigationService = navigationService;
         _settingsService = settingsService;
+        _apiService = apiService;
+
+        navigationService.NavigationRequested += OnNavigatedTo;
+
         OpenDialogCommand = ReactiveCommand.Create(AddNewApi);
-        RemoveApiCommand = ReactiveCommand.Create<string>(RemoveApi);
         OpenSettingsCommand = ReactiveCommand.Create(NavigateSettings);
-#pragma warning disable CS8604 // Possible null reference argument.
-        ApiKeys = new ObservableCollection<ApiKey>(settingsService.GetAllApiKeys());
-#pragma warning restore CS8604 // Possible null reference argument.
+        EnterOverviewCommand = ReactiveCommand.Create<string>(EnterOverview);
+
         settingsService.ApiKeyUpdated += (apiKey, KeyUpdatedAction) => 
         {
             if (KeyUpdatedAction == KeyUpdatedAction.Added)
@@ -37,7 +43,19 @@ public class AccountsViewModel : ViewModelBase
             {
                 ApiKeys.Remove(apiKey);
             }
-        }; 
+        };
+    }
+
+    private async void OnNavigatedTo(Type page)
+    {
+        if (page == typeof(AccountsViewModel))
+        {
+            var keys = await _settingsService.GetAllApiKeysAsync();
+            foreach (var key in keys)
+            {
+                ApiKeys.Add(key);
+            }
+        }
     }
 
     private void AddNewApi()
@@ -45,13 +63,14 @@ public class AccountsViewModel : ViewModelBase
         SukiHost.ShowDialog(new CreateAccountViewModel(_settingsService), allowBackgroundClose: true);
     }
 
-    private async void RemoveApi(string Name)
-    {
-        await _settingsService.RemoveApiAsync(ApiKeys.Where(x => x.Name == Name).First());
-    }
-
     private void NavigateSettings()
     {
         _navigationService.RequestNaviagtion<SettingsViewModel>();
+    }
+
+    private void EnterOverview(string name)
+    {
+        _apiService.SetApiKey(ApiKeys.Where(x => x.Name == name).First());
+        _navigationService.RequestNaviagtion<ServerOverviewViewModel>();
     }
 }

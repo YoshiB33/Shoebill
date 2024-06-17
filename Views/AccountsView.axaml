@@ -20,23 +20,19 @@
                     <Button HorizontalAlignment="Right" Content="0" Command="{Binding OpenSettingsCommand}"/>
                 </DockPanel>
                 <sukiui:GroupBox Header="API keys">
-                    <StackPanel Orientation="Vertical">
+                    <StackPanel Orientation="Vertical" Spacing="5">
                         <ItemsControl ItemsSource="{Binding ApiKeys}" x:Name="ApiKeyControl">
                             <ItemsControl.ItemTemplate>
                                 <DataTemplate>
-                                    <RadioButton GroupName="ApiKeys" Classes="GigaChips">
-                                        <DockPanel>
-                                            <TextBlock Text="{Binding Name}" VerticalAlignment="Center" FontSize="16" />
-                                            <Button Content="X" HorizontalAlignment="Right" Command="{Binding #ApiKeyControl.((vm:AccountsViewModel)DataContext).RemoveApiCommand}" CommandParameter="{Binding Name}"/>
-                                        </DockPanel>
-                                    </RadioButton>
+                                    <Button HorizontalContentAlignment="Stretch" BorderBrush="{DynamicResource SukiControlBorderBrush}" BorderThickness="1" CornerRadius="{DynamicResource MediumCornerRadius}" Padding="15,15,30,15" Command="{Binding #ApiKeyControl.((vm:AccountsViewModel)DataContext).EnterOverviewCommand}" CommandParameter="{Binding Name}">
+                                        <TextBlock Text="{Binding Name}" VerticalAlignment="Center" HorizontalAlignment="Left" FontSize="16" />
+                                    </Button>
                                 </DataTemplate>
                             </ItemsControl.ItemTemplate>
                         </ItemsControl>
-                        <Button Classes="Neutral" Content="Add new API key" Command="{Binding OpenDialogCommand}"/>
+                        <Button Classes="Flat" Content="Add new API key" Command="{Binding OpenDialogCommand}" Margin="0,5,0,0"/>
                     </StackPanel>
                 </sukiui:GroupBox>
-                <Button Classes="Flat Rounded" Content="Enter"/>
             </StackPanel>
         </sukiui:GlassCard>
     </Grid> 
