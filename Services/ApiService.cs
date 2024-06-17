@@ -4,7 +4,7 @@ using System.Net.Http.Headers;
 using System.Net.Http.Json;
 using System.Threading.Tasks;
 using Shoebill.Models;
-using Shoebill.Models.Api.ListApiModel;
+using Shoebill.Models.Api.Responses;
 
 namespace Shoebill.Services;
 
@@ -17,7 +17,7 @@ public class ApiService : IApiService
         this.ApiKey = apiKey;
     }
 
-    public async Task<ListApiModel?> GetServersAsync()
+    public async Task<ListServer?> GetServersAsync()
     {
         if (ApiKey is null || ApiKey.Key is null || ApiKey.Key is null)
         {
@@ -29,6 +29,6 @@ public class ApiService : IApiService
             new MediaTypeWithQualityHeaderValue("application/json")
         );
         client.DefaultRequestHeaders.Authorization = new AuthenticationHeaderValue("Bearer", ApiKey.Key);
-        return await client.GetFromJsonAsync<ListApiModel>($"https://{ApiKey.ServerAdress}/api/client");
+        return await client.GetFromJsonAsync<ListServer>($"https://{ApiKey.ServerAdress}/api/client");
     }
 }

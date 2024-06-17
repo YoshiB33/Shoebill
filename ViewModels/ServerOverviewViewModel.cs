@@ -1,7 +1,7 @@
 ﻿using System.Collections.ObjectModel;
 using System.Reactive;
 using ReactiveUI;
-using Shoebill.Models.Api.ListApiModel;
+using Shoebill.Models.Api.Schemas;
 using Shoebill.Services;
 
 namespace Shoebill.ViewModels;
@@ -11,7 +11,7 @@ public class ServerOverviewViewModel : ViewModelBase
     private bool _isLoading = false;
     public ReactiveCommand<Unit, Unit> NavigateBackCommand { get; set; }
     public ReactiveCommand<Unit, Unit> NavigateSettingsCommand { get; set; }
-    public ObservableCollection<Datum> Servers { get; set; } = [];
+    public ObservableCollection<Server> Servers { get; set; } = [];
     private readonly INavigationService _navigationService;
     private readonly IApiService _apiService;
     public bool IsLoading
@@ -36,10 +36,10 @@ public class ServerOverviewViewModel : ViewModelBase
         IsLoading = true;
         if (page == typeof(ServerOverviewViewModel))
         {
-            var servers = await _apiService.GetServersAsync() ?? throw new System.Exception("Servers is null");
-            foreach (var server in servers.data)
+            var response = await _apiService.GetServersAsync() ?? throw new System.Exception("Servers is null");
+            foreach (var server in response.Data)
             {
-                Servers.Add(server);
+                Servers.Add(server.Attributes);
             }
             IsLoading = false;
         }

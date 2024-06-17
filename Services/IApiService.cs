@@ -1,11 +1,11 @@
 ﻿using System.Threading.Tasks;
 using Shoebill.Models;
-using Shoebill.Models.Api.ListApiModel;
+using Shoebill.Models.Api.Responses;
 
 namespace Shoebill.Services;
 
 public interface IApiService
 {
     public void SetApiKey(ApiKey? apikey);
-    public Task<ListApiModel?> GetServersAsync();
+    public Task<ListServer?> GetServersAsync();
 }
