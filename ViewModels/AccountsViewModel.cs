@@ -50,6 +50,7 @@ public class AccountsViewModel : ViewModelBase
     {
         if (page == typeof(AccountsViewModel))
         {
+            ApiKeys.Clear();
             var keys = await _settingsService.GetAllApiKeysAsync();
             foreach (var key in keys)
             {
