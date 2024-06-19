@@ -3,6 +3,7 @@
             xmlns:d="http://schemas.microsoft.com/expression/blend/2008"
             xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
             xmlns:vm="using:Shoebill.ViewModels"
+            xmlns:local="using:Shoebill.Views"
             xmlns:suki="using:SukiUI.Controls"
             mc:Ignorable="d" d:DesignWidth="800" d:DesignHeight="450"
             x:DataType="vm:ServerMasterViewModel"
@@ -14,5 +15,8 @@
                 <TextBlock Text="Server" HorizontalAlignment="Center" FontSize="20" Grid.Column="1"/>
             </Grid>
         </suki:SukiSideMenu.HeaderContent>
+        <suki:SukiSideMenu.FooterContent>
+            <Button Content="Settings" Command="{Binding NavigateSettingsCommand}" Classes="Neutral"/>
+        </suki:SukiSideMenu.FooterContent>
     </suki:SukiSideMenu>
 </UserControl>
