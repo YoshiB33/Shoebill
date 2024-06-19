@@ -1,5 +1,6 @@
 ﻿using System;
 using System.Collections.Generic;
+using Avalonia.Collections;
 using Shoebill.Models;
 using Shoebill.ViewModels;
 
@@ -38,12 +39,12 @@ public class NavigationService() : INavigationService
         } 
     }
 
-    private readonly List<NavigationHistory> _history = [new NavigationHistory(typeof(AccountsViewModel), false)];
+    private readonly List<NavigationHistory> _history = [];
     private int _currentPage = 0;
 
     public void NavigateBack()
     {
-        var page = _history[_currentPage--];
+        var page = _history[_currentPage - 2];
         if (!page.IsMasterPage)
         {
             NavigationRequested?.Invoke(page.Page);
