@@ -4,6 +4,7 @@
              xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
              xmlns:sukiui="using:SukiUI.Controls"
              xmlns:vm="using:Shoebill.ViewModels"
+             xmlns:icons="using:Material.Icons.Avalonia"
              x:DataType="vm:ServerOverviewViewModel"
              mc:Ignorable="d" d:DesignWidth="800" d:DesignHeight="450"
              x:Class="Shoebill.Views.ServerOverviewView">
@@ -11,13 +12,17 @@
         <vm:ServerOverviewViewModel/>
     </Design.DataContext>
     <Grid>
-        <Button HorizontalAlignment="Left" VerticalAlignment="Top" Content="←" Command="{Binding NavigateBackCommand}"/>
+        <Button HorizontalAlignment="Left" VerticalAlignment="Top" Command="{Binding NavigateBackCommand}">
+            <icons:MaterialIcon Kind="ArrowBack"/>
+        </Button>
         <sukiui:GlassCard VerticalAlignment="Center" HorizontalAlignment="Center" MinWidth="500">
             <sukiui:GroupBox>
                 <sukiui:GroupBox.Header>
                     <DockPanel Dock="Top">
                         <TextBlock Text="Servers" FontSize="18" FontWeight="Bold" HorizontalAlignment="Left" VerticalAlignment="Center"/>
-                        <Button Content="Settings" HorizontalAlignment="Right" Command="{Binding NavigateSettingsCommand}"/>
+                        <Button HorizontalAlignment="Right" Command="{Binding NavigateSettingsCommand}">
+                            <icons:MaterialIcon Kind="Cog" />
+                        </Button>
                     </DockPanel>
                 </sukiui:GroupBox.Header>
                 <StackPanel Orientation="Vertical" Spacing="5">
