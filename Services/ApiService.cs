@@ -11,10 +11,11 @@ namespace Shoebill.Services;
 public class ApiService : IApiService
 {
     private ApiKey? ApiKey { get; set; }
+    public string? CurrentServerUuid { get; set; }
 
     public void SetApiKey(ApiKey? apiKey)
     {
-        this.ApiKey = apiKey;
+        ApiKey = apiKey;
     }
 
     public async Task<ListServer?> GetServersAsync()

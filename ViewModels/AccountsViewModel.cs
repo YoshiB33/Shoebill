@@ -66,12 +66,12 @@ public class AccountsViewModel : ViewModelBase
 
     private void NavigateSettings()
     {
-        _navigationService.RequestNaviagtion<SettingsViewModel>();
+        _navigationService.RequestNaviagtion<SettingsViewModel>(false);
     }
 
     private void EnterOverview(string name)
     {
         _apiService.SetApiKey(ApiKeys.Where(x => x.Name == name).First());
-        _navigationService.RequestNaviagtion<ServerOverviewViewModel>();
+        _navigationService.RequestNaviagtion<ServerOverviewViewModel>(false);
     }
 }

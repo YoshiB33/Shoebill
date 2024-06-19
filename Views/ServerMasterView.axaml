@@ -1,0 +1,18 @@
+<UserControl xmlns="https://github.com/avaloniaui"
+            xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
+            xmlns:d="http://schemas.microsoft.com/expression/blend/2008"
+            xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
+            xmlns:vm="using:Shoebill.ViewModels"
+            xmlns:suki="using:SukiUI.Controls"
+            mc:Ignorable="d" d:DesignWidth="800" d:DesignHeight="450"
+            x:DataType="vm:ServerMasterViewModel"
+            x:Class="Shoebill.Views.ServerMasterView">
+    <suki:SukiSideMenu>
+        <suki:SukiSideMenu.HeaderContent>
+            <StackPanel Orientation="Vertical">
+                <Button Content="Back"/>
+                <TextBlock Text="Server" HorizontalAlignment="Center"/>
+            </StackPanel>
+        </suki:SukiSideMenu.HeaderContent>
+    </suki:SukiSideMenu>
+</UserControl>

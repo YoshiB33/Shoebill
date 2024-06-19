@@ -6,6 +6,7 @@ namespace Shoebill.Services;
 
 public interface IApiService
 {
+    public string? CurrentServerUuid { get; set; }
     public void SetApiKey(ApiKey? apikey);
     public Task<ListServer?> GetServersAsync();
 }

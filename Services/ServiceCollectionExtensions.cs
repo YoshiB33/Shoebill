@@ -12,5 +12,6 @@ public static class ServiceCollectionExtensions {
         collection.AddTransient<ViewModelBase, AccountsViewModel>();
         collection.AddTransient<ViewModelBase, SettingsViewModel>();
         collection.AddTransient<ViewModelBase, ServerOverviewViewModel>();
+        collection.AddTransient<ViewModelBase, ServerMasterViewModel>();
     }
 }
