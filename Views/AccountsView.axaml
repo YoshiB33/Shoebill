@@ -4,6 +4,7 @@
         xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
         xmlns:vm="using:Shoebill.ViewModels"
         xmlns:sukiui="using:SukiUI.Controls"
+        xmlns:icons="using:Material.Icons.Avalonia"
         mc:Ignorable="d" d:DesignWidth="800" d:DesignHeight="450"
         x:Class="Shoebill.Views.AccountsView"
         x:DataType="vm:AccountsViewModel">
@@ -17,7 +18,9 @@
             <StackPanel Orientation="Vertical" Spacing="5">
                 <DockPanel>
                     <TextBlock Text="Choose or create a new API key" FontFeatures="Bold" FontSize="18" Margin="0,0,0,5"/>
-                    <Button HorizontalAlignment="Right" Content="0" Command="{Binding OpenSettingsCommand}"/>
+                    <Button HorizontalAlignment="Right" Command="{Binding OpenSettingsCommand}">
+                        <icons:MaterialIcon Kind="Cog"/>
+                    </Button>
                 </DockPanel>
                 <sukiui:GroupBox Header="API keys">
                     <StackPanel Orientation="Vertical" Spacing="5">
