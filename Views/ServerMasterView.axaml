@@ -5,18 +5,23 @@
             xmlns:vm="using:Shoebill.ViewModels"
             xmlns:local="using:Shoebill.Views"
             xmlns:suki="using:SukiUI.Controls"
+            xmlns:icons="using:Material.Icons.Avalonia"
             mc:Ignorable="d" d:DesignWidth="800" d:DesignHeight="450"
             x:DataType="vm:ServerMasterViewModel"
             x:Class="Shoebill.Views.ServerMasterView">
     <suki:SukiSideMenu>
         <suki:SukiSideMenu.HeaderContent>
-            <Grid ColumnDefinitions="*,*,*">
-                <Button Content="←" HorizontalAlignment="Left" Grid.Column="0" Command="{Binding GoBackCommand}"/>
-                <TextBlock Text="Server" HorizontalAlignment="Center" FontSize="20" Grid.Column="1"/>
-            </Grid>
+            <TextBlock Text="Server" HorizontalAlignment="Center" FontSize="20" Grid.Column="1"/>
         </suki:SukiSideMenu.HeaderContent>
         <suki:SukiSideMenu.FooterContent>
-            <Button Content="Settings" Command="{Binding NavigateSettingsCommand}" Classes="Neutral"/>
+            <StackPanel Orientation="Horizontal" HorizontalAlignment="Center" Spacing="5">
+                <Button Command="{Binding GoBackCommand}"  Classes="Basic" ToolTip.Tip="Go back">
+                    <icons:MaterialIcon Kind="ArrowBack" Width="25" Height="25"/>
+                </Button>
+                <Button Command="{Binding NavigateSettingsCommand}" Classes="Basic" ToolTip.Tip="Settings">
+                    <icons:MaterialIcon Kind="Cog" Width="25" Height="25"/>
+                </Button>
+            </StackPanel>
         </suki:SukiSideMenu.FooterContent>
     </suki:SukiSideMenu>
 </UserControl>
