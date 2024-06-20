@@ -20,7 +20,7 @@ public partial class MainWindowViewModel : ViewModelBase
     {
         Pages = new AvaloniaList<ViewModelBase>(pages);
         navigationService.NavigationRequested += NaviagtionRequested;
-        navigationService.RequestNaviagtion<AccountsViewModel>();
+        navigationService.RequestNaviagtion<AccountsViewModel>(false);
     }
 
     private void NaviagtionRequested(Type pageType)

@@ -5,16 +5,19 @@ using System.Net.Http.Json;
 using System.Threading.Tasks;
 using Shoebill.Models;
 using Shoebill.Models.Api.Responses;
+using Shoebill.Models.Api.Schemas;
 
 namespace Shoebill.Services;
 
 public class ApiService : IApiService
 {
     private ApiKey? ApiKey { get; set; }
+    public string? CurrentServerUuid { get; set; }
+    public Server? CurrentServer { get; set; }
 
     public void SetApiKey(ApiKey? apiKey)
     {
-        this.ApiKey = apiKey;
+        ApiKey = apiKey;
     }
 
     public async Task<ListServer?> GetServersAsync()
@@ -30,5 +33,21 @@ public class ApiService : IApiService
         );
         client.DefaultRequestHeaders.Authorization = new AuthenticationHeaderValue("Bearer", ApiKey.Key);
         return await client.GetFromJsonAsync<ListServer>($"https://{ApiKey.ServerAdress}/api/client");
+    }
+
+    public async Task<Server?> GetServerAsync()
+    {
+        if (ApiKey is null || ApiKey.Key is null || ApiKey.Key is null)
+        {
+            throw new ArgumentNullException(nameof(ApiKey));
+        }
+        var client = new HttpClient();
+        client.DefaultRequestHeaders.Accept.Clear();
+        client.DefaultRequestHeaders.Accept.Add(
+            new MediaTypeWithQualityHeaderValue("application/json")
+        );
+        client.DefaultRequestHeaders.Authorization = new AuthenticationHeaderValue("Bearer", ApiKey.Key);
+        var response = await client.GetFromJsonAsync<GetServerDetails>($"https://{ApiKey.ServerAdress}/api/client/servers/{CurrentServerUuid}");
+        return response?.Attributes;
     }
 }
