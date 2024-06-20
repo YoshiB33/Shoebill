@@ -10,7 +10,7 @@
             x:Class="Shoebill.Views.ServerMasterView">
     <suki:SukiSideMenu>
         <suki:SukiSideMenu.HeaderContent>
-            <TextBlock Text="Server" HorizontalAlignment="Center" FontSize="20" Grid.Column="1"/>
+            <TextBlock Text="{Binding ServerName}" HorizontalAlignment="Center" FontSize="20" Grid.Column="1"/>
         </suki:SukiSideMenu.HeaderContent>
         <suki:SukiSideMenu.Items>
             <suki:SukiSideMenuItem Header="Console">

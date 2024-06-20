@@ -44,6 +44,7 @@ public class ServerOverviewViewModel : ViewModelBase
                 Servers.Add(server.Attributes);
             }
             IsLoading = false;
+            _apiService.CurrentServer = null;
             _apiService.CurrentServerUuid = null;
         }
     }
