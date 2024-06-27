@@ -66,12 +66,6 @@ public class SettingsViewModel : ViewModelBase
             _isThemeLight = true;
         }
 
-        _theme.OnBaseThemeChanged += variant =>
-        {
-            BaseTheme = variant;
-            SukiHost.ShowToast("Succesfully changed theme", $"Successfully changed theme to {variant}");
-        };
-
 #pragma warning disable CS8604 // Possible null reference argument.
         ApiKeys = new ObservableCollection<ApiKey>(settingsService.GetAllApiKeys());
 #pragma warning restore CS8604 // Possible null reference argument.
