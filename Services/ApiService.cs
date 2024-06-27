@@ -2,6 +2,7 @@
 using System.Net.Http;
 using System.Net.Http.Headers;
 using System.Net.Http.Json;
+using System.Text.Json;
 using System.Threading.Tasks;
 using Shoebill.Models;
 using Shoebill.Models.Api.Responses;
@@ -32,7 +33,9 @@ public class ApiService : IApiService
             new MediaTypeWithQualityHeaderValue("application/json")
         );
         client.DefaultRequestHeaders.Authorization = new AuthenticationHeaderValue("Bearer", ApiKey.Key);
-        return await client.GetFromJsonAsync<ListServer>($"https://{ApiKey.ServerAdress}/api/client");
+        var response = await client.GetAsync($"https://{ApiKey.ServerAdress}/api/client");
+        response.EnsureSuccessStatusCode();
+        return await response.Content.ReadFromJsonAsync<ListServer>();
     }
 
     public async Task<Server?> GetServerAsync()
