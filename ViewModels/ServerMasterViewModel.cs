@@ -1,7 +1,10 @@
 ﻿using System;
+using System.Net.Http;
 using System.Reactive;
 using ReactiveUI;
+using Shoebill.Models.Api.Schemas;
 using Shoebill.Services;
+using SukiUI.Controls;
 
 namespace Shoebill.ViewModels;
 
@@ -34,11 +37,24 @@ public class ServerMasterViewModel : ViewModelBase
     {
         if (page == typeof(ServerMasterViewModel))
         {
-            var currentServer = await _apiService.GetServerAsync();
-            _apiService.CurrentServer = currentServer;
+            Server? currentServer = null;
+            try
+            {
+                currentServer = await _apiService.GetServerAsync();
+            }
+            catch (HttpRequestException ex)
+            {
+                Console.WriteLine($"{ex.Message}");
+                Console.WriteLine(ex.StackTrace);
+                
+                SukiHost.ShowMessageBox(new SukiUI.Models.MessageBoxModel("Error found", $"Found a error while finding the server details: {ex.Message}\n {ex.StackTrace}", SukiUI.Enums.NotificationType.Error),true);
+
+                _navigationService.NavigateBack();
+            }
             if (currentServer is not null)
             {
                 ServerName = currentServer.Name;
+                _apiService.CurrentServer = currentServer;
             }
         }
     }

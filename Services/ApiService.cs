@@ -50,7 +50,9 @@ public class ApiService : IApiService
             new MediaTypeWithQualityHeaderValue("application/json")
         );
         client.DefaultRequestHeaders.Authorization = new AuthenticationHeaderValue("Bearer", ApiKey.Key);
-        var response = await client.GetFromJsonAsync<GetServerDetails>($"https://{ApiKey.ServerAdress}/api/client/servers/{CurrentServerUuid}");
-        return response?.Attributes;
+        var response = await client.GetAsync($"https://{ApiKey.ServerAdress}/api/client/servers/{CurrentServerUuid}");
+        response.EnsureSuccessStatusCode();
+        var json = await response.Content.ReadFromJsonAsync<GetServerDetails>();
+        return json?.Attributes;
     }
 }
