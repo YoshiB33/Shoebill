@@ -50,10 +50,10 @@ public class ServerOverviewViewModel : ViewModelBase
             }
             catch (HttpRequestException ex)
             {
-                Console.WriteLine($"{ex.Message}");
+                Console.WriteLine(ex.Message);
                 Console.WriteLine(ex.StackTrace);
                 
-                SukiHost.ShowMessageBox(new SukiUI.Models.MessageBoxModel("Error found", $"Found a error while finding the servers: {ex.Message}\n {ex.StackTrace}", SukiUI.Enums.NotificationType.Error),true);
+                SukiHost.ShowMessageBox(new SukiUI.Models.MessageBoxModel($"Error found: {(int?)ex.StatusCode}", $"Found a error while finding the server details: {ex.Message}\n {ex.StackTrace}", SukiUI.Enums.NotificationType.Error),true);
 
                 _navigationService.NavigateBack();
             }
