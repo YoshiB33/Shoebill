@@ -1,8 +1,13 @@
-﻿using System.Collections.ObjectModel;
+﻿using System;
+using System.Collections.ObjectModel;
+using System.Net.Http;
 using System.Reactive;
+using Avalonia.Controls.Notifications;
 using ReactiveUI;
+using Shoebill.Models.Api.Responses;
 using Shoebill.Models.Api.Schemas;
 using Shoebill.Services;
+using SukiUI.Controls;
 
 namespace Shoebill.ViewModels;
 
@@ -32,18 +37,36 @@ public class ServerOverviewViewModel : ViewModelBase
         NavigateServerCommand   = ReactiveCommand.Create<string>(NavigateServer);
     }
 
-    private async void OnNavigatedTo(System.Type page)
+    private async void OnNavigatedTo(Type page)
     {
         Servers.Clear();
         IsLoading = true;
         if (page == typeof(ServerOverviewViewModel))
         {
-            var response = await _apiService.GetServersAsync() ?? throw new System.Exception("Servers is null");
-            foreach (var server in response.Data)
+            ListServer? servers = null;
+            try
             {
-                Servers.Add(server.Attributes);
+                servers = await _apiService.GetServersAsync();
             }
-            IsLoading = false;
+            catch (HttpRequestException ex)
+            {
+                Console.WriteLine(ex.Message);
+                Console.WriteLine(ex.StackTrace);
+                
+                SukiHost.ShowMessageBox(new SukiUI.Models.MessageBoxModel($"Error found: {(int?)ex.StatusCode}", $"Found a error while finding the server details: {ex.Message}\n {ex.StackTrace}", SukiUI.Enums.NotificationType.Error),true);
+
+                _navigationService.NavigateBack();
+            }
+
+            if (servers is not null && servers.Data is not null)
+            {
+                foreach (var server in servers.Data)
+                {
+                    Servers.Add(server.Attributes);
+                }
+                IsLoading = false;   
+            }
+
             _apiService.CurrentServer = null;
             _apiService.CurrentServerUuid = null;
         }
