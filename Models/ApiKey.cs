@@ -1,6 +1,4 @@
-﻿using System;
-
-namespace Shoebill.Models;
+﻿namespace Shoebill.Models;
 
 public class ApiKey
 {

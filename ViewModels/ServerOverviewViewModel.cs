@@ -2,7 +2,6 @@
 using System.Collections.ObjectModel;
 using System.Net.Http;
 using System.Reactive;
-using Avalonia.Controls.Notifications;
 using ReactiveUI;
 using Shoebill.Models.Api.Responses;
 using Shoebill.Models.Api.Schemas;

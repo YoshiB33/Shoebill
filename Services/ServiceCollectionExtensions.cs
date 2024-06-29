@@ -13,6 +13,6 @@ public static class ServiceCollectionExtensions {
         collection.AddSingleton<ViewModelBase, SettingsViewModel>();
         collection.AddSingleton<ViewModelBase, ServerOverviewViewModel>();
         collection.AddSingleton<ViewModelBase, ServerMasterViewModel>();
-        collection.AddSingleton<ViewModelBase, ServerAccountViewModel>();
+        collection.AddSingleton<ServerViewModelBase, ServerAccountViewModel>();
     }
 }

@@ -8,68 +8,19 @@
             mc:Ignorable="d" d:DesignWidth="800" d:DesignHeight="450"
             x:DataType="vm:ServerMasterViewModel"
             x:Class="Shoebill.Views.ServerMasterView">
-    <suki:SukiSideMenu>
+    <suki:SukiSideMenu SelectedItem="{Binding CurrentPage}" ItemsSource="{Binding Pages}">
+        <suki:SukiSideMenu.ItemTemplate>
+            <DataTemplate>
+                <suki:SukiSideMenuItem Header="{Binding DisplayName}">
+                    <suki:SukiSideMenuItem.Icon>
+                        <icons:MaterialIcon Kind="{Binding Icon}"/>
+                    </suki:SukiSideMenuItem.Icon>    
+                </suki:SukiSideMenuItem>    
+            </DataTemplate>
+        </suki:SukiSideMenu.ItemTemplate>
         <suki:SukiSideMenu.HeaderContent>
             <TextBlock Text="{Binding ServerName}" HorizontalAlignment="Center" FontSize="20" Grid.Column="1"/>
         </suki:SukiSideMenu.HeaderContent>
-        <suki:SukiSideMenu.Items>
-            <suki:SukiSideMenuItem Header="Console">
-                <suki:SukiSideMenuItem.Icon>
-                    <icons:MaterialIcon Kind="Console"/>
-                </suki:SukiSideMenuItem.Icon>
-                <suki:SukiSideMenuItem.PageContent>
-                    <TextBlock Text="Console"/>
-                </suki:SukiSideMenuItem.PageContent>
-            </suki:SukiSideMenuItem>
-            <suki:SukiSideMenuItem Header="Files">
-                <suki:SukiSideMenuItem.Icon>
-                    <icons:MaterialIcon Kind="FolderMultiple"/>
-                </suki:SukiSideMenuItem.Icon>
-                <suki:SukiSideMenuItem.PageContent>
-                    <TextBlock Text="Files"/>
-                </suki:SukiSideMenuItem.PageContent>
-            </suki:SukiSideMenuItem>
-            <suki:SukiSideMenuItem Header="Backups">
-                <suki:SukiSideMenuItem.Icon>
-                    <icons:MaterialIcon Kind="BackupRestore"/>    
-                </suki:SukiSideMenuItem.Icon>
-                <suki:SukiSideMenuItem.PageContent>
-                    <TextBlock Text="Backups"/>    
-                </suki:SukiSideMenuItem.PageContent>
-            </suki:SukiSideMenuItem>
-            <suki:SukiSideMenuItem Header="Databases">
-                <suki:SukiSideMenuItem.Icon>
-                    <icons:MaterialIcon Kind="Database"/>
-                </suki:SukiSideMenuItem.Icon> 
-                <suki:SukiSideMenuItem.PageContent>
-                    <TextBlock Text="Dadabases"/>    
-                </suki:SukiSideMenuItem.PageContent>   
-            </suki:SukiSideMenuItem>
-            <suki:SukiSideMenuItem Header="Startup">
-                <suki:SukiSideMenuItem.Icon>
-                    <icons:MaterialIcon Kind="Play"/>    
-                </suki:SukiSideMenuItem.Icon>
-                <suki:SukiSideMenuItem.PageContent>
-                    <TextBlock Text="Startup"/>
-                </suki:SukiSideMenuItem.PageContent>
-            </suki:SukiSideMenuItem>
-            <suki:SukiSideMenuItem Header="Users">
-                <suki:SukiSideMenuItem.Icon>
-                    <icons:MaterialIcon Kind="AccountSupervisor"/>
-                </suki:SukiSideMenuItem.Icon>
-                <suki:SukiSideMenuItem.PageContent>
-                    <TextBlock Text="Users"/>
-                </suki:SukiSideMenuItem.PageContent>
-            </suki:SukiSideMenuItem>
-            <suki:SukiSideMenuItem Header="Account">
-                <suki:SukiSideMenuItem.Icon>
-                    <icons:MaterialIcon Kind="Account"/>    
-                </suki:SukiSideMenuItem.Icon>
-                <suki:SukiSideMenuItem.PageContent>
-                    <TextBlock Text="Account page"/>    
-                </suki:SukiSideMenuItem.PageContent>
-            </suki:SukiSideMenuItem>
-        </suki:SukiSideMenu.Items>
         <suki:SukiSideMenu.FooterContent>
             <StackPanel Orientation="Horizontal" HorizontalAlignment="Center" Spacing="5">
                 <Button Command="{Binding GoBackCommand}"  Classes="Basic" ToolTip.Tip="Go back">

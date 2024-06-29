@@ -1,6 +1,5 @@
 ﻿using System;
 using System.Collections.Generic;
-using Avalonia.Collections;
 using Shoebill.Models;
 using Shoebill.ViewModels;
 
