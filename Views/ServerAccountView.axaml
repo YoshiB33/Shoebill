@@ -3,7 +3,28 @@
             xmlns:d="http://schemas.microsoft.com/expression/blend/2008"
             xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
             xmlns:vm="using:Shoebill.ViewModels"
+            xmlns:suki="using:SukiUI.Controls"
+            xmlns:objectModel="using:System.Collections.ObjectModel"
             x:DataType="vm:ServerAccountViewModel"
             mc:Ignorable="d" d:DesignWidth="800" d:DesignHeight="450"
             x:Class="Shoebill.Views.ServerAccountView">
+    <suki:SettingsLayout>
+        <suki:SettingsLayout.Items>
+            <objectModel:ObservableCollection x:TypeArguments="suki:SettingsLayoutItem">
+                <suki:SettingsLayoutItem Header="Email">
+                    <suki:SettingsLayoutItem.Content>
+                        <suki:GlassCard>
+                            <StackPanel Orientation="Vertical" Spacing="5" >
+                                <TextBlock Text="Email"/>
+                                <TextBox/>
+                                <TextBlock Text="Enter your password:" Margin="0,15,0,0"/>
+                                <TextBox/>
+                                <Button Classes="Flat" Content="Update email"/>
+                            </StackPanel>    
+                        </suki:GlassCard>
+                    </suki:SettingsLayoutItem.Content>
+                </suki:SettingsLayoutItem>
+            </objectModel:ObservableCollection>
+        </suki:SettingsLayout.Items>
+    </suki:SettingsLayout>
 </UserControl>

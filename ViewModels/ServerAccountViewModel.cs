@@ -23,7 +23,7 @@ public class ServerAccountViewModel : ServerViewModelBase
     }
     public override string? DisplayName 
     {
-        get => "Accounts";
+        get => "Account";
     }
 
     private void OnNavigatedTo(Type page)
