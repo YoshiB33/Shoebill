@@ -16,9 +16,9 @@
                         <suki:GlassCard>
                             <StackPanel Orientation="Vertical" Spacing="5" >
                                 <TextBlock Text="Email"/>
-                                <TextBox/>
+                                <TextBox Text="{Binding EmailText}"/>
                                 <TextBlock Text="Enter your password:" Margin="0,15,0,0"/>
-                                <TextBox/>
+                                <TextBox PasswordChar="*"/>
                                 <Button Classes="Flat" Content="Update email"/>
                             </StackPanel>    
                         </suki:GlassCard>

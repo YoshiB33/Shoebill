@@ -1,11 +1,28 @@
 ﻿using System;
+using System.ComponentModel.DataAnnotations;
 using Material.Icons;
+using ReactiveUI;
 using Shoebill.Services;
 
 namespace Shoebill.ViewModels;
 
 public class ServerAccountViewModel : ServerViewModelBase
 {
+    private string _emailText = "";
+    [EmailAddress]
+    public string EmailText
+    {
+        get => _emailText;
+        set => this.RaiseAndSetIfChanged(ref _emailText, value);
+    }
+    private string _passwordText = "";
+    [Required]
+    public string PasswordText
+    {
+        get => _passwordText;
+        set => this.RaiseAndSetIfChanged(ref _passwordText, value);
+    }
+    
     public INavigationService _navigationService;
     public ServerAccountViewModel(INavigationService navigationService)
     {
