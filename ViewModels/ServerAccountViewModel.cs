@@ -49,14 +49,13 @@ public class ServerAccountViewModel : ViewModelBase
         _navigationService = navigationService;
         navigationService.NavigationRequested += OnNavigatedTo;
 
-        var observable =
-            this.WhenAnyValue(x => x.EmailText, x => x.PasswordText,
-                (email, password) =>
-                    !string.IsNullOrWhiteSpace(email) &&
-                    !string.IsNullOrWhiteSpace(password) &&
-                    EmailHelper.IsEmailValid(email) &&
-                    (email != OldEmail)
-                )
+        this.WhenAnyValue(x => x.EmailText, x => x.PasswordText,
+            (email, password) =>
+                !string.IsNullOrWhiteSpace(email) &&
+                !string.IsNullOrWhiteSpace(password) &&
+                EmailHelper.IsEmailValid(email) &&
+                (email != OldEmail)
+            )
             .Subscribe(x => {
                 CanChangeEmail = x;
             });
@@ -69,7 +68,6 @@ public class ServerAccountViewModel : ViewModelBase
     {
         if (page == typeof(ServerAccountViewModel))
         {
-            Console.WriteLine("Navigated to Accounts page!");
             GetAccountDetails? account = null;
             try
             {
@@ -91,11 +89,26 @@ public class ServerAccountViewModel : ViewModelBase
         }
     }
 
-    private void NavigateBack() =>
-        _navigationService.NavigateBack();
-
-    private void UpdateEmail()
+    private void NavigateBack()
     {
-        Console.WriteLine("Changed email!");
+        _navigationService.NavigateBack();
+        EmailText = "";
+    }
+
+    private async void UpdateEmail()
+    {
+        try
+        {
+            await _apiService.UpdateAccountEmailAsync(EmailText, PasswordText);
+            await SukiHost.ShowToast(new SukiUI.Models.ToastModel("Successfully updated email", $"Upadted email to {EmailText}", SukiUI.Enums.NotificationType.Success));
+            EmailText = "";
+            OnNavigatedTo(typeof(ServerAccountViewModel));
+        }
+        catch (HttpRequestException ex)
+        {
+            Console.WriteLine(ex.Message);
+            Console.WriteLine(ex.HttpRequestError);
+            await SukiHost.ShowToast(new SukiUI.Models.ToastModel("Couldn't update email!", ex.Message, Type: SukiUI.Enums.NotificationType.Error));
+        }
     }
 }

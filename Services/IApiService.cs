@@ -14,4 +14,5 @@ public interface IApiService
     public Task<ListServer?> GetServersAsync();
     public Task<Server?> GetServerAsync();
     public Task<GetAccountDetails?> GetAccountDetailsAsync();
+    public Task UpdateAccountEmailAsync(string Email, string Password);
 }

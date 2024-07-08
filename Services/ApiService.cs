@@ -2,8 +2,11 @@
 using System.Net.Http;
 using System.Net.Http.Headers;
 using System.Net.Http.Json;
+using System.Text;
+using System.Text.Json;
 using System.Threading.Tasks;
 using Shoebill.Models;
+using Shoebill.Models.Api.Requests;
 using Shoebill.Models.Api.Responses;
 using Shoebill.Models.Api.Schemas;
 
@@ -72,5 +75,33 @@ public class ApiService : IApiService
         response.EnsureSuccessStatusCode();
         var json = await response.Content.ReadFromJsonAsync<GetAccountDetails>();
         return json;
+    }
+
+    public async Task UpdateAccountEmailAsync(string Email, string Password)
+    {
+        if (ApiKey is null || ApiKey.Key is null || ApiKey.Name is null)
+        {
+            throw new ArgumentException(nameof(ApiKey));
+        }
+        var settings = new JsonSerializerOptions
+        {
+            PropertyNamingPolicy = JsonNamingPolicy.CamelCase
+        };
+        var body = JsonSerializer.Serialize(new UpdateEmailRequest(Email, Password), settings);
+        var client = new HttpClient();
+        client.DefaultRequestHeaders.Accept.Clear();
+        client.DefaultRequestHeaders.Accept.Add(
+            new MediaTypeWithQualityHeaderValue("application/json")
+        );
+        client.DefaultRequestHeaders.Authorization = new AuthenticationHeaderValue("Bearer", ApiKey.Key);
+        var request = new HttpRequestMessage
+        {
+            Method = HttpMethod.Put,
+            RequestUri = new Uri($"https://{ApiKey.ServerAdress}/api/client/account/email"),
+            Content = new StringContent(body, Encoding.UTF8, "application/json")
+        };
+        var response = await client.SendAsync(request);
+        System.Console.WriteLine(await response.Content.ReadAsStringAsync());
+        response.EnsureSuccessStatusCode();
     }
 }
