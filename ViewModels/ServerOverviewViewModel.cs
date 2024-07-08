@@ -16,6 +16,7 @@ public class ServerOverviewViewModel : ViewModelBase
     public ReactiveCommand<Unit, Unit> NavigateBackCommand { get; set; }
     public ReactiveCommand<Unit, Unit> NavigateSettingsCommand { get; set; }
     public ReactiveCommand<string, Unit> NavigateServerCommand { get; set; }
+    public ReactiveCommand<Unit, Unit> NavigateAccountCommand { get; set; }
     public ObservableCollection<Server> Servers { get; set; } = [];
     private readonly INavigationService _navigationService;
     private readonly IApiService _apiService;
@@ -34,6 +35,7 @@ public class ServerOverviewViewModel : ViewModelBase
         NavigateBackCommand     = ReactiveCommand.Create(NavigateBack);
         NavigateSettingsCommand = ReactiveCommand.Create(NavigateSettings);
         NavigateServerCommand   = ReactiveCommand.Create<string>(NavigateServer);
+        NavigateAccountCommand  = ReactiveCommand.Create(NavigateAccount);
     }
 
     private async void OnNavigatedTo(Type page)
@@ -81,4 +83,6 @@ public class ServerOverviewViewModel : ViewModelBase
         _apiService.CurrentServerUuid = uuid;
         _navigationService.RequestNaviagtion<ServerMasterViewModel>(false);
     }
+    private void NavigateAccount() =>
+        _navigationService.RequestNaviagtion<ServerAccountViewModel>(false);
 }

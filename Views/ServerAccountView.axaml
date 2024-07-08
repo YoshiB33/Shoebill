@@ -5,26 +5,35 @@
             xmlns:vm="using:Shoebill.ViewModels"
             xmlns:suki="using:SukiUI.Controls"
             xmlns:objectModel="using:System.Collections.ObjectModel"
+            xmlns:icons="using:Material.Icons.Avalonia"
             x:DataType="vm:ServerAccountViewModel"
             mc:Ignorable="d" d:DesignWidth="800" d:DesignHeight="450"
             x:Class="Shoebill.Views.ServerAccountView">
-    <suki:SettingsLayout>
-        <suki:SettingsLayout.Items>
-            <objectModel:ObservableCollection x:TypeArguments="suki:SettingsLayoutItem">
-                <suki:SettingsLayoutItem Header="Email">
-                    <suki:SettingsLayoutItem.Content>
-                        <suki:GlassCard>
-                            <StackPanel Orientation="Vertical" Spacing="5" >
-                                <TextBlock Text="Email"/>
-                                <TextBox Text="{Binding EmailText}"/>
-                                <TextBlock Text="Enter your password:" Margin="0,15,0,0"/>
-                                <TextBox PasswordChar="*"/>
-                                <Button Classes="Flat" Content="Update email"/>
-                            </StackPanel>    
-                        </suki:GlassCard>
-                    </suki:SettingsLayoutItem.Content>
-                </suki:SettingsLayoutItem>
-            </objectModel:ObservableCollection>
-        </suki:SettingsLayout.Items>
-    </suki:SettingsLayout>
+    <StackPanel Orientation="Vertical">
+        <DockPanel Dock="Top">
+            <Button Command="{Binding NavigateBackCommand}" HorizontalAlignment="Left" IsVisible="{Binding CanNavigateBack}">
+                <icons:MaterialIcon Kind="ArrowBack"/>
+            </Button>
+            <TextBlock Text="Server Account Settings" FontSize="24" FontWeight="Bold" Margin="25,5,10,5" HorizontalAlignment="Center"/>
+        </DockPanel>
+        <suki:SettingsLayout>
+            <suki:SettingsLayout.Items>
+                <objectModel:ObservableCollection x:TypeArguments="suki:SettingsLayoutItem">
+                    <suki:SettingsLayoutItem Header="Email">
+                        <suki:SettingsLayoutItem.Content>
+                            <suki:GlassCard>
+                                <StackPanel Orientation="Vertical" Spacing="5" >
+                                    <TextBlock Text="Email"/>
+                                    <TextBox Text="{Binding EmailText}"/>
+                                    <TextBlock Text="Enter your password:" Margin="0,15,0,0"/>
+                                    <TextBox PasswordChar="*" Text="{Binding PasswordText}"/>
+                                    <Button Classes="Flat" Content="Update email" Command="{Binding UpdateEmailCommand}" IsEnabled="{Binding CanChangeEmail}"/>
+                                </StackPanel>    
+                            </suki:GlassCard>
+                        </suki:SettingsLayoutItem.Content>
+                    </suki:SettingsLayoutItem>
+                </objectModel:ObservableCollection>
+            </suki:SettingsLayout.Items>
+        </suki:SettingsLayout>
+    </StackPanel>
 </UserControl>

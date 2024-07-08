@@ -14,6 +14,7 @@ public class ApiService : IApiService
     private ApiKey? ApiKey { get; set; }
     public string? CurrentServerUuid { get; set; }
     public Server? CurrentServer { get; set; }
+    public GetAccountAttributes? CurrentAccount { get; set; } 
 
     public void SetApiKey(ApiKey? apiKey)
     {
@@ -53,5 +54,23 @@ public class ApiService : IApiService
         response.EnsureSuccessStatusCode();
         var json = await response.Content.ReadFromJsonAsync<GetServerDetails>();
         return json?.Attributes;
+    }
+
+    public async Task<GetAccountDetails?> GetAccountDetailsAsync()
+    {
+        if (ApiKey is null || ApiKey.Key is null || ApiKey.Key is null)
+        {
+            throw new ArgumentNullException(nameof(ApiKey));
+        }
+        var client = new HttpClient();
+        client.DefaultRequestHeaders.Accept.Clear();
+        client.DefaultRequestHeaders.Accept.Add(
+            new MediaTypeWithQualityHeaderValue("application/json")
+        );
+        client.DefaultRequestHeaders.Authorization = new AuthenticationHeaderValue("Bearer", ApiKey.Key);
+        var response = await client.GetAsync($"https://{ApiKey.ServerAdress}/api/client/account");
+        response.EnsureSuccessStatusCode();
+        var json = await response.Content.ReadFromJsonAsync<GetAccountDetails>();
+        return json;
     }
 }

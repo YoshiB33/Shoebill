@@ -20,9 +20,14 @@
                 <sukiui:GroupBox.Header>
                     <DockPanel Dock="Top">
                         <TextBlock Text="Servers" FontSize="18" FontWeight="Bold" HorizontalAlignment="Left" VerticalAlignment="Center"/>
-                        <Button HorizontalAlignment="Right" Command="{Binding NavigateSettingsCommand}">
-                            <icons:MaterialIcon Kind="Cog" />
-                        </Button>
+                        <StackPanel Spacing="5" HorizontalAlignment="Right" Orientation="Horizontal">
+                            <Button Command="{Binding NavigateAccountCommand}">
+                                <icons:MaterialIcon Kind="AccountCircle"/>
+                            </Button>
+                            <Button Command="{Binding NavigateSettingsCommand}">
+                                <icons:MaterialIcon Kind="Cog" />
+                            </Button>
+                        </StackPanel>
                     </DockPanel>
                 </sukiui:GroupBox.Header>
                 <StackPanel Orientation="Vertical" Spacing="5">
