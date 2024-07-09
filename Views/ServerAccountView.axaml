@@ -23,12 +23,29 @@
                         <suki:SettingsLayoutItem.Content>
                             <suki:GlassCard>
                                 <StackPanel Orientation="Vertical" Spacing="5" >
-                                    <TextBlock Text="Email"/>
+                                    <TextBlock Text="Update Email Adress" FontSize="18" FontWeight="SemiBold"/>
+                                    <TextBlock Text="Email" Margin="0,15,0,0"/>
                                     <TextBox Text="{Binding EmailText}"/>
                                     <TextBlock Text="Enter your password:" Margin="0,15,0,0"/>
-                                    <TextBox PasswordChar="*" Text="{Binding PasswordText}"/>
+                                    <TextBox PasswordChar="*" Text="{Binding EmailPasswordText}"/>
                                     <Button Classes="Flat" Content="Update email" Command="{Binding UpdateEmailCommand}" IsEnabled="{Binding CanChangeEmail}"/>
                                 </StackPanel>    
+                            </suki:GlassCard>
+                        </suki:SettingsLayoutItem.Content>
+                    </suki:SettingsLayoutItem>
+                    <suki:SettingsLayoutItem Header="Passsword">
+                        <suki:SettingsLayoutItem.Content>
+                            <suki:GlassCard>
+                                <StackPanel Orientation="Vertical" Spacing="5" >
+                                    <TextBlock Text="Update Password" FontSize="18" FontWeight="SemiBold"/>
+                                    <TextBlock Text="Current password:" Margin="0,15,0,0"/>
+                                    <TextBox Text="{Binding CurrentPasswordText}" PasswordChar="*"/>
+                                    <TextBlock Text="New password:" Margin="0,15,0,0"/>
+                                    <TextBox PasswordChar="*" Text="{Binding NewPasswordText}" RevealPassword="True"/>
+                                    <TextBlock Text="Reenter new password:" Margin="0,15,0,0"/>
+                                    <TextBox Text="{Binding ConfirmPasswordText}" PasswordChar="*"/>
+                                    <Button Classes="Flat" Content="Update password" Command="{Binding UpdatePasswordCommand}" IsEnabled="{Binding CanChangePassword}"/>
+                                </StackPanel> 
                             </suki:GlassCard>
                         </suki:SettingsLayoutItem.Content>
                     </suki:SettingsLayoutItem>

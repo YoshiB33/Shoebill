@@ -20,18 +20,45 @@ public class ServerAccountViewModel : ViewModelBase
         get => _emailText;
         set => this.RaiseAndSetIfChanged(ref _emailText, value);
     }
-    private string _passwordText = "";
+    private string _emailPasswordText = "";
     [Required]
-    public string PasswordText
+    public string EmailPasswordText
     {
-        get => _passwordText;
-        set => this.RaiseAndSetIfChanged(ref _passwordText, value);
+        get => _emailPasswordText;
+        set => this.RaiseAndSetIfChanged(ref _emailPasswordText, value);
     }
     private bool _canChangeEmail;
     public bool CanChangeEmail
     {
         get => _canChangeEmail;
         set => this.RaiseAndSetIfChanged(ref _canChangeEmail, value);
+    }
+    private string _currentPasswordText = "";
+    [Required]
+    public string CurrentPasswordText
+    {
+        get => _currentPasswordText;
+        set => this.RaiseAndSetIfChanged(ref _currentPasswordText, value);
+    }
+    private string _newPasswordText = "";
+    [Required]
+    public string NewPasswordText
+    {
+        get => _newPasswordText;
+        set => this.RaiseAndSetIfChanged(ref _newPasswordText, value);
+    }
+    private string _confirmPasswordText = "";
+    [Required]
+    public string ConfirmPasswordText
+    {
+        get => _confirmPasswordText;
+        set => this.RaiseAndSetIfChanged(ref _confirmPasswordText, value);
+    }
+    private bool _canChangePassword;
+    public bool CanChangePassword
+    {
+        get => _canChangePassword;
+        set => this.RaiseAndSetIfChanged(ref _canChangePassword, value);
     }
     
 
@@ -40,6 +67,7 @@ public class ServerAccountViewModel : ViewModelBase
 
     public ReactiveCommand<Unit, Unit> NavigateBackCommand { get; set; }
     public ReactiveCommand<Unit, Unit> UpdateEmailCommand { get; set; }
+    public ReactiveCommand<Unit, Unit> UpdatePasswordCommand { get; set; }
 
     private IApiService _apiService;
     private INavigationService _navigationService;
@@ -49,19 +77,31 @@ public class ServerAccountViewModel : ViewModelBase
         _navigationService = navigationService;
         navigationService.NavigationRequested += OnNavigatedTo;
 
-        this.WhenAnyValue(x => x.EmailText, x => x.PasswordText,
+        this.WhenAnyValue(x => x.EmailText, x => x.EmailPasswordText,
             (email, password) =>
-                !string.IsNullOrWhiteSpace(email) &&
-                !string.IsNullOrWhiteSpace(password) &&
+                !string.IsNullOrEmpty(email) &&
+                !string.IsNullOrEmpty(password) &&
                 EmailHelper.IsEmailValid(email) &&
                 (email != OldEmail)
             )
             .Subscribe(x => {
                 CanChangeEmail = x;
             });
+        this.WhenAnyValue(x => x.CurrentPasswordText, x => x.NewPasswordText, x => x.ConfirmPasswordText,
+            (currentPassword, newPassword, confirmPasswordText) =>
+                !string.IsNullOrEmpty(currentPassword) &&
+                !string.IsNullOrEmpty(newPassword) &&
+                !string.IsNullOrEmpty(confirmPasswordText) &&
+                (currentPassword != newPassword) &&
+                (newPassword == confirmPasswordText)
+            )
+            .Subscribe(x => {
+                CanChangePassword = x;
+            });
         
         NavigateBackCommand = ReactiveCommand.Create(NavigateBack);
         UpdateEmailCommand = ReactiveCommand.Create(UpdateEmail);
+        UpdatePasswordCommand = ReactiveCommand.Create(UpdatePassword);
     }
 
     private async void OnNavigatedTo(Type page)
@@ -99,10 +139,10 @@ public class ServerAccountViewModel : ViewModelBase
     {
         try
         {
-            await _apiService.UpdateAccountEmailAsync(EmailText, PasswordText);
+            await _apiService.UpdateAccountEmailAsync(EmailText, EmailPasswordText);
             await SukiHost.ShowToast(new SukiUI.Models.ToastModel("Successfully updated email", $"Upadted email to {EmailText}", SukiUI.Enums.NotificationType.Success));
             EmailText = "";
-            OnNavigatedTo(typeof(ServerAccountViewModel));
+            OnNavigatedTo(typeof(ServerAccountViewModel)); // This line is to reload the information on this page
         }
         catch (HttpRequestException ex)
         {
@@ -110,5 +150,9 @@ public class ServerAccountViewModel : ViewModelBase
             Console.WriteLine(ex.HttpRequestError);
             await SukiHost.ShowToast(new SukiUI.Models.ToastModel("Couldn't update email!", ex.Message, Type: SukiUI.Enums.NotificationType.Error));
         }
+    }
+    private void UpdatePassword()
+    {
+        Console.WriteLine("Updated Password");
     }
 }
