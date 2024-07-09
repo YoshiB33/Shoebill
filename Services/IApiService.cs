@@ -16,4 +16,5 @@ public interface IApiService
     public Task<GetAccountDetails?> GetAccountDetailsAsync();
     public Task UpdateAccountEmailAsync(string Email, string Password);
     public Task UpdateAccountPasswordAsync(string CurrentPassword, string NewPassword, string PasswordConfirmation);
+    public Task<GetApiKeys?> GetApiKeysAsync();
 }

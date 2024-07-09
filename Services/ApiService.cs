@@ -109,4 +109,12 @@ public class ApiService : IApiService
         var body = JsonSerializer.Serialize(new UpadtePasswordRequest(CurrentPassword, NewPassword, PasswordConfirmation), jsonSettings);
         await StandardPutAsync($"https://{ApiKey.ServerAdress}/api/client/account/password", body);
     }
+    public async Task<GetApiKeys?> GetApiKeysAsync()
+    {
+        if (ApiKey is null || ApiKey.Key is null || ApiKey.Name is null)
+        {
+            throw new ArgumentException(nameof(ApiKey));
+        }
+        return await StandardGetAsync<GetApiKeys>("https://{ApiKey.ServerAdress}/api/client/account/api-keys");
+    }
 }
