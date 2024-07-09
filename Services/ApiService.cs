@@ -93,11 +93,20 @@ public class ApiService : IApiService
         {
             throw new ArgumentException(nameof(ApiKey));
         }
+        var body = JsonSerializer.Serialize(new UpdateEmailRequest(Email, Password), jsonSettings);
+        await StandardPutAsync($"https://{ApiKey.ServerAdress}/api/client/account/email", body);
+    }
+    public async Task UpdateAccountPasswordAsync(string CurrentPassword, string NewPassword, string PasswordConfirmation)
+    {
+        if (ApiKey is null || ApiKey.Key is null || ApiKey.Name is null)
+        {
+            throw new ArgumentException(nameof(ApiKey));
+        }
         var settings = new JsonSerializerOptions
         {
             PropertyNamingPolicy = JsonNamingPolicy.CamelCase
         };
-        var body = JsonSerializer.Serialize(new UpdateEmailRequest(Email, Password), settings);
-        await StandardPutAsync($"https://{ApiKey.ServerAdress}/api/client/account/email", body);
+        var body = JsonSerializer.Serialize(new UpadtePasswordRequest(CurrentPassword, NewPassword, PasswordConfirmation), jsonSettings);
+        await StandardPutAsync($"https://{ApiKey.ServerAdress}/api/client/account/password", body);
     }
 }

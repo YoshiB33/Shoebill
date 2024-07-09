@@ -133,6 +133,10 @@ public class ServerAccountViewModel : ViewModelBase
     {
         _navigationService.NavigateBack();
         EmailText = "";
+        EmailPasswordText = "";
+        CurrentPasswordText = "";
+        NewPasswordText = "";
+        ConfirmPasswordText = "";
     }
 
     private async void UpdateEmail()
@@ -140,19 +144,32 @@ public class ServerAccountViewModel : ViewModelBase
         try
         {
             await _apiService.UpdateAccountEmailAsync(EmailText, EmailPasswordText);
-            await SukiHost.ShowToast(new SukiUI.Models.ToastModel("Successfully updated email", $"Upadted email to {EmailText}", SukiUI.Enums.NotificationType.Success));
+            await SukiHost.ShowToast(new SukiUI.Models.ToastModel("Successfully updated email", $"Updated email to {EmailText}", SukiUI.Enums.NotificationType.Success));
             EmailText = "";
             OnNavigatedTo(typeof(ServerAccountViewModel)); // This line is to reload the information on this page
         }
         catch (HttpRequestException ex)
         {
             Console.WriteLine(ex.Message);
-            Console.WriteLine(ex.HttpRequestError);
+            Console.WriteLine(ex.StackTrace);
             await SukiHost.ShowToast(new SukiUI.Models.ToastModel("Couldn't update email!", ex.Message, Type: SukiUI.Enums.NotificationType.Error));
         }
     }
-    private void UpdatePassword()
+    private async void UpdatePassword()
     {
-        Console.WriteLine("Updated Password");
+        try
+        {
+            await _apiService.UpdateAccountPasswordAsync(CurrentPasswordText, NewPasswordText, ConfirmPasswordText);
+            await SukiHost.ShowToast(new SukiUI.Models.ToastModel("Successfully updated password", $"Updated password to {NewPasswordText}", SukiUI.Enums.NotificationType.Success));
+            CurrentPasswordText = "";
+            NewPasswordText = "";
+            ConfirmPasswordText = "";
+        }
+        catch (HttpRequestException ex)
+        {
+            Console.WriteLine(ex.Message);
+            Console.WriteLine(ex.StackTrace);
+            await SukiHost.ShowToast(new SukiUI.Models.ToastModel("Couldn't update password!", ex.Message, Type: SukiUI.Enums.NotificationType.Error));
+        }
     }
 }
