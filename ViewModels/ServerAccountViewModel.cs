@@ -1,4 +1,5 @@
 ﻿using System;
+using System.Collections.ObjectModel;
 using System.ComponentModel.DataAnnotations;
 using System.Net.Http;
 using System.Reactive;
@@ -6,6 +7,7 @@ using System.Reactive.Linq;
 using ReactiveUI;
 using Shoebill.Helpers;
 using Shoebill.Models.Api.Responses;
+using Shoebill.Models.Api.Schemas;
 using Shoebill.Services;
 using SukiUI.Controls;
 
@@ -71,6 +73,7 @@ public class ServerAccountViewModel : ViewModelBase
 
     private IApiService _apiService;
     private INavigationService _navigationService;
+    public ObservableCollection<API_Key> ApiKeys { get; set; } = [];
     public ServerAccountViewModel(INavigationService navigationService, IApiService apiService)
     {
         _apiService = apiService;
@@ -125,6 +128,24 @@ public class ServerAccountViewModel : ViewModelBase
             {
                 EmailText = account.Attributes.Email;
                 _apiService.CurrentAccount = account.Attributes;
+                try
+                {
+                    var keysResponse = await _apiService.GetApiKeysAsync();
+                    if (keysResponse is not null)
+                    {
+                        foreach (var key in keysResponse.Data)
+                        {
+                            ApiKeys.Add(key.Attributes);
+                        }
+                    }
+                }
+                catch (HttpRequestException ex)
+                {
+                   Console.WriteLine(ex.Message);
+                   Console.WriteLine(ex.StackTrace);
+                   await SukiHost.ShowToast(new SukiUI.Models.ToastModel("Couldn't get api keys", ex.Message, SukiUI.Enums.NotificationType.Error)); 
+                }
+
             }
         }
     }
@@ -137,6 +158,7 @@ public class ServerAccountViewModel : ViewModelBase
         CurrentPasswordText = "";
         NewPasswordText = "";
         ConfirmPasswordText = "";
+        ApiKeys.Clear();
     }
 
     private async void UpdateEmail()

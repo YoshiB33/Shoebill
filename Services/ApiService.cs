@@ -115,6 +115,6 @@ public class ApiService : IApiService
         {
             throw new ArgumentException(nameof(ApiKey));
         }
-        return await StandardGetAsync<GetApiKeys>("https://{ApiKey.ServerAdress}/api/client/account/api-keys");
+        return await StandardGetAsync<GetApiKeys>($"https://{ApiKey.ServerAdress}/api/client/account/api-keys");
     }
 }
