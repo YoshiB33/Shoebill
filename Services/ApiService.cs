@@ -37,7 +37,7 @@ public class ApiService : IApiService
             new MediaTypeWithQualityHeaderValue("application/json")
         );
         client.DefaultRequestHeaders.Authorization = new AuthenticationHeaderValue("Bearer", ApiKey?.Key);
-        var response = await client.GetAsync(Path);
+        using var response = await client.GetAsync(Path);
         response.EnsureSuccessStatusCode();
         return await response.Content.ReadFromJsonAsync<T>();
     }
@@ -55,7 +55,7 @@ public class ApiService : IApiService
             RequestUri = new Uri(Path),
             Content = new StringContent(Body, Encoding.UTF8, "application/json")
         };
-        var response = await client.SendAsync(request);
+        using var response = await client.SendAsync(request);
         response.EnsureSuccessStatusCode();
     }
 
