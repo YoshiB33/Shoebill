@@ -70,6 +70,7 @@ public class ServerAccountViewModel : ViewModelBase
     public ReactiveCommand<Unit, Unit> NavigateBackCommand { get; set; }
     public ReactiveCommand<Unit, Unit> UpdateEmailCommand { get; set; }
     public ReactiveCommand<Unit, Unit> UpdatePasswordCommand { get; set; }
+    public ReactiveCommand<Unit, Unit> OpenCreateApiKeyDialogCommand { get; set; }
 
     private IApiService _apiService;
     private INavigationService _navigationService;
@@ -105,6 +106,7 @@ public class ServerAccountViewModel : ViewModelBase
         NavigateBackCommand = ReactiveCommand.Create(NavigateBack);
         UpdateEmailCommand = ReactiveCommand.Create(UpdateEmail);
         UpdatePasswordCommand = ReactiveCommand.Create(UpdatePassword);
+        OpenCreateApiKeyDialogCommand = ReactiveCommand.Create(OpenCreateApiKeyDialog);
     }
 
     private async void OnNavigatedTo(Type page)
@@ -194,4 +196,7 @@ public class ServerAccountViewModel : ViewModelBase
             await SukiHost.ShowToast(new SukiUI.Models.ToastModel("Couldn't update password!", ex.Message, Type: SukiUI.Enums.NotificationType.Error));
         }
     }
+
+    private void OpenCreateApiKeyDialog()
+        => SukiHost.ShowDialog(new CreateApiKeyViewModel(), allowBackgroundClose: true);
 }

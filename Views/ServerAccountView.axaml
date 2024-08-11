@@ -66,7 +66,7 @@
                                                         </DataTemplate>
                                                     </ItemsControl.ItemTemplate>
                                                 </ItemsControl>
-                                                <Button Classes="Flat" Content="Add new key" Command="{Binding AddApiKeyCommand}"/>
+                                                <Button Classes="Flat" Content="Add new key" Command="{Binding OpenCreateApiKeyDialogCommand}"/>
                                             </StackPanel>
                                         </Border>
                                     </StackPanel> 

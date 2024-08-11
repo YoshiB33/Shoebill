@@ -1,5 +1,4 @@
 ﻿using System;
-using System.Collections;
 using System.Net.Http;
 using System.Net.Http.Headers;
 using System.Net.Http.Json;
