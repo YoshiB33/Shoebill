@@ -18,7 +18,7 @@
                 <TextBlock Text="Allowed IPS: (Leave blank to allow any IP. Provide a new IP on each new line)"/>
                 <TextBox AcceptsReturn="True" Text="{Binding IpText}"/>
             </StackPanel>
-            <Button Classes="Flat Rounded" Content="Submit" Command="{Binding SubmitCommand}"/>
+            <Button Classes="Flat Rounded" Content="Submit" Command="{Binding SubmitCommand}" IsEnabled="{Binding CanAddKey}"/>
         </StackPanel>
     </sukiUi:BusyArea>
 </UserControl>

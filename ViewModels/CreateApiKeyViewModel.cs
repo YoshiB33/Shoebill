@@ -1,4 +1,5 @@
 using System.ComponentModel.DataAnnotations;
+using System.Linq;
 using System.Reactive;
 using ReactiveUI;
 using Shoebill.Attributes;
@@ -29,6 +30,9 @@ public class CreateApiKeyViewModel : ViewModelBase
         get => _isBusy;
         set => this.RaiseAndSetIfChanged(ref _isBusy, value);
     }
+    public bool CanAddKey => _canAddKey.Value;
+
+    private ObservableAsPropertyHelper<bool> _canAddKey;
 
     public ReactiveCommand<Unit, Unit> SubmitCommand { get; set; }
 
@@ -38,6 +42,12 @@ public class CreateApiKeyViewModel : ViewModelBase
     {
         _apiService = apiService;
         SubmitCommand = ReactiveCommand.Create(Submit);
+
+        this.WhenAnyValue(x => x.DesctriptionText, x => x.IpText,
+            (description, ips) =>
+                description.Length <= 500 &&
+                IpText.Count(x => x == '\n') <= 49
+            ).ToProperty(this, x => x.CanAddKey, out _canAddKey);
     }
 
     private void Submit()
