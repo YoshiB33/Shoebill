@@ -198,5 +198,5 @@ public class ServerAccountViewModel : ViewModelBase
     }
 
     private void OpenCreateApiKeyDialog()
-        => SukiHost.ShowDialog(new CreateApiKeyViewModel(), allowBackgroundClose: true);
+        => SukiHost.ShowDialog(new CreateApiKeyViewModel(_apiService), allowBackgroundClose: true);
 }
