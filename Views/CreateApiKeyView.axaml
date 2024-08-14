@@ -18,7 +18,7 @@
                 <TextBlock Text="Allowed IPS: (Leave blank to allow any IP. Provide a new IP on each new line)"/>
                 <TextBox AcceptsReturn="True" Text="{Binding IpText}"/>
             </StackPanel>
-            <StackPanel Orientation="Horizontal">
+            <StackPanel Orientation="Horizontal" Spacing="2">
                 <Button Classes="Flat Rounded" Content="Submit" Command="{Binding SubmitCommand}" IsEnabled="{Binding CanAddKey}"/>
                 <Button Content="Cancel" Command="{Binding CancelCommand}"/> 
             </StackPanel>
