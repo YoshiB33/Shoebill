@@ -4,6 +4,7 @@ using System.Reactive;
 using ReactiveUI;
 using Shoebill.Attributes;
 using Shoebill.Services;
+using SukiUI.Controls;
 
 namespace Shoebill.ViewModels;
 
@@ -35,6 +36,7 @@ public class CreateApiKeyViewModel : ViewModelBase
     private ObservableAsPropertyHelper<bool> _canAddKey;
 
     public ReactiveCommand<Unit, Unit> SubmitCommand { get; set; }
+    public ReactiveCommand<Unit, Unit> CancelCommand { get; set; }
 
     private IApiService _apiService { get; set; }
 
@@ -42,6 +44,7 @@ public class CreateApiKeyViewModel : ViewModelBase
     {
         _apiService = apiService;
         SubmitCommand = ReactiveCommand.Create(Submit);
+        CancelCommand = ReactiveCommand.Create(Cancel);
 
         this.WhenAnyValue(x => x.DesctriptionText, x => x.IpText,
             (description, ips) =>
@@ -53,5 +56,9 @@ public class CreateApiKeyViewModel : ViewModelBase
     private void Submit()
     {
         IsBusy = true;
+    }
+    private void Cancel()
+    {
+        SukiHost.CloseDialog();
     }
 }
