@@ -1,4 +1,5 @@
 ﻿using System;
+using System.Collections;
 using System.Net.Http;
 using System.Net.Http.Headers;
 using System.Net.Http.Json;
@@ -20,7 +21,7 @@ public class ApiService : IApiService
     public GetAccountAttributes? CurrentAccount { get; set; } 
     private readonly JsonSerializerOptions jsonSettings = new JsonSerializerOptions
     {
-        PropertyNamingPolicy = JsonNamingPolicy.CamelCase
+        PropertyNamingPolicy = JsonNamingPolicy.SnakeCaseLower
     };
 
     public void SetApiKey(ApiKey? apiKey)
@@ -57,7 +58,26 @@ public class ApiService : IApiService
         using var response = await client.SendAsync(request);
         response.EnsureSuccessStatusCode();
     }
-
+    public async Task<T?> StandardPostAsync<T>(string Path, string Body)
+    {
+        var client = new HttpClient();
+        client.DefaultRequestHeaders.Accept.Clear();
+        client.DefaultRequestHeaders.Accept.Add(
+            new MediaTypeWithQualityHeaderValue("application/json")
+        );
+        client.DefaultRequestHeaders.Authorization = new AuthenticationHeaderValue("Bearer", ApiKey?.Key);
+        var request = new HttpRequestMessage
+        {
+            Method = HttpMethod.Post,
+            RequestUri = new Uri(Path),
+            Content = new StringContent(Body, Encoding.UTF8, "application/json")
+        };
+        using var response = await client.SendAsync(request);
+        System.Console.WriteLine(await response.Content.ReadAsStringAsync());
+        response.EnsureSuccessStatusCode();
+        var dejson = await JsonSerializer.DeserializeAsync<T>(await response.Content.ReadAsStreamAsync());
+        return dejson;
+    }
     public async Task<ListServer?> GetServersAsync()
     {
         if (ApiKey is null || ApiKey.Key is null || ApiKey.Key is null)
@@ -115,5 +135,15 @@ public class ApiService : IApiService
             throw new ArgumentException(nameof(ApiKey));
         }
         return await StandardGetAsync<GetApiKeys>($"https://{ApiKey.ServerAdress}/api/client/account/api-keys");
+    }
+
+    public async Task<CreateApiKeyResponse?> CreateApiKeyAsync(string Description, IEnumerable AllowedIps)
+    {
+        if (ApiKey is null || ApiKey.Key is null || ApiKey.Name is null)
+        {
+            throw new ArgumentException(nameof(ApiKey));
+        }
+        var body = JsonSerializer.Serialize(new CreateApiKeyRequest(Description, AllowedIps), jsonSettings);
+        return await StandardPostAsync<CreateApiKeyResponse>($"https://{ApiKey.ServerAdress}/api/client/account/api-keys", body);
     }
 }

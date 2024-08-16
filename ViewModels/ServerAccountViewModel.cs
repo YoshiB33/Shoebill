@@ -114,6 +114,7 @@ public class ServerAccountViewModel : ViewModelBase
         if (page == typeof(ServerAccountViewModel))
         {
             GetAccountDetails? account = null;
+            ApiKeys.Clear();
             try
             {
                 account = await _apiService.GetAccountDetailsAsync();
@@ -198,5 +199,5 @@ public class ServerAccountViewModel : ViewModelBase
     }
 
     private void OpenCreateApiKeyDialog()
-        => SukiHost.ShowDialog(new CreateApiKeyViewModel(_apiService), allowBackgroundClose: true);
+        => SukiHost.ShowDialog(new CreateApiKeyViewModel(_apiService, _navigationService), allowBackgroundClose: true);
 }

@@ -1,4 +1,5 @@
-﻿using System.Threading.Tasks;
+﻿using System.Collections;
+using System.Threading.Tasks;
 using Shoebill.Models;
 using Shoebill.Models.Api.Responses;
 using Shoebill.Models.Api.Schemas;
@@ -17,4 +18,5 @@ public interface IApiService
     public Task UpdateAccountEmailAsync(string Email, string Password);
     public Task UpdateAccountPasswordAsync(string CurrentPassword, string NewPassword, string PasswordConfirmation);
     public Task<GetApiKeys?> GetApiKeysAsync();
+    public Task<CreateApiKeyResponse?> CreateApiKeyAsync(string Description, IEnumerable AllowedIps);
 }

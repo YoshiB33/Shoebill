@@ -1,10 +1,13 @@
+using System;
 using System.ComponentModel.DataAnnotations;
 using System.Linq;
+using System.Net.Http;
 using System.Reactive;
 using ReactiveUI;
 using Shoebill.Attributes;
 using Shoebill.Services;
 using SukiUI.Controls;
+using SukiUI.Models;
 
 namespace Shoebill.ViewModels;
 
@@ -39,10 +42,12 @@ public class CreateApiKeyViewModel : ViewModelBase
     public ReactiveCommand<Unit, Unit> CancelCommand { get; set; }
 
     private IApiService _apiService { get; set; }
+    private INavigationService _navigationService { get; set; }
 
-    public CreateApiKeyViewModel(IApiService apiService)
+    public CreateApiKeyViewModel(IApiService apiService, INavigationService navigationService)
     {
         _apiService = apiService;
+        _navigationService = navigationService;
         SubmitCommand = ReactiveCommand.Create(Submit);
         CancelCommand = ReactiveCommand.Create(Cancel);
 
@@ -53,12 +58,22 @@ public class CreateApiKeyViewModel : ViewModelBase
             ).ToProperty(this, x => x.CanAddKey, out _canAddKey);
     }
 
-    private void Submit()
+    private async void Submit()
     {
         IsBusy = true;
-    }
-    private void Cancel()
-    {
+        var ips = IpText.Split(Environment.NewLine).Where(x => !string.IsNullOrWhiteSpace(x));
+        try
+        {
+            await _apiService.CreateApiKeyAsync(DesctriptionText, ips);
+        }
+        catch (HttpRequestException ex)
+        {
+            await SukiHost.ShowToast(new ToastModel("Couldn't create an api key", ex.Message, SukiUI.Enums.NotificationType.Error));
+        }
+        _navigationService.NavigationRequested?.Invoke(typeof(ServerAccountViewModel));
+        IsBusy = false;
         SukiHost.CloseDialog();
     }
+    private void Cancel() =>
+        SukiHost.CloseDialog();
 }
