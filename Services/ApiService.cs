@@ -73,10 +73,26 @@ public class ApiService : IApiService
             Content = new StringContent(Body, Encoding.UTF8, "application/json")
         };
         using var response = await client.SendAsync(request);
-        System.Console.WriteLine(await response.Content.ReadAsStringAsync());
         response.EnsureSuccessStatusCode();
         var dejson = await JsonSerializer.DeserializeAsync<T>(await response.Content.ReadAsStreamAsync());
         return dejson;
+    }
+    public async Task StandardDeteteAsync(string Path)
+    {
+        var client = new HttpClient();
+        client.DefaultRequestHeaders.Accept.Clear();
+        client.DefaultRequestHeaders.Accept.Add(
+            new MediaTypeWithQualityHeaderValue("application/json")
+        );
+        client.DefaultRequestHeaders.Authorization = new AuthenticationHeaderValue("Bearer", ApiKey?.Key);
+        var request = new HttpRequestMessage
+        {
+            Method = HttpMethod.Delete,
+            RequestUri = new Uri(Path),
+            Content = new StringContent("{}", Encoding.UTF8, "application/json")
+        };
+        using var response = await client.SendAsync(request);
+        response.EnsureSuccessStatusCode();
     }
     public async Task<ListServer?> GetServersAsync()
     {
@@ -145,5 +161,15 @@ public class ApiService : IApiService
         }
         var body = JsonSerializer.Serialize(new CreateApiKeyRequest(Description, AllowedIps), jsonSettings);
         return await StandardPostAsync<CreateApiKeyResponse>($"https://{ApiKey.ServerAdress}/api/client/account/api-keys", body);
+    }
+
+    public async Task DeteteApiKeyAsync(string Identifier)
+    {
+        if (ApiKey is null || ApiKey.Key is null || ApiKey.Name is null)
+        {
+            throw new ArgumentException(nameof(ApiKey));
+        }
+        var body = JsonSerializer.Serialize(new DeteteApiKeyRequest(Identifier), jsonSettings);
+        await StandardDeteteAsync($"https://{ApiKey.ServerAdress}/api/client/account/api-keys/{Identifier}");
     }
 }

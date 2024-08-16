@@ -71,6 +71,7 @@ public class ServerAccountViewModel : ViewModelBase
     public ReactiveCommand<Unit, Unit> UpdateEmailCommand { get; set; }
     public ReactiveCommand<Unit, Unit> UpdatePasswordCommand { get; set; }
     public ReactiveCommand<Unit, Unit> OpenCreateApiKeyDialogCommand { get; set; }
+    public ReactiveCommand<string, Unit> RemoveApiKeyCommand { get; set; }
 
     private IApiService _apiService;
     private INavigationService _navigationService;
@@ -107,6 +108,7 @@ public class ServerAccountViewModel : ViewModelBase
         UpdateEmailCommand = ReactiveCommand.Create(UpdateEmail);
         UpdatePasswordCommand = ReactiveCommand.Create(UpdatePassword);
         OpenCreateApiKeyDialogCommand = ReactiveCommand.Create(OpenCreateApiKeyDialog);
+        RemoveApiKeyCommand = ReactiveCommand.Create<string>(RemoveApiKey);
     }
 
     private async void OnNavigatedTo(Type page)
@@ -200,4 +202,36 @@ public class ServerAccountViewModel : ViewModelBase
 
     private void OpenCreateApiKeyDialog()
         => SukiHost.ShowDialog(new CreateApiKeyViewModel(_apiService, _navigationService), allowBackgroundClose: true);
+
+    private async void RemoveApiKey(string id)
+    {
+        Console.WriteLine("Deletes an api key! Key id: {0}", id);
+        try
+        {
+            await _apiService.DeteteApiKeyAsync(id);
+            await SukiHost.ShowToast(new SukiUI.Models.ToastModel($"Successfully deleted api key: {id}", SukiUI.Enums.NotificationType.Success));
+            ApiKeys.Clear();
+            try
+            {
+                var keysResponse = await _apiService.GetApiKeysAsync();
+                if (keysResponse is not null)
+                {
+                    foreach (var key in keysResponse.Data)
+                    {
+                        ApiKeys.Add(key.Attributes);
+                    }
+                }
+            }
+            catch (HttpRequestException ex)
+            {
+                Console.WriteLine(ex.Message);
+                Console.WriteLine(ex.StackTrace);
+                await SukiHost.ShowToast(new SukiUI.Models.ToastModel("Couldn't get api keys", ex.Message, SukiUI.Enums.NotificationType.Error)); 
+            }
+        }
+        catch (HttpRequestException ex)
+        {
+            await SukiHost.ShowToast(new SukiUI.Models.ToastModel($"Couldn't detete api key: {id}", ex.Message, SukiUI.Enums.NotificationType.Error));
+        }
+    }
 }
