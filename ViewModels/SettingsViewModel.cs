@@ -6,6 +6,7 @@ using Avalonia.Styling;
 using ReactiveUI;
 using Shoebill.Models;
 using Shoebill.Services;
+using Shoebill.ViewModels.Dialogs;
 using SukiUI;
 using SukiUI.Controls;
 using SukiUI.Models;

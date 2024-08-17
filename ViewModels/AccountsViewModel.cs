@@ -5,6 +5,7 @@ using System.Reactive;
 using ReactiveUI;
 using Shoebill.Models;
 using Shoebill.Services;
+using Shoebill.ViewModels.Dialogs;
 using SukiUI.Controls;
 
 namespace Shoebill.ViewModels;

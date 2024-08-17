@@ -9,7 +9,7 @@ using Shoebill.Services;
 using SukiUI.Controls;
 using SukiUI.Models;
 
-namespace Shoebill.ViewModels;
+namespace Shoebill.ViewModels.Dialogs;
 
 public class CreateApiKeyViewModel : ViewModelBase
 {

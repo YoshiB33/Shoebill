@@ -7,6 +7,7 @@ using Avalonia.Collections;
 using ReactiveUI;
 using Shoebill.Models.Api.Schemas;
 using Shoebill.Services;
+using Shoebill.ViewModels.ServerSubpages;
 using SukiUI.Controls;
 
 namespace Shoebill.ViewModels;

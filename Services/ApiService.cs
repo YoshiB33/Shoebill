@@ -109,7 +109,7 @@ public class ApiService : IApiService
         {
             throw new ArgumentNullException(nameof(ApiKey));
         }
-        var response = await StandardGetAsync<GetServerDetails>($"https://{ApiKey.ServerAdress}/api/client/{CurrentServerUuid}");
+        var response = await StandardGetAsync<GetServerDetails>($"https://{ApiKey.ServerAdress}/api/client/servers/{CurrentServerUuid}");
         return response?.Attributes;
     }
 

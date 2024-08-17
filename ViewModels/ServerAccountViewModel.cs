@@ -9,6 +9,7 @@ using Shoebill.Helpers;
 using Shoebill.Models.Api.Responses;
 using Shoebill.Models.Api.Schemas;
 using Shoebill.Services;
+using Shoebill.ViewModels.Dialogs;
 using SukiUI.Controls;
 
 namespace Shoebill.ViewModels;

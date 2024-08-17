@@ -1,6 +1,6 @@
 using Avalonia.Controls;
 
-namespace Shoebill.Views;
+namespace Shoebill.Views.Dialogs;
 
 public partial class CreateAccountView : UserControl
 {

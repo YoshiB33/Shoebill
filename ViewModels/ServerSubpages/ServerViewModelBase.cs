@@ -1,6 +1,6 @@
 ﻿using Material.Icons;
 
-namespace Shoebill.ViewModels;
+namespace Shoebill.ViewModels.ServerSubpages;
 
 public abstract class ServerViewModelBase : ViewModelBase
 {

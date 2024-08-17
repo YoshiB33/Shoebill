@@ -5,7 +5,7 @@ using Shoebill.Models;
 using Shoebill.Services;
 using SukiUI.Controls;
 
-namespace Shoebill.ViewModels;
+namespace Shoebill.ViewModels.Dialogs;
 
 public class CreateAccountViewModel : ViewModelBase
 {
