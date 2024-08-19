@@ -87,7 +87,11 @@
                                                         <DataTemplate>
                                                             <Border Background="Transparent" BorderBrush="{DynamicResource SukiControlBorderBrush}" BorderThickness="1" CornerRadius="{DynamicResource MediumCornerRadius}" Padding="15,15,30,15">
                                                                 <DockPanel>
-                                                                    <TextBlock Text="{Binding Name}" VerticalAlignment="Center" FontSize="16" />
+                                                                    <StackPanel Orientation="Vertical" Spacing="2">
+                                                                        <TextBlock Text="{Binding Name}" VerticalAlignment="Center" FontSize="16" />
+                                                                        <TextBlock Text="{Binding Fingerprint, StringFormat='SHA256:{0}'}"/>
+                                                                        <TextBlock Text="{Binding Created_at, StringFormat='Created at: {0}'}" Classes="Caption"/>
+                                                                    </StackPanel>
                                                                     <StackPanel Orientation="Horizontal" HorizontalAlignment="Right" Spacing="5">
                                                                         <Button>
                                                                             <icons:MaterialIcon Kind="Close"/>
