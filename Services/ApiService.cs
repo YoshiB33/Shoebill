@@ -181,4 +181,14 @@ public class ApiService : IApiService
         }
         return await StandardGetAsync<GetSSHResponse>($"https://{ApiKey.ServerAdress}/api/client/account/ssh-keys");
     }
+
+    public async Task<CreateSSHKeyResponse?> CreateSSHKeyAsync(string Name, string PublicKey)
+    {
+        if (ApiKey is null || ApiKey.Key is null || ApiKey.Name is null)
+        {
+            throw new ArgumentException(nameof(ApiKey));
+        }
+        var body = JsonSerializer.Serialize(new CreateSSHKeyRequest(Name, PublicKey), jsonSettings);
+        return await StandardPostAsync<CreateSSHKeyResponse>($"https://{ApiKey.ServerAdress}/api/client/account/ssh-keys", body);
+    }
 }
