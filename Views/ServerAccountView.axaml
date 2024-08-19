@@ -57,7 +57,7 @@
                                                                 <DockPanel>
                                                                     <TextBlock Text="{Binding Identifier}" VerticalAlignment="Center" FontSize="16" />
                                                                     <StackPanel Orientation="Horizontal" HorizontalAlignment="Right" Spacing="5">
-                                                                        <Button>
+                                                                        <Button Command="{Binding #ApiKeyControl.((vm:ServerAccountViewModel)DataContext).ShowKeyInfoCommand}" CommandParameter="{Binding Identifier}">
                                                                             <icons:MaterialIcon Kind="InformationOutline"/>
                                                                         </Button>
                                                                         <Button Command="{Binding #ApiKeyControl.((vm:ServerAccountViewModel)DataContext).RemoveApiKeyCommand}" CommandParameter="{Binding Identifier}">

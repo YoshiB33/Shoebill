@@ -1,0 +1,25 @@
+<UserControl xmlns="https://github.com/avaloniaui"
+             xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
+             xmlns:d="http://schemas.microsoft.com/expression/blend/2008"
+             xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
+             xmlns:suki="using:SukiUI.Controls"
+             xmlns:vm="using:Shoebill.ViewModels.Dialogs"
+             mc:Ignorable="d" d:DesignWidth="800" d:DesignHeight="450"
+             x:DataType="vm:ApiKeyInfoViewModel"
+             x:Class="Shoebill.Views.Dialogs.ApiKeyInfoView">
+    <StackPanel Orientation="Vertical" Spacing="5">
+        <TextBlock Text="{Binding Identifier, StringFormat='Key: {0}'}" Classes="h3"/>
+        <TextBlock Text="{Binding Description}" FontWeight="Medium" FontSize="16"/>
+        <suki:GroupBox Header="Allowed IPs (All allowed if empty)">
+            <ItemsControl ItemsSource="{Binding Allowed_ips}">
+                <ItemsControl.ItemTemplate>
+                    <DataTemplate>
+                        <TextBlock Text="{Binding}" Classes="Caption"/>
+                    </DataTemplate>
+                </ItemsControl.ItemTemplate>
+            </ItemsControl>
+        </suki:GroupBox>
+        <TextBlock Text="{Binding Created_at, StringFormat='Creted at: {0}'}" Margin="0,5,0,0"/>
+        <TextBlock Text="{Binding Last_used_at_text, StringFormat='Last used at: {0}'}"/>
+    </StackPanel>
+</UserControl>
