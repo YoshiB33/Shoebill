@@ -20,4 +20,5 @@ public interface IApiService
     public Task<GetApiKeys?> GetApiKeysAsync();
     public Task<CreateApiKeyResponse?> CreateApiKeyAsync(string Description, IEnumerable AllowedIps);
     public Task DeteteApiKeyAsync(string Identifier);
+    public Task<GetSSHResponse?> GetSSHKeysAsync();
 }

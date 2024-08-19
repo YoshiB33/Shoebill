@@ -79,6 +79,7 @@ public class ServerAccountViewModel : ViewModelBase
     private IApiService _apiService;
     private INavigationService _navigationService;
     public ObservableCollection<API_Key> ApiKeys { get; set; } = [];
+    public ObservableCollection<SSH_Key> SSH_Keys { get; set; } = [];
     public ServerAccountViewModel(INavigationService navigationService, IApiService apiService)
     {
         _apiService = apiService;
@@ -153,6 +154,23 @@ public class ServerAccountViewModel : ViewModelBase
                    Console.WriteLine(ex.Message);
                    Console.WriteLine(ex.StackTrace);
                    await SukiHost.ShowToast(new SukiUI.Models.ToastModel("Couldn't get api keys", ex.Message, SukiUI.Enums.NotificationType.Error)); 
+                }
+                try
+                {
+                    var ssh_keys = await _apiService.GetSSHKeysAsync();
+                    if (ssh_keys is not null)
+                    {
+                        foreach (var key in ssh_keys.Data)
+                        {
+                            SSH_Keys.Add(key.Attributes);
+                        }
+                    }
+                }
+                catch (HttpRequestException ex)
+                {
+                   Console.WriteLine(ex.Message);
+                   Console.WriteLine(ex.StackTrace);
+                   await SukiHost.ShowToast(new SukiUI.Models.ToastModel("Couldn't get ssh keys", ex.Message, SukiUI.Enums.NotificationType.Error)); 
                 }
 
             }

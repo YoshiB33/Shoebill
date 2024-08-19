@@ -172,4 +172,13 @@ public class ApiService : IApiService
         var body = JsonSerializer.Serialize(new DeteteApiKeyRequest(Identifier), jsonSettings);
         await StandardDeteteAsync($"https://{ApiKey.ServerAdress}/api/client/account/api-keys/{Identifier}");
     }
+
+    public async Task<GetSSHResponse?> GetSSHKeysAsync()
+    {
+        if (ApiKey is null || ApiKey.Key is null || ApiKey.Name is null)
+        {
+            throw new ArgumentException(nameof(ApiKey));
+        }
+        return await StandardGetAsync<GetSSHResponse>($"https://{ApiKey.ServerAdress}/api/client/account/ssh-keys");
+    }
 }

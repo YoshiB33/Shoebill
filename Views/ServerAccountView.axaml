@@ -76,6 +76,35 @@
                                 </suki:GlassCard>
                             </suki:SettingsLayoutItem.Content>
                         </suki:SettingsLayoutItem>
+                       <suki:SettingsLayoutItem Header="SSH Keys">
+                            <suki:SettingsLayoutItem.Content>
+                                <suki:GlassCard>
+                                    <StackPanel Orientation="Vertical" Spacing="5" >
+                                        <Border BorderBrush="Gray" CornerRadius="5" BorderThickness="1" Padding="10">
+                                            <StackPanel Orientation="Vertical" Spacing="10">
+                                                <ItemsControl ItemsSource="{Binding SSH_Keys}" x:Name="SSHKeyControl">
+                                                    <ItemsControl.ItemTemplate>
+                                                        <DataTemplate>
+                                                            <Border Background="Transparent" BorderBrush="{DynamicResource SukiControlBorderBrush}" BorderThickness="1" CornerRadius="{DynamicResource MediumCornerRadius}" Padding="15,15,30,15">
+                                                                <DockPanel>
+                                                                    <TextBlock Text="{Binding Name}" VerticalAlignment="Center" FontSize="16" />
+                                                                    <StackPanel Orientation="Horizontal" HorizontalAlignment="Right" Spacing="5">
+                                                                        <Button>
+                                                                            <icons:MaterialIcon Kind="Close"/>
+                                                                        </Button>
+                                                                    </StackPanel>
+                                                                </DockPanel>
+                                                            </Border>
+                                                        </DataTemplate>
+                                                    </ItemsControl.ItemTemplate>
+                                                </ItemsControl>
+                                                <Button Classes="Flat" Content="Add new key"/>
+                                            </StackPanel>
+                                        </Border>
+                                    </StackPanel> 
+                                </suki:GlassCard>
+                            </suki:SettingsLayoutItem.Content>
+                        </suki:SettingsLayoutItem> 
                     </objectModel:ObservableCollection>
                 </suki:SettingsLayout.Items>
             </suki:SettingsLayout>
