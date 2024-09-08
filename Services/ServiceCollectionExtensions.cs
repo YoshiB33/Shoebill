@@ -3,8 +3,10 @@ using Shoebill.ViewModels;
 
 namespace Shoebill.Services;
 
-public static class ServiceCollectionExtensions {
-    public static void AddCommonServices(this IServiceCollection collection) {
+public static class ServiceCollectionExtensions
+{
+    public static void AddCommonServices(this IServiceCollection collection)
+    {
         collection.AddSingleton<INavigationService, NavigationService>();
         collection.AddSingleton<ISettingsService, SettingsService>();
         collection.AddSingleton<IApiService, ApiService>();

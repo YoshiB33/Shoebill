@@ -18,8 +18,8 @@ public class ApiService : IApiService
     private ApiKey? ApiKey { get; set; }
     public string? CurrentServerUuid { get; set; }
     public Server? CurrentServer { get; set; }
-    public GetAccountAttributes? CurrentAccount { get; set; } 
-    private readonly JsonSerializerOptions jsonSettings = new JsonSerializerOptions
+    public GetAccountAttributes? CurrentAccount { get; set; }
+    private readonly JsonSerializerOptions jsonSettings = new()
     {
         PropertyNamingPolicy = JsonNamingPolicy.SnakeCaseLower
     };

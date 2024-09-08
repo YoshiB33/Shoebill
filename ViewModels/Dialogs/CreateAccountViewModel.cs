@@ -70,8 +70,8 @@ public class CreateAccountViewModel : ViewModelBase
         {
             var canCreateUser = this.WhenAnyValue(
                 x => x.ServerUrl, x => x.ServerName, x => x.ServerApiKey, x => x.IsClientSelected, x => x.IsApplicationSelected,
-                    (url, name, key, clientSelected, applicationSelected) => 
-                        !string.IsNullOrWhiteSpace(name) && 
+                    (url, name, key, clientSelected, applicationSelected) =>
+                        !string.IsNullOrWhiteSpace(name) &&
                         !string.IsNullOrWhiteSpace(key) &&
                         !string.IsNullOrWhiteSpace(url) &&
                         (applicationSelected || clientSelected))
@@ -82,8 +82,8 @@ public class CreateAccountViewModel : ViewModelBase
 #pragma warning disable CS8602 // Dereference of a possibly null reference.
             var canCreateUser = this.WhenAnyValue(
                 x => x.ServerUrl, x => x.ServerName, x => x.ServerApiKey, x => x.IsClientSelected, x => x.IsApplicationSelected,
-                    (url, name, key, clientSelected, applicationSelected) => 
-                        !string.IsNullOrWhiteSpace(name) && 
+                    (url, name, key, clientSelected, applicationSelected) =>
+                        !string.IsNullOrWhiteSpace(name) &&
                         !string.IsNullOrWhiteSpace(key) &&
                         !string.IsNullOrWhiteSpace(url) &&
                         !apiKeys.Exists(x => x.Key == key) &&
@@ -104,7 +104,7 @@ public class CreateAccountViewModel : ViewModelBase
             ServerUrl = editApiKey.ServerAdress;
             if (editApiKey.ApiType == ApiTypes.Client)
             {
-                IsClientSelected  = true;
+                IsClientSelected = true;
             }
             else
             {
@@ -123,16 +123,18 @@ public class CreateAccountViewModel : ViewModelBase
         IsEntering = true;
         if (IsClientSelected)
         {
-            await _settingsService.WriteApiKeyAsync(new ApiKey {
+            await _settingsService.WriteApiKeyAsync(new ApiKey
+            {
                 Name = ServerName,
                 ServerAdress = ServerUrl,
                 Key = ServerApiKey,
                 ApiType = ApiTypes.Client
-            });   
+            });
         }
         else
         {
-            await _settingsService.WriteApiKeyAsync(new ApiKey {
+            await _settingsService.WriteApiKeyAsync(new ApiKey
+            {
                 Name = ServerName,
                 ServerAdress = ServerUrl,
                 Key = ServerApiKey,

@@ -23,12 +23,12 @@ public class ServerMasterViewModel : ViewModelBase
     public ViewModelBase? CurrentPage
     {
         get => _currentPage;
-        set  
+        set
         {
             this.RaiseAndSetIfChanged(ref _currentPage, value);
             if (value is not null)
             {
-                _navigationService.MasterNavigationRequested?.Invoke(value.GetType());   
+                _navigationService.MasterNavigationRequested?.Invoke(value.GetType());
             }
         }
     }
@@ -39,7 +39,7 @@ public class ServerMasterViewModel : ViewModelBase
     }
 
     public IAvaloniaReadOnlyList<ServerViewModelBase> Pages { get; }
-    
+
 
     public ServerMasterViewModel(INavigationService navigationService, IApiService apiService, IEnumerable<ServerViewModelBase> subPages)
     {
@@ -66,8 +66,8 @@ public class ServerMasterViewModel : ViewModelBase
             {
                 Console.WriteLine(ex.Message);
                 Console.WriteLine(ex.StackTrace);
-                
-                SukiHost.ShowMessageBox(new SukiUI.Models.MessageBoxModel($"Error found: {(int?)ex.StatusCode}", $"Found a error while finding the server details: {ex.Message}\n {ex.StackTrace}", SukiUI.Enums.NotificationType.Error),true);
+
+                SukiHost.ShowMessageBox(new SukiUI.Models.MessageBoxModel($"Error found: {(int?)ex.StatusCode}", $"Found a error while finding the server details: {ex.Message}\n {ex.StackTrace}", SukiUI.Enums.NotificationType.Error), true);
 
                 _navigationService.NavigateBack();
             }

@@ -64,7 +64,7 @@ public class ServerAccountViewModel : ViewModelBase
         get => _canChangePassword;
         set => this.RaiseAndSetIfChanged(ref _canChangePassword, value);
     }
-    
+
 
     public string? OldEmail => _apiService.CurrentAccount?.Email;
     public bool CanNavigateBack => _navigationService.CanNavigateback;
@@ -93,7 +93,8 @@ public class ServerAccountViewModel : ViewModelBase
                 EmailHelper.IsEmailValid(email) &&
                 (email != OldEmail)
             )
-            .Subscribe(x => {
+            .Subscribe(x =>
+            {
                 CanChangeEmail = x;
             });
         this.WhenAnyValue(x => x.CurrentPasswordText, x => x.NewPasswordText, x => x.ConfirmPasswordText,
@@ -104,10 +105,11 @@ public class ServerAccountViewModel : ViewModelBase
                 (currentPassword != newPassword) &&
                 (newPassword == confirmPasswordText)
             )
-            .Subscribe(x => {
+            .Subscribe(x =>
+            {
                 CanChangePassword = x;
             });
-        
+
         NavigateBackCommand = ReactiveCommand.Create(NavigateBack);
         UpdateEmailCommand = ReactiveCommand.Create(UpdateEmail);
         UpdatePasswordCommand = ReactiveCommand.Create(UpdatePassword);
@@ -130,7 +132,7 @@ public class ServerAccountViewModel : ViewModelBase
             {
                 Console.WriteLine(ex.Message);
                 Console.WriteLine(ex.StackTrace);
-                SukiHost.ShowMessageBox(new SukiUI.Models.MessageBoxModel($"Error found: {(int?)ex.StatusCode}", 
+                SukiHost.ShowMessageBox(new SukiUI.Models.MessageBoxModel($"Error found: {(int?)ex.StatusCode}",
                     $"An error was found when getting account details: {ex.Message}\n{ex.StackTrace}", SukiUI.Enums.NotificationType.Error), true);
                 _navigationService.NavigateBack();
             }
@@ -151,9 +153,9 @@ public class ServerAccountViewModel : ViewModelBase
                 }
                 catch (HttpRequestException ex)
                 {
-                   Console.WriteLine(ex.Message);
-                   Console.WriteLine(ex.StackTrace);
-                   await SukiHost.ShowToast(new SukiUI.Models.ToastModel("Couldn't get api keys", ex.Message, SukiUI.Enums.NotificationType.Error)); 
+                    Console.WriteLine(ex.Message);
+                    Console.WriteLine(ex.StackTrace);
+                    await SukiHost.ShowToast(new SukiUI.Models.ToastModel("Couldn't get api keys", ex.Message, SukiUI.Enums.NotificationType.Error));
                 }
                 try
                 {
@@ -168,9 +170,9 @@ public class ServerAccountViewModel : ViewModelBase
                 }
                 catch (HttpRequestException ex)
                 {
-                   Console.WriteLine(ex.Message);
-                   Console.WriteLine(ex.StackTrace);
-                   await SukiHost.ShowToast(new SukiUI.Models.ToastModel("Couldn't get ssh keys", ex.Message, SukiUI.Enums.NotificationType.Error)); 
+                    Console.WriteLine(ex.Message);
+                    Console.WriteLine(ex.StackTrace);
+                    await SukiHost.ShowToast(new SukiUI.Models.ToastModel("Couldn't get ssh keys", ex.Message, SukiUI.Enums.NotificationType.Error));
                 }
 
             }
@@ -248,7 +250,7 @@ public class ServerAccountViewModel : ViewModelBase
             {
                 Console.WriteLine(ex.Message);
                 Console.WriteLine(ex.StackTrace);
-                await SukiHost.ShowToast(new SukiUI.Models.ToastModel("Couldn't get api keys", ex.Message, SukiUI.Enums.NotificationType.Error)); 
+                await SukiHost.ShowToast(new SukiUI.Models.ToastModel("Couldn't get api keys", ex.Message, SukiUI.Enums.NotificationType.Error));
             }
         }
         catch (HttpRequestException ex)

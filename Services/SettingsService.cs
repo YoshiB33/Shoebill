@@ -20,7 +20,8 @@ public class SettingsService : ISettingsService
     }
     public void WriteEmptySettings()
     {
-        var emptyjson = JsonSerializer.Serialize(new SettingsModel {
+        var emptyjson = JsonSerializer.Serialize(new SettingsModel
+        {
             ApiKeys = []
         });
         File.WriteAllText(SettingsPath, emptyjson);
@@ -51,7 +52,7 @@ public class SettingsService : ISettingsService
 
     public void WriteApiKey(ApiKey apiKey)
     {
-        var currentSettings = JsonSerializer.Deserialize<SettingsModel>(File.ReadAllText(SettingsPath)); 
+        var currentSettings = JsonSerializer.Deserialize<SettingsModel>(File.ReadAllText(SettingsPath));
         currentSettings?.ApiKeys?.Add(apiKey);
         File.WriteAllText(SettingsPath, JsonSerializer.Serialize(currentSettings));
         ApiKeyUpdated?.Invoke(apiKey, KeyUpdatedAction.Added);
@@ -70,7 +71,7 @@ public class SettingsService : ISettingsService
 
     public void RemoveApiKey(ApiKey apiKey)
     {
-        var currentSettings = JsonSerializer.Deserialize<SettingsModel>(File.ReadAllText(SettingsPath)); 
+        var currentSettings = JsonSerializer.Deserialize<SettingsModel>(File.ReadAllText(SettingsPath));
         currentSettings?.ApiKeys?.Remove(apiKey);
         File.WriteAllText(SettingsPath, JsonSerializer.Serialize(currentSettings));
         ApiKeyUpdated?.Invoke(apiKey, KeyUpdatedAction.Removed);

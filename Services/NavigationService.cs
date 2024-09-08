@@ -9,7 +9,7 @@ public class NavigationService() : INavigationService
 {
     public Action<Type>? NavigationRequested { get; set; }
     public Action<Type>? MasterNavigationRequested { get; set; }
-    public bool CanNavigateback 
+    public bool CanNavigateback
     {
         get
         {
@@ -23,8 +23,8 @@ public class NavigationService() : INavigationService
             }
         }
     }
-    public bool CanNavigateForward 
-    { 
+    public bool CanNavigateForward
+    {
         get
         {
             if (_currentPage != _history.Count)
@@ -35,7 +35,7 @@ public class NavigationService() : INavigationService
             {
                 return false;
             }
-        } 
+        }
     }
 
     private readonly List<NavigationHistory> _history = [];

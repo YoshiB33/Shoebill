@@ -33,7 +33,7 @@ public class AccountsViewModel : ViewModelBase
         OpenSettingsCommand = ReactiveCommand.Create(NavigateSettings);
         EnterOverviewCommand = ReactiveCommand.Create<string>(EnterOverview);
 
-        settingsService.ApiKeyUpdated += (apiKey, KeyUpdatedAction) => 
+        settingsService.ApiKeyUpdated += (apiKey, KeyUpdatedAction) =>
         {
             if (KeyUpdatedAction == KeyUpdatedAction.Added)
             {

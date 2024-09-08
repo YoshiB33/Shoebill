@@ -74,7 +74,7 @@ public class SettingsViewModel : ViewModelBase
         RemoveApiCommand = ReactiveCommand.Create<string>(RemoveApiKey);
         AddApiCommand = ReactiveCommand.Create(AddApiKey);
         EditApiCommand = ReactiveCommand.Create<string>(EditApiKey);
-        ToggleBaseThemeCommand  = ReactiveCommand.Create(ToggleBaseTheme);
+        ToggleBaseThemeCommand = ReactiveCommand.Create(ToggleBaseTheme);
 
         settingsService.ApiKeyUpdated += (key, updateAction) =>
         {
