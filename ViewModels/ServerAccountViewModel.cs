@@ -76,6 +76,7 @@ public class ServerAccountViewModel : ViewModelBase
     public ReactiveCommand<string, Unit> RemoveApiKeyCommand { get; set; }
     public ReactiveCommand<string, Unit> ShowKeyInfoCommand { get; set; }
     public ReactiveCommand<Unit, Unit> OpenCreateSSHKeyDialogCommand { get; set; }
+    public ReactiveCommand<string, Unit> RemoveSSHKeyCommand { get; set; }
 
     private IApiService _apiService;
     private INavigationService _navigationService;
@@ -118,6 +119,7 @@ public class ServerAccountViewModel : ViewModelBase
         RemoveApiKeyCommand = ReactiveCommand.Create<string>(RemoveApiKey);
         ShowKeyInfoCommand = ReactiveCommand.Create<string>(ShowKeyInfo);
         OpenCreateSSHKeyDialogCommand = ReactiveCommand.Create(OpenCreateSSHKeyDialog);
+        RemoveSSHKeyCommand = ReactiveCommand.Create<string>(RemoveSSHKey);
     }
 
     private async void OnNavigatedTo(Type page)
@@ -237,23 +239,10 @@ public class ServerAccountViewModel : ViewModelBase
         {
             await _apiService.DeteteApiKeyAsync(id);
             await SukiHost.ShowToast(new SukiUI.Models.ToastModel($"Successfully deleted api key: {id}", SukiUI.Enums.NotificationType.Success));
-            ApiKeys.Clear();
-            try
+            var apiKey = ApiKeys.Where(x => x.Identifier == id).FirstOrDefault();
+            if (apiKey is not null)
             {
-                var keysResponse = await _apiService.GetApiKeysAsync();
-                if (keysResponse is not null)
-                {
-                    foreach (var key in keysResponse.Data)
-                    {
-                        ApiKeys.Add(key.Attributes);
-                    }
-                }
-            }
-            catch (HttpRequestException ex)
-            {
-                Console.WriteLine(ex.Message);
-                Console.WriteLine(ex.StackTrace);
-                await SukiHost.ShowToast(new SukiUI.Models.ToastModel("Couldn't get api keys", ex.Message, SukiUI.Enums.NotificationType.Error));
+                ApiKeys.Remove(apiKey);
             }
         }
         catch (HttpRequestException ex)
@@ -276,4 +265,23 @@ public class ServerAccountViewModel : ViewModelBase
 
     private void OpenCreateSSHKeyDialog()
         => SukiHost.ShowDialog(new CreateSSHKeyViewModel(_apiService, _navigationService), allowBackgroundClose: true);
+
+    private async void RemoveSSHKey(string Fingerprint)
+    {
+        Console.WriteLine("Deletes an SSH key! Key fingerprint: {0}", Fingerprint);
+        try
+        {
+            await _apiService.DeteteSSHKeyAsync(Fingerprint);
+            await SukiHost.ShowToast(new SukiUI.Models.ToastModel($"Successfully deleted SSH key: {Fingerprint}", SukiUI.Enums.NotificationType.Success));
+            var sshKey = SSH_Keys.Where(x => x.Fingerprint == Fingerprint).FirstOrDefault();
+            if (sshKey is not null)
+            {
+                SSH_Keys.Remove(sshKey);
+            }
+        }
+        catch (HttpRequestException ex)
+        {
+            await SukiHost.ShowToast(new SukiUI.Models.ToastModel($"Couldn't detete SSH key: {Fingerprint}", ex.Message, SukiUI.Enums.NotificationType.Error));
+        }
+    }
 }
