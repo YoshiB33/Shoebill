@@ -75,6 +75,7 @@ public class ServerAccountViewModel : ViewModelBase
     public ReactiveCommand<Unit, Unit> OpenCreateApiKeyDialogCommand { get; set; }
     public ReactiveCommand<string, Unit> RemoveApiKeyCommand { get; set; }
     public ReactiveCommand<string, Unit> ShowKeyInfoCommand { get; set; }
+    public ReactiveCommand<Unit, Unit> OpenCreateSSHKeyDialogCommand { get; set; }
 
     private IApiService _apiService;
     private INavigationService _navigationService;
@@ -116,6 +117,7 @@ public class ServerAccountViewModel : ViewModelBase
         OpenCreateApiKeyDialogCommand = ReactiveCommand.Create(OpenCreateApiKeyDialog);
         RemoveApiKeyCommand = ReactiveCommand.Create<string>(RemoveApiKey);
         ShowKeyInfoCommand = ReactiveCommand.Create<string>(ShowKeyInfo);
+        OpenCreateSSHKeyDialogCommand = ReactiveCommand.Create(OpenCreateSSHKeyDialog);
     }
 
     private async void OnNavigatedTo(Type page)
@@ -124,6 +126,7 @@ public class ServerAccountViewModel : ViewModelBase
         {
             GetAccountDetails? account = null;
             ApiKeys.Clear();
+            SSH_Keys.Clear();
             try
             {
                 account = await _apiService.GetAccountDetailsAsync();
@@ -270,4 +273,7 @@ public class ServerAccountViewModel : ViewModelBase
             await SukiHost.ShowToast(new SukiUI.Models.ToastModel("Couldn't display key info", SukiUI.Enums.NotificationType.Error));
         }
     }
+
+    private void OpenCreateSSHKeyDialog()
+        => SukiHost.ShowDialog(new CreateSSHKeyViewModel(_apiService, _navigationService), allowBackgroundClose: true);
 }

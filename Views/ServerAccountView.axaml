@@ -102,7 +102,7 @@
                                                         </DataTemplate>
                                                     </ItemsControl.ItemTemplate>
                                                 </ItemsControl>
-                                                <Button Classes="Flat" Content="Add new key"/>
+                                                <Button Classes="Flat" Content="Add new key" Command="{Binding OpenCreateSSHKeyDialogCommand}"/>
                                             </StackPanel>
                                         </Border>
                                     </StackPanel> 
