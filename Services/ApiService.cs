@@ -141,7 +141,7 @@ public class ApiService : IApiService
         {
             PropertyNamingPolicy = JsonNamingPolicy.CamelCase
         };
-        var body = JsonSerializer.Serialize(new UpadtePasswordRequest(CurrentPassword, NewPassword, PasswordConfirmation), jsonSettings);
+        var body = JsonSerializer.Serialize(new UpdatePasswordRequest(CurrentPassword, NewPassword, PasswordConfirmation), jsonSettings);
         await StandardPutAsync($"https://{ApiKey.ServerAdress}/api/client/account/password", body);
     }
     public async Task<GetApiKeys?> GetApiKeysAsync()
@@ -169,7 +169,6 @@ public class ApiService : IApiService
         {
             throw new ArgumentException(nameof(ApiKey));
         }
-        var body = JsonSerializer.Serialize(new DeteteApiKeyRequest(Identifier), jsonSettings);
         await StandardDeteteAsync($"https://{ApiKey.ServerAdress}/api/client/account/api-keys/{Identifier}");
     }
 
@@ -190,5 +189,15 @@ public class ApiService : IApiService
         }
         var body = JsonSerializer.Serialize(new CreateSSHKeyRequest(Name, PublicKey), jsonSettings);
         return await StandardPostAsync<CreateSSHKeyResponse>($"https://{ApiKey.ServerAdress}/api/client/account/ssh-keys", body);
+    }
+
+    public async Task DeteteSSHKeyAsync(string Fingerprint)
+    {
+        if (ApiKey is null || ApiKey.Key is null || ApiKey.Name is null)
+        {
+            throw new ArgumentException(nameof(ApiKey));
+        }
+        var body = JsonSerializer.Serialize(new DeleteSSHKeyRequest(Fingerprint), jsonSettings);
+        await StandardDeteteAsync($"https://{ApiKey.ServerAdress}/api/client/account/ssh-keys/remove");
     }
 }

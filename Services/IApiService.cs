@@ -22,4 +22,5 @@ public interface IApiService
     public Task DeteteApiKeyAsync(string Identifier);
     public Task<GetSSHResponse?> GetSSHKeysAsync();
     public Task<CreateSSHKeyResponse?> CreateSSHKeyAsync(string Name, string PublicKey);
+    public Task DeteteSSHKeyAsync(string Fingerprint);
 }
