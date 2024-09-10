@@ -197,7 +197,7 @@ public class ApiService : IApiService
         {
             throw new ArgumentException(nameof(ApiKey));
         }
-        var body = JsonSerializer.Serialize(new DeleteSSHKeyRequest(Fingerprint), jsonSettings);
-        await StandardDeteteAsync($"https://{ApiKey.ServerAdress}/api/client/account/ssh-keys/remove");
+        var client = new HttpClient();
+        await client.PostAsJsonAsync($"https://{ApiKey.ServerAdress}/api/client/account/ssh-keys/remove", new DeleteSSHKeyRequest(Fingerprint), jsonSettings);
     }
 }
