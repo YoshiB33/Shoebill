@@ -2,11 +2,13 @@
 using System.Collections.ObjectModel;
 using System.Net.Http;
 using System.Reactive;
+using Avalonia.Controls.Notifications;
 using ReactiveUI;
 using Shoebill.Models.Api.Responses;
 using Shoebill.Models.Api.Schemas;
 using Shoebill.Services;
 using SukiUI.Controls;
+using SukiUI.Dialogs;
 
 namespace Shoebill.ViewModels;
 
@@ -20,15 +22,17 @@ public class ServerOverviewViewModel : ViewModelBase
     public ObservableCollection<Server> Servers { get; set; } = [];
     private readonly INavigationService _navigationService;
     private readonly IApiService _apiService;
+    private readonly ISukiDialogManager _dialogManager;
     public bool IsLoading
     {
         get => _isLoading;
         set => this.RaiseAndSetIfChanged(ref _isLoading, value);
     }
-    public ServerOverviewViewModel(INavigationService navigationService, IApiService apiService)
+    public ServerOverviewViewModel(INavigationService navigationService, IApiService apiService, ISukiDialogManager dialogManager)
     {
         _navigationService = navigationService;
         _apiService = apiService;
+        _dialogManager = dialogManager;
 
         navigationService.NavigationRequested += OnNavigatedTo;
 
@@ -54,7 +58,12 @@ public class ServerOverviewViewModel : ViewModelBase
                 Console.WriteLine(ex.Message);
                 Console.WriteLine(ex.StackTrace);
 
-                SukiHost.ShowMessageBox(new SukiUI.Models.MessageBoxModel($"Error found: {(int?)ex.StatusCode}", $"Found a error while finding the server details: {ex.Message}\n {ex.StackTrace}", SukiUI.Enums.NotificationType.Error), true);
+                _dialogManager.CreateDialog()
+                    .WithTitle($"Error found: {(int?)ex.StatusCode}")
+                    .WithContent($"Found a error while finding the server details: {ex.Message}\n {ex.StackTrace}")
+                    .OfType(NotificationType.Error)
+                    .Dismiss().ByClickingBackground()
+                    .TryShow();
 
                 _navigationService.NavigateBack();
             }

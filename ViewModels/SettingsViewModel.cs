@@ -9,6 +9,7 @@ using Shoebill.Services;
 using Shoebill.ViewModels.Dialogs;
 using SukiUI;
 using SukiUI.Controls;
+using SukiUI.Dialogs;
 using SukiUI.Models;
 
 namespace Shoebill.ViewModels;
@@ -22,6 +23,7 @@ public class SettingsViewModel : ViewModelBase
     private bool _isThemeLight;
     private readonly ISettingsService _settingsService;
     private readonly INavigationService _navigationService;
+    private readonly ISukiDialogManager _dialogManager;
     public ReactiveCommand<Unit, Unit> NavigateBackCommand { get; set; }
     public ReactiveCommand<string, Unit> RemoveApiCommand { get; set; }
     public ReactiveCommand<Unit, Unit> AddApiCommand { get; set; }
@@ -49,10 +51,11 @@ public class SettingsViewModel : ViewModelBase
         get => _baseTheme;
         set => this.RaiseAndSetIfChanged(ref _baseTheme, value);
     }
-    public SettingsViewModel(ISettingsService settingsService, INavigationService navigationService)
+    public SettingsViewModel(ISettingsService settingsService, INavigationService navigationService, ISukiDialogManager dialogManager)
     {
         _settingsService = settingsService;
         _navigationService = navigationService;
+        _dialogManager = dialogManager;
 
         _theme = SukiTheme.GetInstance();
         Themes = _theme.ColorThemes;
@@ -95,11 +98,17 @@ public class SettingsViewModel : ViewModelBase
     }
     private void AddApiKey()
     {
-        SukiHost.ShowDialog(new CreateAccountViewModel(_settingsService), allowBackgroundClose: true);
+        _dialogManager.CreateDialog()
+            .WithViewModel(dialog => new CreateAccountViewModel(_settingsService, dialog))
+            .Dismiss().ByClickingBackground()
+            .TryShow();
     }
     private void EditApiKey(string Name)
     {
-        SukiHost.ShowDialog(new CreateAccountViewModel(_settingsService, ApiKeys.Where(x => x.Name == Name).First()));
+        _dialogManager.CreateDialog()
+            .WithViewModel(dialog => new CreateAccountViewModel(_settingsService, dialog, ApiKeys.Where(x => x.Name == Name).First()))
+            .Dismiss().ByClickingBackground()
+            .TryShow();
     }
     private void NavigateBack()
     {

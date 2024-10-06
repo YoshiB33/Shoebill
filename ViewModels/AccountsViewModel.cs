@@ -6,7 +6,7 @@ using ReactiveUI;
 using Shoebill.Models;
 using Shoebill.Services;
 using Shoebill.ViewModels.Dialogs;
-using SukiUI.Controls;
+using SukiUI.Dialogs;
 
 namespace Shoebill.ViewModels;
 
@@ -18,14 +18,16 @@ public class AccountsViewModel : ViewModelBase
     private readonly INavigationService _navigationService;
     private readonly ISettingsService _settingsService;
     private readonly IApiService _apiService;
+    private readonly ISukiDialogManager _dialogManager;
 
     public ObservableCollection<ApiKey> ApiKeys { get; set; } = [];
 
-    public AccountsViewModel(INavigationService navigationService, ISettingsService settingsService, IApiService apiService)
+    public AccountsViewModel(INavigationService navigationService, ISettingsService settingsService, IApiService apiService, ISukiDialogManager dialogManager)
     {
         _navigationService = navigationService;
         _settingsService = settingsService;
         _apiService = apiService;
+        _dialogManager = dialogManager;
 
         navigationService.NavigationRequested += OnNavigatedTo;
 
@@ -61,7 +63,14 @@ public class AccountsViewModel : ViewModelBase
 
     private void AddNewApi()
     {
-        SukiHost.ShowDialog(new CreateAccountViewModel(_settingsService), allowBackgroundClose: true);
+        _dialogManager.CreateDialog()
+            .WithViewModel(dialog => new CreateAccountViewModel(_settingsService, dialog))
+            .Dismiss().ByClickingBackground()
+            .TryShow();
+        _dialogManager.CreateDialog()
+            .WithTitle("Multi Option Dialog")
+            .WithContent("Select any one of the below options:")
+            .TryShow();
     }
 
     private void NavigateSettings()

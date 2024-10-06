@@ -3,11 +3,12 @@ using System.ComponentModel.DataAnnotations;
 using System.Linq;
 using System.Net.Http;
 using System.Reactive;
+using Avalonia.Controls.Notifications;
 using ReactiveUI;
 using Shoebill.Attributes;
 using Shoebill.Services;
-using SukiUI.Controls;
-using SukiUI.Models;
+using SukiUI.Dialogs;
+using SukiUI.Toasts;
 
 namespace Shoebill.ViewModels.Dialogs;
 
@@ -43,11 +44,16 @@ public class CreateApiKeyViewModel : ViewModelBase
 
     private IApiService _apiService { get; set; }
     private INavigationService _navigationService { get; set; }
+    private readonly ISukiDialog _dialog;
+    private readonly ISukiToastManager _toastManager;
 
-    public CreateApiKeyViewModel(IApiService apiService, INavigationService navigationService)
+    public CreateApiKeyViewModel(IApiService apiService, INavigationService navigationService, ISukiDialog sukiDialog, ISukiToastManager toastManager)
     {
         _apiService = apiService;
         _navigationService = navigationService;
+        _dialog = sukiDialog;
+        _toastManager = toastManager;
+
         SubmitCommand = ReactiveCommand.Create(Submit);
         CancelCommand = ReactiveCommand.Create(Cancel);
 
@@ -68,12 +74,18 @@ public class CreateApiKeyViewModel : ViewModelBase
         }
         catch (HttpRequestException ex)
         {
-            await SukiHost.ShowToast(new ToastModel("Couldn't create an api key", ex.Message, SukiUI.Enums.NotificationType.Error));
+            _toastManager.CreateToast()
+                .WithTitle("Couldn't create an API key")
+                .WithContent(ex.Message)
+                .OfType(NotificationType.Error)
+                // FIXME:              .Dismiss().After(TimeSpan.FromSeconds(5))
+                .Dismiss().ByClicking()
+                .Queue();
         }
         _navigationService.NavigationRequested?.Invoke(typeof(ServerAccountViewModel));
         IsBusy = false;
-        SukiHost.CloseDialog();
+        _dialog.Dismiss();
     }
     private void Cancel() =>
-        SukiHost.CloseDialog();
+        _dialog.Dismiss();
 }

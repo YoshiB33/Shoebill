@@ -3,9 +3,8 @@ using System.Net.Http;
 using System.Reactive;
 using ReactiveUI;
 using Shoebill.Services;
-using SukiUI.Controls;
-using SukiUI.Enums;
-using SukiUI.Models;
+using SukiUI.Dialogs;
+using SukiUI.Toasts;
 
 namespace Shoebill.ViewModels.Dialogs;
 
@@ -39,13 +38,18 @@ public class CreateSSHKeyViewModel : ViewModelBase
     public ReactiveCommand<Unit, Unit> CancelCommand { get; set; }
     public ReactiveCommand<Unit, Unit> SubmitCommand { get; set; }
 
-    public IApiService _apiService { get; set; }
-    public INavigationService _navigationService { get; set; }
+    private IApiService _apiService { get; set; }
+    private INavigationService _navigationService { get; set; }
+    private readonly ISukiDialog _dialog;
+    private readonly ISukiToastManager _toastManager;
 
-    public CreateSSHKeyViewModel(IApiService apiService, INavigationService navigationService)
+    public CreateSSHKeyViewModel(IApiService apiService, INavigationService navigationService, ISukiDialog dialog, ISukiToastManager toastManager)
     {
         _apiService = apiService;
         _navigationService = navigationService;
+        _dialog = dialog;
+        _toastManager = toastManager;
+
         this.WhenAnyValue(x => x.Name, x => x.PublicKey,
             (name, key) =>
                 !string.IsNullOrWhiteSpace(Name) &&
@@ -57,7 +61,7 @@ public class CreateSSHKeyViewModel : ViewModelBase
     }
 
     private void Cancel() =>
-        SukiHost.CloseDialog();
+        _dialog.Dismiss();
     private async void Submit()
     {
         IsSubmitting = true;
@@ -67,10 +71,13 @@ public class CreateSSHKeyViewModel : ViewModelBase
         }
         catch (HttpRequestException ex)
         {
-            await SukiHost.ShowToast(new ToastModel(Title: "Couldn't create a new SSH key", $"{ex.StackTrace}", NotificationType.Error));
+            _toastManager.CreateToast()
+                .WithTitle($"Couldn't create a new SSH key ({(int?)ex.StatusCode})")
+                .Dismiss().ByClicking()
+                .Queue();
         }
         _navigationService.NavigationRequested?.Invoke(typeof(ServerAccountViewModel));
         IsSubmitting = false;
-        SukiHost.CloseDialog();
+        _dialog.Dismiss();
     }
 }

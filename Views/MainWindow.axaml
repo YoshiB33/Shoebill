@@ -8,8 +8,14 @@
         mc:Ignorable="d" d:DesignWidth="800" d:DesignHeight="450"
         x:Class="Shoebill.Views.MainWindow"
         x:DataType="vm:MainWindowViewModel"
+        SystemDecorations="None"
+        ExtendClientAreaChromeHints="PreferSystemChrome"
         Icon="/Assets/avalonia-logo.ico"
         Title="Shoebill">
+    <sukiUi:SukiWindow.Hosts>
+        <sukiUi:SukiDialogHost Manager="{Binding DialogManager}"/>
+        <sukiUi:SukiToastHost Manager="{Binding ToastManager}"/>
+    </sukiUi:SukiWindow.Hosts>
     <TransitioningContentControl Content="{Binding ContentViewModel}">
         <TransitioningContentControl.PageTransition>
             <CrossFade Duration="0:00:00.300"/>

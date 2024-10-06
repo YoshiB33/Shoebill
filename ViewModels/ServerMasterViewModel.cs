@@ -4,11 +4,14 @@ using System.Linq;
 using System.Net.Http;
 using System.Reactive;
 using Avalonia.Collections;
+using Avalonia.Controls.Notifications;
 using ReactiveUI;
 using Shoebill.Models.Api.Schemas;
 using Shoebill.Services;
 using Shoebill.ViewModels.ServerSubpages;
 using SukiUI.Controls;
+using SukiUI.Dialogs;
+using SukiUI.Toasts;
 
 namespace Shoebill.ViewModels;
 
@@ -20,6 +23,7 @@ public class ServerMasterViewModel : ViewModelBase
     public ReactiveCommand<Unit, Unit> NavigateSettingsCommand { get; set; }
     private readonly INavigationService _navigationService;
     private readonly IApiService _apiService;
+    private readonly ISukiDialogManager _dialogManager;
     public ViewModelBase? CurrentPage
     {
         get => _currentPage;
@@ -41,11 +45,12 @@ public class ServerMasterViewModel : ViewModelBase
     public IAvaloniaReadOnlyList<ServerViewModelBase> Pages { get; }
 
 
-    public ServerMasterViewModel(INavigationService navigationService, IApiService apiService, IEnumerable<ServerViewModelBase> subPages)
+    public ServerMasterViewModel(INavigationService navigationService, IApiService apiService, IEnumerable<ServerViewModelBase> subPages, ISukiDialogManager dialogManager)
     {
         Pages = new AvaloniaList<ServerViewModelBase>(subPages.OrderBy(x => x.Index).ThenBy(x => x.DisplayName));
         _navigationService = navigationService;
         _apiService = apiService;
+        _dialogManager = dialogManager;
 
         navigationService.NavigationRequested += OnNavigatedTo;
 
@@ -67,7 +72,12 @@ public class ServerMasterViewModel : ViewModelBase
                 Console.WriteLine(ex.Message);
                 Console.WriteLine(ex.StackTrace);
 
-                SukiHost.ShowMessageBox(new SukiUI.Models.MessageBoxModel($"Error found: {(int?)ex.StatusCode}", $"Found a error while finding the server details: {ex.Message}\n {ex.StackTrace}", SukiUI.Enums.NotificationType.Error), true);
+                _dialogManager.CreateDialog()
+                    .WithTitle($"Error found: {(int?)ex.StatusCode}")
+                    .WithContent($"Found a error while finding the server details: {ex.Message}\n {ex.StackTrace}")
+                    .OfType(NotificationType.Error)
+                    .Dismiss().ByClickingBackground()
+                    .TryShow();
 
                 _navigationService.NavigateBack();
             }

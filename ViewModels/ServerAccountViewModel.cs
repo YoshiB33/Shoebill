@@ -5,13 +5,15 @@ using System.Linq;
 using System.Net.Http;
 using System.Reactive;
 using System.Reactive.Linq;
+using Avalonia.Controls.Notifications;
 using ReactiveUI;
 using Shoebill.Helpers;
 using Shoebill.Models.Api.Responses;
 using Shoebill.Models.Api.Schemas;
 using Shoebill.Services;
 using Shoebill.ViewModels.Dialogs;
-using SukiUI.Controls;
+using SukiUI.Dialogs;
+using SukiUI.Toasts;
 
 namespace Shoebill.ViewModels;
 
@@ -81,12 +83,16 @@ public class ServerAccountViewModel : ViewModelBase
 
     private IApiService _apiService;
     private INavigationService _navigationService;
+    private readonly ISukiDialogManager _dialogManager;
+    private readonly ISukiToastManager _toastManager;
     public ObservableCollection<API_Key> ApiKeys { get; set; } = [];
     public ObservableCollection<SSH_Key> SSH_Keys { get; set; } = [];
-    public ServerAccountViewModel(INavigationService navigationService, IApiService apiService)
+    public ServerAccountViewModel(INavigationService navigationService, IApiService apiService, ISukiDialogManager dialogManager, ISukiToastManager toastManager)
     {
         _apiService = apiService;
         _navigationService = navigationService;
+        _dialogManager = dialogManager;
+        _toastManager = toastManager;
         navigationService.NavigationRequested += OnNavigatedTo;
 
         this.WhenAnyValue(x => x.EmailText, x => x.EmailPasswordText,
@@ -139,8 +145,12 @@ public class ServerAccountViewModel : ViewModelBase
             {
                 Console.WriteLine(ex.Message);
                 Console.WriteLine(ex.StackTrace);
-                SukiHost.ShowMessageBox(new SukiUI.Models.MessageBoxModel($"Error found: {(int?)ex.StatusCode}",
-                    $"An error was found when getting account details: {ex.Message}\n{ex.StackTrace}", SukiUI.Enums.NotificationType.Error), true);
+                _toastManager.CreateToast()
+                    .WithTitle($"Can't get account details ({(int?)ex.StatusCode})")
+                    .WithContent($"An error was found when getting account details: {ex.Message}")
+                    .OfType(NotificationType.Error)
+                    .Dismiss().ByClicking()
+                    .Queue();
                 _navigationService.NavigateBack();
             }
             if (account is not null)
@@ -162,7 +172,12 @@ public class ServerAccountViewModel : ViewModelBase
                 {
                     Console.WriteLine(ex.Message);
                     Console.WriteLine(ex.StackTrace);
-                    await SukiHost.ShowToast(new SukiUI.Models.ToastModel("Couldn't get api keys", ex.Message, SukiUI.Enums.NotificationType.Error));
+                    _toastManager.CreateToast()
+                        .WithTitle($"Couldn't get api keys ({(int?)ex.StatusCode})")
+                        .WithContent(ex.Message)
+                        .OfType(NotificationType.Error)
+                        .Dismiss().ByClicking()
+                        .Queue();
                 }
                 try
                 {
@@ -179,7 +194,12 @@ public class ServerAccountViewModel : ViewModelBase
                 {
                     Console.WriteLine(ex.Message);
                     Console.WriteLine(ex.StackTrace);
-                    await SukiHost.ShowToast(new SukiUI.Models.ToastModel("Couldn't get ssh keys", ex.Message, SukiUI.Enums.NotificationType.Error));
+                    _toastManager.CreateToast()
+                        .WithTitle("Couldn't get SSH keys")
+                        .WithContent(ex.Message)
+                        .OfType(NotificationType.Error)
+                        .Dismiss().ByClicking()
+                        .Queue();
                 }
 
             }
@@ -202,7 +222,12 @@ public class ServerAccountViewModel : ViewModelBase
         try
         {
             await _apiService.UpdateAccountEmailAsync(EmailText, EmailPasswordText);
-            await SukiHost.ShowToast(new SukiUI.Models.ToastModel("Successfully updated email", $"Updated email to {EmailText}", SukiUI.Enums.NotificationType.Success));
+            _toastManager.CreateToast()
+                .WithTitle("Successfully updated email")
+                .WithContent($"Updated email to {EmailText}")
+                .OfType(NotificationType.Success)
+                .Dismiss().ByClicking()
+                .Queue();
             EmailText = "";
             OnNavigatedTo(typeof(ServerAccountViewModel)); // This line is to reload the information on this page
         }
@@ -210,7 +235,12 @@ public class ServerAccountViewModel : ViewModelBase
         {
             Console.WriteLine(ex.Message);
             Console.WriteLine(ex.StackTrace);
-            await SukiHost.ShowToast(new SukiUI.Models.ToastModel("Couldn't update email!", ex.Message, Type: SukiUI.Enums.NotificationType.Error));
+            _toastManager.CreateToast()
+                .WithTitle($"Couldn't update email ({(int?)ex.StatusCode})")
+                .WithContent(ex.Message)
+                .OfType(NotificationType.Error)
+                .Dismiss().ByClicking()
+                .Queue();
         }
     }
     private async void UpdatePassword()
@@ -218,7 +248,11 @@ public class ServerAccountViewModel : ViewModelBase
         try
         {
             await _apiService.UpdateAccountPasswordAsync(CurrentPasswordText, NewPasswordText, ConfirmPasswordText);
-            await SukiHost.ShowToast(new SukiUI.Models.ToastModel("Successfully updated password", $"Updated password to {NewPasswordText}", SukiUI.Enums.NotificationType.Success));
+            _toastManager.CreateToast()
+                .WithTitle("Successfully updated password")
+                .OfType(NotificationType.Success)
+                .Dismiss().ByClicking()
+                .Queue();
             CurrentPasswordText = "";
             NewPasswordText = "";
             ConfirmPasswordText = "";
@@ -227,12 +261,22 @@ public class ServerAccountViewModel : ViewModelBase
         {
             Console.WriteLine(ex.Message);
             Console.WriteLine(ex.StackTrace);
-            await SukiHost.ShowToast(new SukiUI.Models.ToastModel("Couldn't update password!", ex.Message, Type: SukiUI.Enums.NotificationType.Error));
+            _toastManager.CreateToast()
+                .WithTitle($"Couldn't update password ({(int?)ex.StatusCode})")
+                .WithContent(ex.Message)
+                .OfType(NotificationType.Error)
+                .Dismiss().ByClicking()
+                .Queue();
         }
     }
 
     private void OpenCreateApiKeyDialog()
-        => SukiHost.ShowDialog(new CreateApiKeyViewModel(_apiService, _navigationService), allowBackgroundClose: true);
+    {
+        _dialogManager.CreateDialog()
+            .WithViewModel(dialog => new CreateApiKeyViewModel(_apiService, _navigationService, dialog, _toastManager))
+            .Dismiss().ByClickingBackground()
+            .TryShow();
+    }
 
     private async void RemoveApiKey(string id)
     {
@@ -240,7 +284,11 @@ public class ServerAccountViewModel : ViewModelBase
         try
         {
             await _apiService.DeteteApiKeyAsync(id);
-            await SukiHost.ShowToast(new SukiUI.Models.ToastModel($"Successfully deleted api key: {id}", SukiUI.Enums.NotificationType.Success));
+            _toastManager.CreateToast()
+                .WithTitle("Successfully deleted api key")
+                .OfType(NotificationType.Success)
+                .Dismiss().ByClicking()
+                .Queue();
             var apiKey = ApiKeys.Where(x => x.Identifier == id).FirstOrDefault();
             if (apiKey is not null)
             {
@@ -249,24 +297,41 @@ public class ServerAccountViewModel : ViewModelBase
         }
         catch (HttpRequestException ex)
         {
-            await SukiHost.ShowToast(new SukiUI.Models.ToastModel($"Couldn't detete api key: {id}", ex.Message, SukiUI.Enums.NotificationType.Error));
+            _toastManager.CreateToast()
+                .WithTitle($"Couldn't update password ({(int?)ex.StatusCode})")
+                .WithContent(ex.Message)
+                .OfType(NotificationType.Error)
+                .Dismiss().ByClicking()
+                .Queue();
         }
     }
-    private async void ShowApiKeyInfo(string Id)
+    private void ShowApiKeyInfo(string Id)
     {
         var key = ApiKeys.Where(x => x.Identifier == Id).FirstOrDefault();
         if (key is not null)
         {
-            SukiHost.ShowDialog(new ApiKeyInfoViewModel(key), true, true);
+            _dialogManager.CreateDialog()
+                .WithViewModel(dialog => new ApiKeyInfoViewModel(key))
+                .Dismiss().ByClickingBackground()
+                .TryShow();
         }
         else
         {
-            await SukiHost.ShowToast(new SukiUI.Models.ToastModel("Couldn't display api key info", SukiUI.Enums.NotificationType.Error));
+            _toastManager.CreateToast()
+                .WithTitle($"Couldn't display api key info")
+                .OfType(NotificationType.Error)
+                .Dismiss().ByClicking()
+                .Queue();
         }
     }
 
     private void OpenCreateSSHKeyDialog()
-        => SukiHost.ShowDialog(new CreateSSHKeyViewModel(_apiService, _navigationService), allowBackgroundClose: true);
+    {
+        _dialogManager.CreateDialog()
+            .WithViewModel(dialog => new CreateSSHKeyViewModel(_apiService, _navigationService, dialog, _toastManager))
+            .Dismiss().ByClickingBackground()
+            .TryShow();
+    }
 
     private async void RemoveSSHKey(string Fingerprint)
     {
@@ -274,7 +339,11 @@ public class ServerAccountViewModel : ViewModelBase
         try
         {
             await _apiService.DeteteSSHKeyAsync(Fingerprint);
-            await SukiHost.ShowToast(new SukiUI.Models.ToastModel($"Successfully deleted SSH key: {Fingerprint}", SukiUI.Enums.NotificationType.Success));
+            _toastManager.CreateToast()
+                .WithTitle("Successfully deleted SSH key")
+                .OfType(NotificationType.Success)
+                .Dismiss().ByClicking()
+                .Queue();
             var sshKey = SSH_Keys.Where(x => x.Fingerprint == Fingerprint).FirstOrDefault();
             if (sshKey is not null)
             {
@@ -283,19 +352,30 @@ public class ServerAccountViewModel : ViewModelBase
         }
         catch (HttpRequestException ex)
         {
-            await SukiHost.ShowToast(new SukiUI.Models.ToastModel($"Couldn't detete SSH key: {Fingerprint}", ex.Message, SukiUI.Enums.NotificationType.Error));
+            _toastManager.CreateToast()
+                .WithTitle($"Couldn't delete SSH key ({(int?)ex.StatusCode})")
+                .OfType(NotificationType.Error)
+                .Dismiss().ByClicking()
+                .Queue();
         }
     }
-    private async void ShowSSHKeyInfo(string Fingerprint)
+    private void ShowSSHKeyInfo(string Fingerprint)
     {
         var key = SSH_Keys.Where(x => x.Fingerprint == Fingerprint).FirstOrDefault();
         if (key is not null)
         {
-            SukiHost.ShowDialog(new SSHKeyInfoViewModel(key), true, true);
+            _dialogManager.CreateDialog()
+                .WithViewModel(dialog => new SSHKeyInfoViewModel(key))
+                .Dismiss().ByClickingBackground()
+                .TryShow();
         }
         else
         {
-            await SukiHost.ShowToast(new SukiUI.Models.ToastModel("Couldn't display SSH key info", SukiUI.Enums.NotificationType.Error));
+            _toastManager.CreateToast()
+                .WithTitle($"Couldn't display SSH key info")
+                .OfType(NotificationType.Error)
+                .Dismiss().ByClicking()
+                .Queue();
         }
     }
 }

@@ -4,6 +4,7 @@ using ReactiveUI;
 using Shoebill.Models;
 using Shoebill.Services;
 using SukiUI.Controls;
+using SukiUI.Dialogs;
 
 namespace Shoebill.ViewModels.Dialogs;
 
@@ -18,6 +19,7 @@ public class CreateAccountViewModel : ViewModelBase
     private bool _isApplicationSelected = false;
     private readonly ObservableAsPropertyHelper<bool> _canCreateAccount;
     private ISettingsService _settingsService;
+    private readonly ISukiDialog _dialog;
 
     public ReactiveCommand<Unit, Unit> EnterCommand { get; }
     public ReactiveCommand<Unit, Unit> CancelCommand { get; }
@@ -62,10 +64,12 @@ public class CreateAccountViewModel : ViewModelBase
     }
     public bool CanCreateAccount => _canCreateAccount.Value;
     public ApiKey? ApiKey { get; set; }
-    public CreateAccountViewModel(ISettingsService settingsService, ApiKey? editApiKey = null)
+    public CreateAccountViewModel(ISettingsService settingsService, ISukiDialog dialog, ApiKey? editApiKey = null)
     {
         var apiKeys = settingsService.GetAllApiKeys();
         _settingsService = settingsService;
+        _dialog = dialog;
+
         if (editApiKey is not null)
         {
             var canCreateUser = this.WhenAnyValue(
@@ -142,10 +146,10 @@ public class CreateAccountViewModel : ViewModelBase
             });
         }
         IsEntering = false;
-        SukiHost.CloseDialog();
+        _dialog.Dismiss();
     }
     private void Cancel()
     {
-        SukiHost.CloseDialog();
+        _dialog.Dismiss();
     }
 }

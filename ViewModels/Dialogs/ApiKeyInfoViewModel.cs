@@ -1,5 +1,6 @@
 using System;
 using System.Collections.Generic;
+using ReactiveUI;
 using Shoebill.Models.Api.Schemas;
 
 namespace Shoebill.ViewModels.Dialogs;
