@@ -21,6 +21,7 @@
     <PackageReference Include="Avalonia.ReactiveUI" Version="11.1.0-beta2" />
     <PackageReference Include="Material.Icons.Avalonia" Version="2.1.9" />
     <PackageReference Include="Microsoft.Extensions.DependencyInjection" Version="8.0.0" />
+    <PackageReference Include="Microsoft.Extensions.Http" Version="8.0.0" />
     <PackageReference Include="ReactiveUI" Version="20.1.1" />
     <PackageReference Include="SukiUI" Version="6.0.0-beta7" />
   </ItemGroup>

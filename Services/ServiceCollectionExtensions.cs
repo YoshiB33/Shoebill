@@ -9,6 +9,7 @@ public static class ServiceCollectionExtensions
     {
         collection.AddSingleton<INavigationService, NavigationService>();
         collection.AddSingleton<ISettingsService, SettingsService>();
+        collection.AddHttpClient<IApiService, ApiService>();
         collection.AddSingleton<IApiService, ApiService>();
         collection.AddSingleton<MainWindowViewModel>();
         collection.AddSingleton<ViewModelBase, AccountsViewModel>();
