@@ -20,7 +20,8 @@ public class SettingsService : ISettingsService
     }
     public void WriteEmptySettings()
     {
-        var emptyjson = JsonSerializer.Serialize(new SettingsModel {
+        var emptyjson = JsonSerializer.Serialize(new SettingsModel
+        {
             ApiKeys = []
         });
         File.WriteAllText(SettingsPath, emptyjson);
@@ -51,7 +52,7 @@ public class SettingsService : ISettingsService
 
     public void WriteApiKey(ApiKey apiKey)
     {
-        var currentSettings = JsonSerializer.Deserialize<SettingsModel>(File.ReadAllText(SettingsPath)); 
+        var currentSettings = JsonSerializer.Deserialize<SettingsModel>(File.ReadAllText(SettingsPath));
         currentSettings?.ApiKeys?.Add(apiKey);
         File.WriteAllText(SettingsPath, JsonSerializer.Serialize(currentSettings));
         ApiKeyUpdated?.Invoke(apiKey, KeyUpdatedAction.Added);
@@ -60,15 +61,17 @@ public class SettingsService : ISettingsService
     public async Task WriteApiKeyAsync(ApiKey apiKey)
     {
         var currentSettings = JsonSerializer.Deserialize<SettingsModel>(File.ReadAllText(SettingsPath));
-        using var fs = File.Open(SettingsPath, FileMode.Truncate);
-        currentSettings?.ApiKeys?.Add(apiKey);
-        await JsonSerializer.SerializeAsync(fs, currentSettings);
+        using (var fs = File.Open(SettingsPath, FileMode.Truncate))
+        {
+            currentSettings?.ApiKeys?.Add(apiKey);
+            await JsonSerializer.SerializeAsync(fs, currentSettings);
+        }
         ApiKeyUpdated?.Invoke(apiKey, KeyUpdatedAction.Added);
     }
 
     public void RemoveApiKey(ApiKey apiKey)
     {
-        var currentSettings = JsonSerializer.Deserialize<SettingsModel>(File.ReadAllText(SettingsPath)); 
+        var currentSettings = JsonSerializer.Deserialize<SettingsModel>(File.ReadAllText(SettingsPath));
         currentSettings?.ApiKeys?.Remove(apiKey);
         File.WriteAllText(SettingsPath, JsonSerializer.Serialize(currentSettings));
         ApiKeyUpdated?.Invoke(apiKey, KeyUpdatedAction.Removed);
@@ -77,9 +80,11 @@ public class SettingsService : ISettingsService
     public async Task RemoveApiAsync(ApiKey apiKey)
     {
         var currentSettings = JsonSerializer.Deserialize<SettingsModel>(File.ReadAllText(SettingsPath));
-        using var fs = File.Open(SettingsPath, FileMode.Truncate);
-        currentSettings?.ApiKeys?.RemoveAll(x => x.Key == apiKey.Key);
-        await JsonSerializer.SerializeAsync(fs, currentSettings);
+        using (var fs = File.Open(SettingsPath, FileMode.Truncate))
+        {
+            currentSettings?.ApiKeys?.RemoveAll(x => x.Key == apiKey.Key);
+            await JsonSerializer.SerializeAsync(fs, currentSettings);
+        }
         ApiKeyUpdated?.Invoke(apiKey, KeyUpdatedAction.Removed);
     }
 }

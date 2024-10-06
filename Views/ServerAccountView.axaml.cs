@@ -2,9 +2,9 @@ using Avalonia.Controls;
 
 namespace Shoebill.Views;
 
-public partial class ServerOverviewView : UserControl
+public partial class ServerAccountView : UserControl
 {
-    public ServerOverviewView()
+    public ServerAccountView()
     {
         InitializeComponent();
     }

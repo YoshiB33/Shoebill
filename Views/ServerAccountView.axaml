@@ -1,0 +1,120 @@
+<UserControl xmlns="https://github.com/avaloniaui"
+            xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
+            xmlns:d="http://schemas.microsoft.com/expression/blend/2008"
+            xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
+            xmlns:vm="using:Shoebill.ViewModels"
+            xmlns:suki="using:SukiUI.Controls"
+            xmlns:objectModel="using:System.Collections.ObjectModel"
+            xmlns:icons="using:Material.Icons.Avalonia"
+            x:DataType="vm:ServerAccountViewModel"
+            mc:Ignorable="d" d:DesignWidth="800" d:DesignHeight="450"
+            x:Class="Shoebill.Views.ServerAccountView">
+    <suki:SukiStackPage Margin="20">
+        <suki:SukiStackPage.Content>
+            <suki:SettingsLayout Name="Account">
+                <suki:SettingsLayout.Items>
+                    <objectModel:ObservableCollection x:TypeArguments="suki:SettingsLayoutItem">
+                        <suki:SettingsLayoutItem Header="Email">
+                            <suki:SettingsLayoutItem.Content>
+                                <suki:GlassCard>
+                                    <StackPanel Orientation="Vertical" Spacing="5" >
+                                        <TextBlock Text="Update Email Adress" FontSize="18" FontWeight="SemiBold"/>
+                                        <TextBlock Text="Email" Margin="0,15,0,0"/>
+                                        <TextBox Text="{Binding EmailText}"/>
+                                        <TextBlock Text="Enter your password:" Margin="0,15,0,0"/>
+                                        <TextBox PasswordChar="*" Text="{Binding EmailPasswordText}"/>
+                                        <Button Classes="Flat" Content="Update email" Command="{Binding UpdateEmailCommand}" IsEnabled="{Binding CanChangeEmail}"/>
+                                    </StackPanel>    
+                                </suki:GlassCard>
+                            </suki:SettingsLayoutItem.Content>
+                        </suki:SettingsLayoutItem>
+                        <suki:SettingsLayoutItem Header="Password">
+                            <suki:SettingsLayoutItem.Content>
+                                <suki:GlassCard>
+                                    <StackPanel Orientation="Vertical" Spacing="5" >
+                                        <TextBlock Text="Update Password" FontSize="18" FontWeight="SemiBold"/>
+                                        <TextBlock Text="Current password:" Margin="0,15,0,0"/>
+                                        <TextBox Text="{Binding CurrentPasswordText}" PasswordChar="*"/>
+                                        <TextBlock Text="New password:" Margin="0,15,0,0"/>
+                                        <TextBox PasswordChar="*" Text="{Binding NewPasswordText}" RevealPassword="True"/>
+                                        <TextBlock Text="Reenter new password:" Margin="0,15,0,0"/>
+                                        <TextBox Text="{Binding ConfirmPasswordText}" PasswordChar="*"/>
+                                        <Button Classes="Flat" Content="Update password" Command="{Binding UpdatePasswordCommand}" IsEnabled="{Binding CanChangePassword}"/>
+                                    </StackPanel> 
+                                </suki:GlassCard>
+                            </suki:SettingsLayoutItem.Content>
+                        </suki:SettingsLayoutItem>
+                        <suki:SettingsLayoutItem Header="Api Keys">
+                            <suki:SettingsLayoutItem.Content>
+                                <suki:GlassCard>
+                                    <StackPanel Orientation="Vertical" Spacing="5" >
+                                        <Border BorderBrush="Gray" CornerRadius="5" BorderThickness="1" Padding="10">
+                                            <StackPanel Orientation="Vertical" Spacing="10">
+                                                <ItemsControl ItemsSource="{Binding ApiKeys}" x:Name="ApiKeyControl">
+                                                    <ItemsControl.ItemTemplate>
+                                                        <DataTemplate>
+                                                            <Border Background="Transparent" BorderBrush="{DynamicResource SukiControlBorderBrush}" BorderThickness="1" CornerRadius="{DynamicResource MediumCornerRadius}" Padding="15,15,30,15">
+                                                                <DockPanel>
+                                                                    <TextBlock Text="{Binding Identifier}" VerticalAlignment="Center" FontSize="16" />
+                                                                    <StackPanel Orientation="Horizontal" HorizontalAlignment="Right" Spacing="5">
+                                                                        <Button Command="{Binding #ApiKeyControl.((vm:ServerAccountViewModel)DataContext).ShowApiKeyInfoCommand}" CommandParameter="{Binding Identifier}">
+                                                                            <icons:MaterialIcon Kind="InformationOutline"/>
+                                                                        </Button>
+                                                                        <Button Command="{Binding #ApiKeyControl.((vm:ServerAccountViewModel)DataContext).RemoveApiKeyCommand}" CommandParameter="{Binding Identifier}">
+                                                                            <icons:MaterialIcon Kind="Close"/>
+                                                                        </Button>
+                                                                    </StackPanel>
+                                                                </DockPanel>
+                                                            </Border>
+                                                        </DataTemplate>
+                                                    </ItemsControl.ItemTemplate>
+                                                </ItemsControl>
+                                                <Button Classes="Flat" Content="Add new key" Command="{Binding OpenCreateApiKeyDialogCommand}"/>
+                                            </StackPanel>
+                                        </Border>
+                                    </StackPanel> 
+                                </suki:GlassCard>
+                            </suki:SettingsLayoutItem.Content>
+                        </suki:SettingsLayoutItem>
+                       <suki:SettingsLayoutItem Header="SSH Keys">
+                            <suki:SettingsLayoutItem.Content>
+                                <suki:GlassCard>
+                                    <StackPanel Orientation="Vertical" Spacing="5" >
+                                        <Border BorderBrush="Gray" CornerRadius="5" BorderThickness="1" Padding="10">
+                                            <StackPanel Orientation="Vertical" Spacing="10">
+                                                <ItemsControl ItemsSource="{Binding SSH_Keys}" x:Name="SSHKeyControl">
+                                                    <ItemsControl.ItemTemplate>
+                                                        <DataTemplate>
+                                                            <Border Background="Transparent" BorderBrush="{DynamicResource SukiControlBorderBrush}" BorderThickness="1" CornerRadius="{DynamicResource MediumCornerRadius}" Padding="15,15,30,15">
+                                                                <DockPanel>
+                                                                    <StackPanel Orientation="Vertical" Spacing="2">
+                                                                        <TextBlock Text="{Binding Name}" VerticalAlignment="Center" FontSize="16" />
+                                                                        <TextBlock Text="{Binding Fingerprint, StringFormat='SHA256:{0}'}"/>
+                                                                        <TextBlock Text="{Binding Created_at, StringFormat='Created at: {0}'}" Classes="Caption"/>
+                                                                    </StackPanel>
+                                                                    <StackPanel Orientation="Horizontal" HorizontalAlignment="Right" Spacing="5">
+                                                                        <Button Command="{Binding #ApiKeyControl.((vm:ServerAccountViewModel)DataContext).ShowSSHKeyInfoCommand}" CommandParameter="{Binding Fingerprint}">
+                                                                            <icons:MaterialIcon Kind="InformationOutline"/>
+                                                                        </Button>
+                                                                        <Button Command="{Binding #ApiKeyControl.((vm:ServerAccountViewModel)DataContext).RemoveSSHKeyCommand}" CommandParameter="{Binding Fingerprint}">
+                                                                            <icons:MaterialIcon Kind="Close"/>
+                                                                        </Button>
+                                                                    </StackPanel>
+                                                                </DockPanel>
+                                                            </Border>
+                                                        </DataTemplate>
+                                                    </ItemsControl.ItemTemplate>
+                                                </ItemsControl>
+                                                <Button Classes="Flat" Content="Add new key" Command="{Binding OpenCreateSSHKeyDialogCommand}"/>
+                                            </StackPanel>
+                                        </Border>
+                                    </StackPanel> 
+                                </suki:GlassCard>
+                            </suki:SettingsLayoutItem.Content>
+                        </suki:SettingsLayoutItem> 
+                    </objectModel:ObservableCollection>
+                </suki:SettingsLayout.Items>
+            </suki:SettingsLayout>
+        </suki:SukiStackPage.Content>
+    </suki:SukiStackPage>
+</UserControl>

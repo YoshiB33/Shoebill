@@ -1,4 +1,4 @@
-﻿namespace Shoebill;
+﻿namespace Shoebill.Models;
 
 public enum KeyUpdatedAction
 {

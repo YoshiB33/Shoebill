@@ -1,5 +1,4 @@
 ﻿using System.Collections.ObjectModel;
-using System.ComponentModel.DataAnnotations;
 using System.Linq;
 using System.Reactive;
 using Avalonia.Collections;
@@ -7,6 +6,7 @@ using Avalonia.Styling;
 using ReactiveUI;
 using Shoebill.Models;
 using Shoebill.Services;
+using Shoebill.ViewModels.Dialogs;
 using SukiUI;
 using SukiUI.Controls;
 using SukiUI.Models;
@@ -74,7 +74,7 @@ public class SettingsViewModel : ViewModelBase
         RemoveApiCommand = ReactiveCommand.Create<string>(RemoveApiKey);
         AddApiCommand = ReactiveCommand.Create(AddApiKey);
         EditApiCommand = ReactiveCommand.Create<string>(EditApiKey);
-        ToggleBaseThemeCommand  = ReactiveCommand.Create(ToggleBaseTheme);
+        ToggleBaseThemeCommand = ReactiveCommand.Create(ToggleBaseTheme);
 
         settingsService.ApiKeyUpdated += (key, updateAction) =>
         {

@@ -1,0 +1,27 @@
+<UserControl xmlns="https://github.com/avaloniaui"
+             xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
+             xmlns:d="http://schemas.microsoft.com/expression/blend/2008"
+             xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
+             xmlns:vm="using:Shoebill.ViewModels.Dialogs"
+             xmlns:sukiUi="using:SukiUI.Controls"
+             mc:Ignorable="d" d:DesignWidth="800" d:DesignHeight="450"
+             x:Class="Shoebill.Views.Dialogs.CreateApiKeyView"
+             x:DataType="vm:CreateApiKeyViewModel">
+    <sukiUi:BusyArea IsBusy="{Binding IsBusy}">
+        <StackPanel Orientation="Vertical" Spacing="5">
+            <TextBlock Text="Create an api key" FontSize="25" FontWeight="Bold"/>
+            <StackPanel Spacing="2">
+                <TextBlock Text="Desctription:"/>
+                <TextBox Text="{Binding DesctriptionText}"/>
+            </StackPanel>
+            <StackPanel Orientation="Vertical" Spacing="2">
+                <TextBlock Text="Allowed IPS: (Leave blank to allow any IP. Provide a new IP on each new line)"/>
+                <TextBox AcceptsReturn="True" Text="{Binding IpText}"/>
+            </StackPanel>
+            <StackPanel Orientation="Horizontal" Spacing="2">
+                <Button Classes="Flat Rounded" Content="Submit" Command="{Binding SubmitCommand}" IsEnabled="{Binding CanAddKey}"/>
+                <Button Content="Cancel" Command="{Binding CancelCommand}"/> 
+            </StackPanel>
+        </StackPanel>
+    </sukiUi:BusyArea>
+</UserControl>

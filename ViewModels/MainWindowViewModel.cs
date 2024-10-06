@@ -26,7 +26,7 @@ public partial class MainWindowViewModel : ViewModelBase
     private void NaviagtionRequested(Type pageType)
     {
         var page = Pages.FirstOrDefault(x => x.GetType() == pageType);
-        if (page == null || ContentViewModel.GetType() == pageType)  return;
+        if (page == null || ContentViewModel.GetType() == pageType) return;
         ContentViewModel = page;
     }
 }

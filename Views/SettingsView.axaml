@@ -12,60 +12,56 @@
     <Design.DataContext>
         <vm:SettingsViewModel/>
     </Design.DataContext>
-    <StackPanel Orientation="Vertical">
-       <DockPanel Dock="Top">
-            <Button IsVisible="{Binding ShowBackButton}" Command="{Binding NavigateBackCommand}" HorizontalAlignment="Left">
-                <icons:MaterialIcon Kind="ArrowBack"/>
-            </Button>
-            <TextBlock Text="Settings" FontSize="24" FontWeight="Bold" Grid.Column="1" Margin="25,5,10,5" HorizontalAlignment="Center"/>
-        </DockPanel> 
-        <suki:SettingsLayout>
-            <suki:SettingsLayout.Items>
-                <OM:ObservableCollection x:TypeArguments="suki:SettingsLayoutItem">
-                    <suki:SettingsLayoutItem Header="Appearence">
-                        <suki:SettingsLayoutItem.Content>
-                            <StackPanel Orientation="Vertical">
-                                <TextBlock Text="Theme" FontSize="16" FontWeight="SemiBold"/>
-                                <StackPanel Orientation="Vertical" Spacing="5">
-                                    <RadioButton GroupName="Theme" Content="Light" IsChecked="{Binding IsThemeLight}" Command="{Binding ToggleBaseThemeCommand}"/>
-                                    <RadioButton GroupName="Theme" Content="Dark" IsChecked="{Binding IsThemeDark}" Command="{Binding ToggleBaseThemeCommand}"/>
-                                </StackPanel>
-                            </StackPanel>
-                        </suki:SettingsLayoutItem.Content>
-                    </suki:SettingsLayoutItem>
-                    <suki:SettingsLayoutItem Header="Api">
-                        <suki:SettingsLayoutItem.Content>
-                            <StackPanel Orientation="Vertical">
-                                <TextBlock Text="Keys" FontSize="16" FontWeight="SemiBold"/>
-                                <Border BorderBrush="Gray" CornerRadius="5" BorderThickness="1" Padding="10">
-                                    <StackPanel Orientation="Vertical" Spacing="10">
-                                        <ItemsControl ItemsSource="{Binding ApiKeys}" x:Name="ApiKeyControl">
-                                            <ItemsControl.ItemTemplate>
-                                                <DataTemplate>
-                                                    <Border Background="Transparent" BorderBrush="{DynamicResource SukiControlBorderBrush}" BorderThickness="1" CornerRadius="{DynamicResource MediumCornerRadius}" Padding="15,15,30,15">
-                                                        <DockPanel>
-                                                            <TextBlock Text="{Binding Name}" VerticalAlignment="Center" FontSize="16" />
-                                                            <StackPanel Orientation="Horizontal" HorizontalAlignment="Right" Spacing="5">
-                                                                <Button Command="{Binding #ApiKeyControl.((vm:SettingsViewModel)DataContext).EditApiCommand}" CommandParameter="{Binding Name}">
-                                                                    <icons:MaterialIcon Kind="Pencil"/>
-                                                                </Button>
-                                                                <Button Command="{Binding #ApiKeyControl.((vm:SettingsViewModel)DataContext).RemoveApiCommand}" CommandParameter="{Binding Name}">
-                                                                    <icons:MaterialIcon Kind="Close"/>
-                                                                </Button>
-                                                            </StackPanel>
-                                                        </DockPanel>
-                                                    </Border>
-                                                </DataTemplate>
-                                            </ItemsControl.ItemTemplate>
-                                        </ItemsControl>
-                                        <Button Classes="Flat" Content="Add new key" Command="{Binding AddApiCommand}"/>
+    <suki:SukiStackPage>
+        <suki:SukiStackPage.Content>
+            <suki:SettingsLayout Name="Settings">
+                <suki:SettingsLayout.Items>
+                    <OM:ObservableCollection x:TypeArguments="suki:SettingsLayoutItem">
+                        <suki:SettingsLayoutItem Header="Appearence">
+                            <suki:SettingsLayoutItem.Content>
+                                <StackPanel Orientation="Vertical">
+                                    <TextBlock Text="Theme" FontSize="16" FontWeight="SemiBold"/>
+                                    <StackPanel Orientation="Vertical" Spacing="5">
+                                        <RadioButton GroupName="Theme" Content="Light" IsChecked="{Binding IsThemeLight}" Command="{Binding ToggleBaseThemeCommand}"/>
+                                        <RadioButton GroupName="Theme" Content="Dark" IsChecked="{Binding IsThemeDark}" Command="{Binding ToggleBaseThemeCommand}"/>
                                     </StackPanel>
-                                </Border>
-                            </StackPanel>
-                        </suki:SettingsLayoutItem.Content>
-                    </suki:SettingsLayoutItem>
-                </OM:ObservableCollection>
-            </suki:SettingsLayout.Items>
-        </suki:SettingsLayout>
-    </StackPanel>
+                                </StackPanel>
+                            </suki:SettingsLayoutItem.Content>
+                        </suki:SettingsLayoutItem>
+                        <suki:SettingsLayoutItem Header="Api">
+                            <suki:SettingsLayoutItem.Content>
+                                <StackPanel Orientation="Vertical">
+                                    <TextBlock Text="Keys" FontSize="16" FontWeight="SemiBold"/>
+                                    <Border BorderBrush="Gray" CornerRadius="5" BorderThickness="1" Padding="10">
+                                        <StackPanel Orientation="Vertical" Spacing="10">
+                                            <ItemsControl ItemsSource="{Binding ApiKeys}" x:Name="ApiKeyControl">
+                                                <ItemsControl.ItemTemplate>
+                                                    <DataTemplate>
+                                                        <Border Background="Transparent" BorderBrush="{DynamicResource SukiControlBorderBrush}" BorderThickness="1" CornerRadius="{DynamicResource MediumCornerRadius}" Padding="15,15,30,15">
+                                                            <DockPanel>
+                                                                <TextBlock Text="{Binding Name}" VerticalAlignment="Center" FontSize="16" />
+                                                                <StackPanel Orientation="Horizontal" HorizontalAlignment="Right" Spacing="5">
+                                                                    <Button Command="{Binding #ApiKeyControl.((vm:SettingsViewModel)DataContext).EditApiCommand}" CommandParameter="{Binding Name}">
+                                                                        <icons:MaterialIcon Kind="Pencil"/>
+                                                                    </Button>
+                                                                    <Button Command="{Binding #ApiKeyControl.((vm:SettingsViewModel)DataContext).RemoveApiCommand}" CommandParameter="{Binding Name}">
+                                                                        <icons:MaterialIcon Kind="Close"/>
+                                                                    </Button>
+                                                                </StackPanel>
+                                                            </DockPanel>
+                                                        </Border>
+                                                    </DataTemplate>
+                                                </ItemsControl.ItemTemplate>
+                                            </ItemsControl>
+                                            <Button Classes="Flat" Content="Add new key" Command="{Binding AddApiCommand}"/>
+                                        </StackPanel>
+                                    </Border>
+                                </StackPanel>
+                            </suki:SettingsLayoutItem.Content>
+                        </suki:SettingsLayoutItem>
+                    </OM:ObservableCollection>
+                </suki:SettingsLayout.Items>
+            </suki:SettingsLayout>
+        </suki:SukiStackPage.Content>
+    </suki:SukiStackPage>
 </UserControl>

@@ -2,7 +2,6 @@
 using System.Collections.ObjectModel;
 using System.Net.Http;
 using System.Reactive;
-using Avalonia.Controls.Notifications;
 using ReactiveUI;
 using Shoebill.Models.Api.Responses;
 using Shoebill.Models.Api.Schemas;
@@ -17,6 +16,7 @@ public class ServerOverviewViewModel : ViewModelBase
     public ReactiveCommand<Unit, Unit> NavigateBackCommand { get; set; }
     public ReactiveCommand<Unit, Unit> NavigateSettingsCommand { get; set; }
     public ReactiveCommand<string, Unit> NavigateServerCommand { get; set; }
+    public ReactiveCommand<Unit, Unit> NavigateAccountCommand { get; set; }
     public ObservableCollection<Server> Servers { get; set; } = [];
     private readonly INavigationService _navigationService;
     private readonly IApiService _apiService;
@@ -32,9 +32,10 @@ public class ServerOverviewViewModel : ViewModelBase
 
         navigationService.NavigationRequested += OnNavigatedTo;
 
-        NavigateBackCommand     = ReactiveCommand.Create(NavigateBack);
+        NavigateBackCommand = ReactiveCommand.Create(NavigateBack);
         NavigateSettingsCommand = ReactiveCommand.Create(NavigateSettings);
-        NavigateServerCommand   = ReactiveCommand.Create<string>(NavigateServer);
+        NavigateServerCommand = ReactiveCommand.Create<string>(NavigateServer);
+        NavigateAccountCommand = ReactiveCommand.Create(NavigateAccount);
     }
 
     private async void OnNavigatedTo(Type page)
@@ -52,8 +53,8 @@ public class ServerOverviewViewModel : ViewModelBase
             {
                 Console.WriteLine(ex.Message);
                 Console.WriteLine(ex.StackTrace);
-                
-                SukiHost.ShowMessageBox(new SukiUI.Models.MessageBoxModel($"Error found: {(int?)ex.StatusCode}", $"Found a error while finding the server details: {ex.Message}\n {ex.StackTrace}", SukiUI.Enums.NotificationType.Error),true);
+
+                SukiHost.ShowMessageBox(new SukiUI.Models.MessageBoxModel($"Error found: {(int?)ex.StatusCode}", $"Found a error while finding the server details: {ex.Message}\n {ex.StackTrace}", SukiUI.Enums.NotificationType.Error), true);
 
                 _navigationService.NavigateBack();
             }
@@ -64,7 +65,7 @@ public class ServerOverviewViewModel : ViewModelBase
                 {
                     Servers.Add(server.Attributes);
                 }
-                IsLoading = false;   
+                IsLoading = false;
             }
 
             _apiService.CurrentServer = null;
@@ -76,10 +77,12 @@ public class ServerOverviewViewModel : ViewModelBase
         _navigationService.NavigateBack();
     private void NavigateSettings() =>
         _navigationService.RequestNaviagtion<SettingsViewModel>(false);
-    
+
     private void NavigateServer(string uuid)
     {
         _apiService.CurrentServerUuid = uuid;
         _navigationService.RequestNaviagtion<ServerMasterViewModel>(false);
     }
+    private void NavigateAccount() =>
+        _navigationService.RequestNaviagtion<ServerAccountViewModel>(false);
 }

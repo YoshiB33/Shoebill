@@ -1,11 +1,11 @@
 ﻿using System;
 using System.Collections.ObjectModel;
-using System.ComponentModel.DataAnnotations;
 using System.Linq;
 using System.Reactive;
 using ReactiveUI;
 using Shoebill.Models;
 using Shoebill.Services;
+using Shoebill.ViewModels.Dialogs;
 using SukiUI.Controls;
 
 namespace Shoebill.ViewModels;
@@ -33,7 +33,7 @@ public class AccountsViewModel : ViewModelBase
         OpenSettingsCommand = ReactiveCommand.Create(NavigateSettings);
         EnterOverviewCommand = ReactiveCommand.Create<string>(EnterOverview);
 
-        settingsService.ApiKeyUpdated += (apiKey, KeyUpdatedAction) => 
+        settingsService.ApiKeyUpdated += (apiKey, KeyUpdatedAction) =>
         {
             if (KeyUpdatedAction == KeyUpdatedAction.Added)
             {
