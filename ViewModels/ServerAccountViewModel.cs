@@ -74,9 +74,10 @@ public class ServerAccountViewModel : ViewModelBase
     public ReactiveCommand<Unit, Unit> UpdatePasswordCommand { get; set; }
     public ReactiveCommand<Unit, Unit> OpenCreateApiKeyDialogCommand { get; set; }
     public ReactiveCommand<string, Unit> RemoveApiKeyCommand { get; set; }
-    public ReactiveCommand<string, Unit> ShowKeyInfoCommand { get; set; }
+    public ReactiveCommand<string, Unit> ShowApiKeyInfoCommand { get; set; }
     public ReactiveCommand<Unit, Unit> OpenCreateSSHKeyDialogCommand { get; set; }
     public ReactiveCommand<string, Unit> RemoveSSHKeyCommand { get; set; }
+    public ReactiveCommand<string, Unit> ShowSSHKeyInfoCommand { get; set; }
 
     private IApiService _apiService;
     private INavigationService _navigationService;
@@ -117,9 +118,10 @@ public class ServerAccountViewModel : ViewModelBase
         UpdatePasswordCommand = ReactiveCommand.Create(UpdatePassword);
         OpenCreateApiKeyDialogCommand = ReactiveCommand.Create(OpenCreateApiKeyDialog);
         RemoveApiKeyCommand = ReactiveCommand.Create<string>(RemoveApiKey);
-        ShowKeyInfoCommand = ReactiveCommand.Create<string>(ShowKeyInfo);
+        ShowApiKeyInfoCommand = ReactiveCommand.Create<string>(ShowApiKeyInfo);
         OpenCreateSSHKeyDialogCommand = ReactiveCommand.Create(OpenCreateSSHKeyDialog);
         RemoveSSHKeyCommand = ReactiveCommand.Create<string>(RemoveSSHKey);
+        ShowSSHKeyInfoCommand = ReactiveCommand.Create<string>(ShowSSHKeyInfo);
     }
 
     private async void OnNavigatedTo(Type page)
@@ -250,7 +252,7 @@ public class ServerAccountViewModel : ViewModelBase
             await SukiHost.ShowToast(new SukiUI.Models.ToastModel($"Couldn't detete api key: {id}", ex.Message, SukiUI.Enums.NotificationType.Error));
         }
     }
-    private async void ShowKeyInfo(string Id)
+    private async void ShowApiKeyInfo(string Id)
     {
         var key = ApiKeys.Where(x => x.Identifier == Id).FirstOrDefault();
         if (key is not null)
@@ -259,7 +261,7 @@ public class ServerAccountViewModel : ViewModelBase
         }
         else
         {
-            await SukiHost.ShowToast(new SukiUI.Models.ToastModel("Couldn't display key info", SukiUI.Enums.NotificationType.Error));
+            await SukiHost.ShowToast(new SukiUI.Models.ToastModel("Couldn't display api key info", SukiUI.Enums.NotificationType.Error));
         }
     }
 
@@ -282,6 +284,18 @@ public class ServerAccountViewModel : ViewModelBase
         catch (HttpRequestException ex)
         {
             await SukiHost.ShowToast(new SukiUI.Models.ToastModel($"Couldn't detete SSH key: {Fingerprint}", ex.Message, SukiUI.Enums.NotificationType.Error));
+        }
+    }
+    private async void ShowSSHKeyInfo(string Fingerprint)
+    {
+        var key = SSH_Keys.Where(x => x.Fingerprint == Fingerprint).FirstOrDefault();
+        if (key is not null)
+        {
+            SukiHost.ShowDialog(new SSHKeyInfoViewModel(key), true, true);
+        }
+        else
+        {
+            await SukiHost.ShowToast(new SukiUI.Models.ToastModel("Couldn't display SSH key info", SukiUI.Enums.NotificationType.Error));
         }
     }
 }
