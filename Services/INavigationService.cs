@@ -10,5 +10,5 @@ public interface INavigationService
     public bool CanNavigateForward { get; set; }
     public void NavigateForward();
     public void NavigateBack();
-    public void RequestNaviagtion<T>(bool isMasterPage) where T : ViewModels.ViewModelBase;
+    public void RequestNaviagtion<T>() where T : ViewModels.ViewModelBase;
 }

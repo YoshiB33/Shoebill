@@ -14,7 +14,6 @@ namespace Shoebill.ViewModels;
 public class ServerOverviewViewModel : ViewModelBase
 {
     private bool _isLoading = false;
-    public ReactiveCommand<Unit, Unit> NavigateSettingsCommand { get; set; }
     public ReactiveCommand<string, Unit> NavigateServerCommand { get; set; }
     public ReactiveCommand<Unit, Unit> NavigateAccountCommand { get; set; }
     public ObservableCollection<Server> Servers { get; set; } = [];
@@ -34,7 +33,6 @@ public class ServerOverviewViewModel : ViewModelBase
 
         navigationService.NavigationRequested += OnNavigatedTo;
 
-        NavigateSettingsCommand = ReactiveCommand.Create(NavigateSettings);
         NavigateServerCommand = ReactiveCommand.Create<string>(NavigateServer);
         NavigateAccountCommand = ReactiveCommand.Create(NavigateAccount);
     }
@@ -79,14 +77,11 @@ public class ServerOverviewViewModel : ViewModelBase
         }
     }
 
-    private void NavigateSettings() =>
-        _navigationService.RequestNaviagtion<SettingsViewModel>(false);
-
     private void NavigateServer(string uuid)
     {
         _apiService.CurrentServerUuid = uuid;
-        _navigationService.RequestNaviagtion<ServerMasterViewModel>(false);
+        _navigationService.RequestNaviagtion<ServerMasterViewModel>();
     }
     private void NavigateAccount() =>
-        _navigationService.RequestNaviagtion<ServerAccountViewModel>(false);
+        _navigationService.RequestNaviagtion<ServerAccountViewModel>();
 }

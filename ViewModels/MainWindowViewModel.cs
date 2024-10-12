@@ -19,6 +19,7 @@ public partial class MainWindowViewModel : ViewModelBase
         set => this.RaiseAndSetIfChanged(ref _canGoBack, value);
     }
     public ReactiveCommand<Unit, Unit> NavigateBackCommand { get; set; }
+    public ReactiveCommand<Unit, Unit> NavigateSettingsCommand { get; set; }
     public ISukiDialogManager DialogManager { get; }
     public ISukiToastManager ToastManager { get; }
     public IAvaloniaReadOnlyList<ViewModelBase> Pages;
@@ -36,9 +37,10 @@ public partial class MainWindowViewModel : ViewModelBase
         ToastManager = toastManager;
         _navigationService = navigationService;
         navigationService.NavigationRequested += NaviagtionRequested;
-        navigationService.RequestNaviagtion<AccountsViewModel>(false);
+        navigationService.RequestNaviagtion<AccountsViewModel>();
 
         NavigateBackCommand = ReactiveCommand.Create(NavigateBack);
+        NavigateSettingsCommand = ReactiveCommand.Create(NavigateSettings);
     }
 
     private void NaviagtionRequested(Type pageType)
@@ -51,4 +53,7 @@ public partial class MainWindowViewModel : ViewModelBase
 
     private void NavigateBack()
         => _navigationService.NavigateBack();
+
+    private void NavigateSettings()
+        => _navigationService.RequestNaviagtion<SettingsViewModel>();
 }

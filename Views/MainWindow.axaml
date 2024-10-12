@@ -18,6 +18,9 @@
         <sukiUi:SukiToastHost Manager="{Binding ToastManager}"/>
     </sukiUi:SukiWindow.Hosts>
     <sukiUi:SukiWindow.RightWindowTitleBarControls>
+        <Button Classes="Classic WindowControlsButton" Command="{Binding NavigateSettingsCommand}">
+            <icons:MaterialIcon Kind="Gear"/>    
+        </Button>
         <Button Classes="Classic WindowControlsButton" IsEnabled="{Binding CanGoBack, Mode=TwoWay}" Command="{Binding NavigateBackCommand}">
             <icons:MaterialIcon Kind="ArrowRight"/>
         </Button>

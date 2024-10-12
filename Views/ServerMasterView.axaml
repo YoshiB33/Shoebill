@@ -22,14 +22,9 @@
             <TextBlock Text="{Binding ServerName}" HorizontalAlignment="Center" FontSize="20" Grid.Column="1"/>
         </suki:SukiSideMenu.HeaderContent>
         <suki:SukiSideMenu.FooterContent>
-            <StackPanel Orientation="Horizontal" HorizontalAlignment="Center" Spacing="5">
-                <Button Command="{Binding GoBackCommand}"  Classes="Basic" ToolTip.Tip="Go back">
-                    <icons:MaterialIcon Kind="ChevronLeft" Width="25" Height="25"/>
-                </Button>
-                <Button Command="{Binding NavigateSettingsCommand}" Classes="Basic" ToolTip.Tip="Settings">
-                    <icons:MaterialIcon Kind="Cog" Width="25" Height="25"/>
-                </Button>
-            </StackPanel> 
+            <Button Command="{Binding GoBackCommand}"  Classes="Basic" ToolTip.Tip="Go back">
+                <icons:MaterialIcon Kind="ChevronLeft" Width="25" Height="25"/>
+            </Button>
         </suki:SukiSideMenu.FooterContent>
     </suki:SukiSideMenu>
 </UserControl>

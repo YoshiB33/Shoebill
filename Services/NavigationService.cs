@@ -2,6 +2,7 @@
 using System.Collections.Generic;
 using Shoebill.Models;
 using Shoebill.ViewModels;
+using Shoebill.ViewModels.ServerSubpages;
 
 namespace Shoebill.Services;
 
@@ -48,8 +49,9 @@ public class NavigationService() : INavigationService
         _currentPage++;
     }
 
-    public void RequestNaviagtion<T>(bool isMasterPage) where T : ViewModelBase
+    public void RequestNaviagtion<T>() where T : ViewModelBase
     {
+        var isMasterPage = typeof(T).IsSubclassOf(typeof(ServerViewModelBase));
         if (_history.Count > 0)
         {
             CanNavigateBack = true;

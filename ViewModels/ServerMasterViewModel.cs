@@ -9,7 +9,6 @@ using ReactiveUI;
 using Shoebill.Models.Api.Schemas;
 using Shoebill.Services;
 using Shoebill.ViewModels.ServerSubpages;
-using SukiUI.Controls;
 using SukiUI.Dialogs;
 using SukiUI.Toasts;
 
@@ -20,7 +19,6 @@ public class ServerMasterViewModel : ViewModelBase
     private string _serverName = "ServerName";
     private ViewModelBase? _currentPage;
     public ReactiveCommand<Unit, Unit> GoBackCommand { get; set; }
-    public ReactiveCommand<Unit, Unit> NavigateSettingsCommand { get; set; }
     private readonly INavigationService _navigationService;
     private readonly IApiService _apiService;
     private readonly ISukiDialogManager _dialogManager;
@@ -55,7 +53,6 @@ public class ServerMasterViewModel : ViewModelBase
         navigationService.NavigationRequested += OnNavigatedTo;
 
         GoBackCommand = ReactiveCommand.Create(GoBack);
-        NavigateSettingsCommand = ReactiveCommand.Create(NavigateSettings);
     }
 
     private async void OnNavigatedTo(Type page)
@@ -91,6 +88,4 @@ public class ServerMasterViewModel : ViewModelBase
 
     private void GoBack() =>
         _navigationService.NavigateBack();
-    private void NavigateSettings() =>
-        _navigationService.RequestNaviagtion<SettingsViewModel>(false);
 }

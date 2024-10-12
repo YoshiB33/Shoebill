@@ -21,9 +21,6 @@
                             <Button Command="{Binding NavigateAccountCommand}">
                                 <icons:MaterialIcon Kind="AccountCircle"/>
                             </Button>
-                            <Button Command="{Binding NavigateSettingsCommand}">
-                                <icons:MaterialIcon Kind="Cog" />
-                            </Button>
                         </StackPanel>
                     </DockPanel>
                 </sukiui:GroupBox.Header>

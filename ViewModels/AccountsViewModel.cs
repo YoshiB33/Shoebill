@@ -13,7 +13,6 @@ namespace Shoebill.ViewModels;
 public class AccountsViewModel : ViewModelBase
 {
     public ReactiveCommand<Unit, Unit> OpenDialogCommand { get; set; }
-    public ReactiveCommand<Unit, Unit> OpenSettingsCommand { get; set; }
     public ReactiveCommand<string, Unit> EnterOverviewCommand { get; set; }
     private readonly INavigationService _navigationService;
     private readonly ISettingsService _settingsService;
@@ -32,7 +31,6 @@ public class AccountsViewModel : ViewModelBase
         navigationService.NavigationRequested += OnNavigatedTo;
 
         OpenDialogCommand = ReactiveCommand.Create(AddNewApi);
-        OpenSettingsCommand = ReactiveCommand.Create(NavigateSettings);
         EnterOverviewCommand = ReactiveCommand.Create<string>(EnterOverview);
 
         settingsService.ApiKeyUpdated += (apiKey, KeyUpdatedAction) =>
@@ -73,14 +71,9 @@ public class AccountsViewModel : ViewModelBase
             .TryShow();
     }
 
-    private void NavigateSettings()
-    {
-        _navigationService.RequestNaviagtion<SettingsViewModel>(false);
-    }
-
     private void EnterOverview(string name)
     {
         _apiService.SetApiKey(ApiKeys.Where(x => x.Name == name).First());
-        _navigationService.RequestNaviagtion<ServerOverviewViewModel>(false);
+        _navigationService.RequestNaviagtion<ServerOverviewViewModel>();
     }
 }
