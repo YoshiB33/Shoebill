@@ -6,8 +6,8 @@ public interface INavigationService
 {
     public Action<Type>? NavigationRequested { get; set; }
     public Action<Type>? MasterNavigationRequested { get; set; }
-    public bool CanNavigateback { get; }
-    public bool CanNavigateForward { get; }
+    public bool CanNavigateBack { get; }
+    public bool CanNavigateForward { get; set; }
     public void NavigateForward();
     public void NavigateBack();
     public void RequestNaviagtion<T>(bool isMasterPage) where T : ViewModels.ViewModelBase;

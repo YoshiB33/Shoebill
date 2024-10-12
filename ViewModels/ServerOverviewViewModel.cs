@@ -7,7 +7,6 @@ using ReactiveUI;
 using Shoebill.Models.Api.Responses;
 using Shoebill.Models.Api.Schemas;
 using Shoebill.Services;
-using SukiUI.Controls;
 using SukiUI.Dialogs;
 
 namespace Shoebill.ViewModels;
@@ -15,7 +14,6 @@ namespace Shoebill.ViewModels;
 public class ServerOverviewViewModel : ViewModelBase
 {
     private bool _isLoading = false;
-    public ReactiveCommand<Unit, Unit> NavigateBackCommand { get; set; }
     public ReactiveCommand<Unit, Unit> NavigateSettingsCommand { get; set; }
     public ReactiveCommand<string, Unit> NavigateServerCommand { get; set; }
     public ReactiveCommand<Unit, Unit> NavigateAccountCommand { get; set; }
@@ -36,7 +34,6 @@ public class ServerOverviewViewModel : ViewModelBase
 
         navigationService.NavigationRequested += OnNavigatedTo;
 
-        NavigateBackCommand = ReactiveCommand.Create(NavigateBack);
         NavigateSettingsCommand = ReactiveCommand.Create(NavigateSettings);
         NavigateServerCommand = ReactiveCommand.Create<string>(NavigateServer);
         NavigateAccountCommand = ReactiveCommand.Create(NavigateAccount);
@@ -82,8 +79,6 @@ public class ServerOverviewViewModel : ViewModelBase
         }
     }
 
-    private void NavigateBack() =>
-        _navigationService.NavigateBack();
     private void NavigateSettings() =>
         _navigationService.RequestNaviagtion<SettingsViewModel>(false);
 

@@ -69,7 +69,7 @@ public class ServerAccountViewModel : ViewModelBase
 
 
     public string? OldEmail => _apiService.CurrentAccount?.Email;
-    public bool CanNavigateBack => _navigationService.CanNavigateback;
+    public bool CanNavigateBack => _navigationService.CanNavigateBack;
 
     public ReactiveCommand<Unit, Unit> NavigateBackCommand { get; set; }
     public ReactiveCommand<Unit, Unit> UpdateEmailCommand { get; set; }

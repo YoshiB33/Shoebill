@@ -9,34 +9,8 @@ public class NavigationService() : INavigationService
 {
     public Action<Type>? NavigationRequested { get; set; }
     public Action<Type>? MasterNavigationRequested { get; set; }
-    public bool CanNavigateback
-    {
-        get
-        {
-            if (_currentPage > 0)
-            {
-                return true;
-            }
-            else
-            {
-                return false;
-            }
-        }
-    }
-    public bool CanNavigateForward
-    {
-        get
-        {
-            if (_currentPage != _history.Count)
-            {
-                return true;
-            }
-            else
-            {
-                return false;
-            }
-        }
-    }
+    public bool CanNavigateBack { get; set; } = false;
+    public bool CanNavigateForward { get; set; } = false;
 
     private readonly List<NavigationHistory> _history = [];
     private int _currentPage = 0;
@@ -44,6 +18,11 @@ public class NavigationService() : INavigationService
     public void NavigateBack()
     {
         var page = _history[_currentPage - 2];
+        _history.RemoveAt(_currentPage - 1);
+        if (_history.Count <= 1)
+        {
+            CanNavigateBack = false;
+        }
         if (!page.IsMasterPage)
         {
             NavigationRequested?.Invoke(page.Page);
@@ -71,6 +50,10 @@ public class NavigationService() : INavigationService
 
     public void RequestNaviagtion<T>(bool isMasterPage) where T : ViewModelBase
     {
+        if (_history.Count > 0)
+        {
+            CanNavigateBack = true;
+        }
         if (!isMasterPage)
         {
             NavigationRequested?.Invoke(typeof(T));

@@ -29,31 +29,67 @@ public class ApiService(
     public void SetApiKey(ApiKey? apiKey)
     {
         ApiKey = apiKey;
-        httpClient.BaseAddress = new Uri($"https://{apiKey?.ServerAdress}/api/");
-        httpClient.DefaultRequestHeaders.Authorization = new AuthenticationHeaderValue("Bearer", apiKey?.Key);
     }
 
     public async Task<T?> StandardGetAsync<T>(string Path)
     {
+        httpClient.DefaultRequestHeaders.Accept.Clear();
+        httpClient.DefaultRequestHeaders.Accept.Add(
+            new MediaTypeWithQualityHeaderValue("application/json")
+        );
+        httpClient.DefaultRequestHeaders.Authorization = new AuthenticationHeaderValue("Bearer", ApiKey?.Key);
         using var response = await httpClient.GetAsync(Path);
         response.EnsureSuccessStatusCode();
         return await response.Content.ReadFromJsonAsync<T>();
     }
-    public async Task StandardPutAsync<T>(string Path, T Body)
+    public async Task StandardPutAsync(string Path, string Body)
     {
-        var response = await httpClient.PutAsJsonAsync(Path, Body);
+        httpClient.DefaultRequestHeaders.Accept.Clear();
+        httpClient.DefaultRequestHeaders.Accept.Add(
+            new MediaTypeWithQualityHeaderValue("application/json")
+        );
+        httpClient.DefaultRequestHeaders.Authorization = new AuthenticationHeaderValue("Bearer", ApiKey?.Key);
+        var request = new HttpRequestMessage
+        {
+            Method = HttpMethod.Put,
+            RequestUri = new Uri(Path),
+            Content = new StringContent(Body, Encoding.UTF8, "application/json")
+        };
+        using var response = await httpClient.SendAsync(request);
         response.EnsureSuccessStatusCode();
     }
-    public async Task<T2?> StandardPostAsync<T1, T2>(string Path, T1 Body)
+    public async Task<T?> StandardPostAsync<T>(string Path, string Body)
     {
-        var response = await httpClient.PostAsJsonAsync(Path, Body);
+        httpClient.DefaultRequestHeaders.Accept.Clear();
+        httpClient.DefaultRequestHeaders.Accept.Add(
+            new MediaTypeWithQualityHeaderValue("application/json")
+        );
+        httpClient.DefaultRequestHeaders.Authorization = new AuthenticationHeaderValue("Bearer", ApiKey?.Key);
+        var request = new HttpRequestMessage
+        {
+            Method = HttpMethod.Post,
+            RequestUri = new Uri(Path),
+            Content = new StringContent(Body, Encoding.UTF8, "application/json")
+        };
+        using var response = await httpClient.SendAsync(request);
         response.EnsureSuccessStatusCode();
-        var deJson = await JsonSerializer.DeserializeAsync<T2>(await response.Content.ReadAsStreamAsync());
-        return deJson;
+        var dejson = await JsonSerializer.DeserializeAsync<T>(await response.Content.ReadAsStreamAsync());
+        return dejson;
     }
     public async Task StandardDeteteAsync(string Path)
     {
-        var response = await httpClient.DeleteAsync(Path);
+        httpClient.DefaultRequestHeaders.Accept.Clear();
+        httpClient.DefaultRequestHeaders.Accept.Add(
+            new MediaTypeWithQualityHeaderValue("application/json")
+        );
+        httpClient.DefaultRequestHeaders.Authorization = new AuthenticationHeaderValue("Bearer", ApiKey?.Key);
+        var request = new HttpRequestMessage
+        {
+            Method = HttpMethod.Delete,
+            RequestUri = new Uri(Path),
+            Content = new StringContent("{}", Encoding.UTF8, "application/json")
+        };
+        using var response = await httpClient.SendAsync(request);
         response.EnsureSuccessStatusCode();
     }
     public async Task<ListServer?> GetServersAsync()
@@ -62,7 +98,7 @@ public class ApiService(
         {
             throw new ArgumentNullException("The ApiKey or one of its properties is null.");
         }
-        return await StandardGetAsync<ListServer>($"client");
+        return await StandardGetAsync<ListServer>($"https://{ApiKey.ServerAdress}/api/client");
     }
 
     public async Task<Server?> GetServerAsync()
@@ -71,7 +107,7 @@ public class ApiService(
         {
             throw new ArgumentNullException(nameof(ApiKey));
         }
-        var response = await StandardGetAsync<GetServerDetails>($"client/servers/{CurrentServerUuid}");
+        var response = await StandardGetAsync<GetServerDetails>($"https://{ApiKey.ServerAdress}/api/client/servers/{CurrentServerUuid}");
         return response?.Attributes;
     }
 
@@ -81,7 +117,7 @@ public class ApiService(
         {
             throw new ArgumentNullException(nameof(ApiKey));
         }
-        return await StandardGetAsync<GetAccountDetails>($"client/account");
+        return await StandardGetAsync<GetAccountDetails>($"https://{ApiKey.ServerAdress}/api/client/account");
     }
 
     public async Task UpdateAccountEmailAsync(string Email, string Password)
@@ -91,7 +127,7 @@ public class ApiService(
             throw new ArgumentException(nameof(ApiKey));
         }
         var body = JsonSerializer.Serialize(new UpdateEmailRequest(Email, Password), jsonSettings);
-        await StandardPutAsync($"client/account/email", body);
+        await StandardPutAsync($"https://{ApiKey.ServerAdress}/api/client/account/email", body);
     }
     public async Task UpdateAccountPasswordAsync(string CurrentPassword, string NewPassword, string PasswordConfirmation)
     {
@@ -104,7 +140,7 @@ public class ApiService(
             PropertyNamingPolicy = JsonNamingPolicy.CamelCase
         };
         var body = JsonSerializer.Serialize(new UpdatePasswordRequest(CurrentPassword, NewPassword, PasswordConfirmation), jsonSettings);
-        await StandardPutAsync($"client/account/password", body);
+        await StandardPutAsync($"https://{ApiKey.ServerAdress}/api/client/account/password", body);
     }
     public async Task<GetApiKeys?> GetApiKeysAsync()
     {
@@ -112,7 +148,7 @@ public class ApiService(
         {
             throw new ArgumentException(nameof(ApiKey));
         }
-        return await StandardGetAsync<GetApiKeys>($"client/account/api-keys");
+        return await StandardGetAsync<GetApiKeys>($"https://{ApiKey.ServerAdress}/api/client/account/api-keys");
     }
 
     public async Task<CreateApiKeyResponse?> CreateApiKeyAsync(string Description, IEnumerable AllowedIps)
@@ -121,7 +157,8 @@ public class ApiService(
         {
             throw new ArgumentException(nameof(ApiKey));
         }
-        return await StandardPostAsync<CreateApiKeyRequest, CreateApiKeyResponse>($"client/account/api-keys", new CreateApiKeyRequest(Description, AllowedIps));
+        var body = JsonSerializer.Serialize(new CreateApiKeyRequest(Description, AllowedIps), jsonSettings);
+        return await StandardPostAsync<CreateApiKeyResponse>($"https://{ApiKey.ServerAdress}/api/client/account/api-keys", body);
     }
 
     public async Task DeteteApiKeyAsync(string Identifier)
@@ -130,7 +167,7 @@ public class ApiService(
         {
             throw new ArgumentException(nameof(ApiKey));
         }
-        await StandardDeteteAsync($"client/account/api-keys/{Identifier}");
+        await StandardDeteteAsync($"https://{ApiKey.ServerAdress}/api/client/account/api-keys/{Identifier}");
     }
 
     public async Task<GetSSHResponse?> GetSSHKeysAsync()
@@ -139,7 +176,7 @@ public class ApiService(
         {
             throw new ArgumentException(nameof(ApiKey));
         }
-        return await StandardGetAsync<GetSSHResponse>($"client/account/ssh-keys");
+        return await StandardGetAsync<GetSSHResponse>($"https://{ApiKey.ServerAdress}/api/client/account/ssh-keys");
     }
 
     public async Task<CreateSSHKeyResponse?> CreateSSHKeyAsync(string Name, string PublicKey)
@@ -148,7 +185,8 @@ public class ApiService(
         {
             throw new ArgumentException(nameof(ApiKey));
         }
-        return await StandardPostAsync<CreateSSHKeyRequest, CreateSSHKeyResponse>($"client/account/ssh-keys", new CreateSSHKeyRequest(Name, PublicKey));
+        var body = JsonSerializer.Serialize(new CreateSSHKeyRequest(Name, PublicKey), jsonSettings);
+        return await StandardPostAsync<CreateSSHKeyResponse>($"https://{ApiKey.ServerAdress}/api/client/account/ssh-keys", body);
     }
 
     public async Task DeteteSSHKeyAsync(string Fingerprint)
@@ -157,7 +195,13 @@ public class ApiService(
         {
             throw new ArgumentException(nameof(ApiKey));
         }
-        var request = await httpClient.PostAsJsonAsync($"client/account/ssh-keys/remove", new DeleteSSHKeyRequest(Fingerprint), jsonSettings);
-        request.EnsureSuccessStatusCode();
+        var client = new HttpClient();
+        await client.PostAsJsonAsync($"https://{ApiKey.ServerAdress}/api/client/account/ssh-keys/remove", new DeleteSSHKeyRequest(Fingerprint), jsonSettings);
+    }
+
+    ~ApiService()
+    {
+        httpClient.CancelPendingRequests();
+        httpClient.Dispose();
     }
 }

@@ -12,9 +12,6 @@
         <vm:ServerOverviewViewModel/>
     </Design.DataContext>
     <Grid>
-        <Button HorizontalAlignment="Left" VerticalAlignment="Top" Command="{Binding NavigateBackCommand}">
-            <icons:MaterialIcon Kind="ArrowBack"/>
-        </Button>
         <sukiui:GlassCard VerticalAlignment="Center" HorizontalAlignment="Center" MinWidth="500">
             <sukiui:GroupBox>
                 <sukiui:GroupBox.Header>
