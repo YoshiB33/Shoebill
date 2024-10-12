@@ -1,5 +1,6 @@
 ﻿using Microsoft.Extensions.DependencyInjection;
 using Shoebill.ViewModels;
+using Shoebill.ViewModels.ServerSubpages;
 using SukiUI.Dialogs;
 using SukiUI.Toasts;
 
@@ -21,5 +22,6 @@ public static class ServiceCollectionExtensions
         collection.AddSingleton<ViewModelBase, ServerAccountViewModel>();
         collection.AddSingleton<ISukiDialogManager, SukiDialogManager>();
         collection.AddSingleton<ISukiToastManager, SukiToastManager>();
+        collection.AddSingleton<ServerViewModelBase, ServerConsoleViewModel>();
     }
 }
