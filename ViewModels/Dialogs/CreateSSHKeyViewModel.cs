@@ -1,3 +1,4 @@
+using System;
 using System.ComponentModel.DataAnnotations;
 using System.Net.Http;
 using System.Reactive;
@@ -73,6 +74,7 @@ public class CreateSSHKeyViewModel : ViewModelBase
         {
             _toastManager.CreateToast()
                 .WithTitle($"Couldn't create a new SSH key ({(int?)ex.StatusCode})")
+                .Dismiss().After(TimeSpan.FromSeconds(5))
                 .Dismiss().ByClicking()
                 .Queue();
         }

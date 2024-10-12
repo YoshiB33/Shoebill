@@ -78,7 +78,7 @@ public class CreateApiKeyViewModel : ViewModelBase
                 .WithTitle("Couldn't create an API key")
                 .WithContent(ex.Message)
                 .OfType(NotificationType.Error)
-                // FIXME:              .Dismiss().After(TimeSpan.FromSeconds(5))
+                .Dismiss().After(TimeSpan.FromSeconds(5))
                 .Dismiss().ByClicking()
                 .Queue();
         }

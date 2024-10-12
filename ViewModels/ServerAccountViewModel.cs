@@ -149,6 +149,7 @@ public class ServerAccountViewModel : ViewModelBase
                     .WithTitle($"Can't get account details ({(int?)ex.StatusCode})")
                     .WithContent($"An error was found when getting account details: {ex.Message}")
                     .OfType(NotificationType.Error)
+                    .Dismiss().After(TimeSpan.FromSeconds(5))
                     .Dismiss().ByClicking()
                     .Queue();
                 _navigationService.NavigateBack();
@@ -176,6 +177,7 @@ public class ServerAccountViewModel : ViewModelBase
                         .WithTitle($"Couldn't get api keys ({(int?)ex.StatusCode})")
                         .WithContent(ex.Message)
                         .OfType(NotificationType.Error)
+                        .Dismiss().After(TimeSpan.FromSeconds(5))
                         .Dismiss().ByClicking()
                         .Queue();
                 }
@@ -198,6 +200,7 @@ public class ServerAccountViewModel : ViewModelBase
                         .WithTitle("Couldn't get SSH keys")
                         .WithContent(ex.Message)
                         .OfType(NotificationType.Error)
+                        .Dismiss().After(TimeSpan.FromSeconds(5))
                         .Dismiss().ByClicking()
                         .Queue();
                 }
@@ -226,6 +229,7 @@ public class ServerAccountViewModel : ViewModelBase
                 .WithTitle("Successfully updated email")
                 .WithContent($"Updated email to {EmailText}")
                 .OfType(NotificationType.Success)
+                .Dismiss().After(TimeSpan.FromSeconds(5))
                 .Dismiss().ByClicking()
                 .Queue();
             EmailText = "";
@@ -239,6 +243,7 @@ public class ServerAccountViewModel : ViewModelBase
                 .WithTitle($"Couldn't update email ({(int?)ex.StatusCode})")
                 .WithContent(ex.Message)
                 .OfType(NotificationType.Error)
+                .Dismiss().After(TimeSpan.FromSeconds(5))
                 .Dismiss().ByClicking()
                 .Queue();
         }
@@ -251,6 +256,7 @@ public class ServerAccountViewModel : ViewModelBase
             _toastManager.CreateToast()
                 .WithTitle("Successfully updated password")
                 .OfType(NotificationType.Success)
+                .Dismiss().After(TimeSpan.FromSeconds(5))
                 .Dismiss().ByClicking()
                 .Queue();
             CurrentPasswordText = "";
@@ -265,6 +271,7 @@ public class ServerAccountViewModel : ViewModelBase
                 .WithTitle($"Couldn't update password ({(int?)ex.StatusCode})")
                 .WithContent(ex.Message)
                 .OfType(NotificationType.Error)
+                .Dismiss().After(TimeSpan.FromSeconds(5))
                 .Dismiss().ByClicking()
                 .Queue();
         }
@@ -287,6 +294,7 @@ public class ServerAccountViewModel : ViewModelBase
             _toastManager.CreateToast()
                 .WithTitle("Successfully deleted api key")
                 .OfType(NotificationType.Success)
+                .Dismiss().After(TimeSpan.FromSeconds(5))
                 .Dismiss().ByClicking()
                 .Queue();
             var apiKey = ApiKeys.Where(x => x.Identifier == id).FirstOrDefault();
@@ -301,6 +309,7 @@ public class ServerAccountViewModel : ViewModelBase
                 .WithTitle($"Couldn't update password ({(int?)ex.StatusCode})")
                 .WithContent(ex.Message)
                 .OfType(NotificationType.Error)
+                .Dismiss().After(TimeSpan.FromSeconds(5))
                 .Dismiss().ByClicking()
                 .Queue();
         }
@@ -320,6 +329,7 @@ public class ServerAccountViewModel : ViewModelBase
             _toastManager.CreateToast()
                 .WithTitle($"Couldn't display api key info")
                 .OfType(NotificationType.Error)
+                .Dismiss().After(TimeSpan.FromSeconds(5))
                 .Dismiss().ByClicking()
                 .Queue();
         }
@@ -341,6 +351,7 @@ public class ServerAccountViewModel : ViewModelBase
             await _apiService.DeteteSSHKeyAsync(Fingerprint);
             _toastManager.CreateToast()
                 .WithTitle("Successfully deleted SSH key")
+                .Dismiss().After(TimeSpan.FromSeconds(5))
                 .OfType(NotificationType.Success)
                 .Dismiss().ByClicking()
                 .Queue();
@@ -355,6 +366,7 @@ public class ServerAccountViewModel : ViewModelBase
             _toastManager.CreateToast()
                 .WithTitle($"Couldn't delete SSH key ({(int?)ex.StatusCode})")
                 .OfType(NotificationType.Error)
+                .Dismiss().After(TimeSpan.FromSeconds(5))
                 .Dismiss().ByClicking()
                 .Queue();
         }
@@ -374,6 +386,7 @@ public class ServerAccountViewModel : ViewModelBase
             _toastManager.CreateToast()
                 .WithTitle($"Couldn't display SSH key info")
                 .OfType(NotificationType.Error)
+                .Dismiss().After(TimeSpan.FromSeconds(5))
                 .Dismiss().ByClicking()
                 .Queue();
         }
