@@ -19,7 +19,7 @@
     </sukiUi:SukiWindow.Hosts>
     <sukiUi:SukiWindow.RightWindowTitleBarControls>
         <Button Classes="Classic WindowControlsButton" IsEnabled="{Binding CanGoBack, Mode=TwoWay}" Command="{Binding NavigateBackCommand}">
-            <icons:MaterialIcon Kind="Arrow"/>
+            <icons:MaterialIcon Kind="ArrowRight"/>
         </Button>
     </sukiUi:SukiWindow.RightWindowTitleBarControls>
     <TransitioningContentControl Content="{Binding ContentViewModel}">
