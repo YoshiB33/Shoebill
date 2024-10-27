@@ -2,7 +2,44 @@
              xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
              xmlns:d="http://schemas.microsoft.com/expression/blend/2008"
              xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
+             xmlns:suki="clr-namespace:SukiUI.Controls;assembly=SukiUI"
              mc:Ignorable="d" d:DesignWidth="800" d:DesignHeight="450"
              x:Class="Shoebill.Views.ServerSubpages.ServerConsoleView">
-    Welcome to Avalonia!
+    <Grid ColumnDefinitions="6*, 2*" RowDefinitions="5*, 2*">
+        <suki:GlassCard Grid.Column="0" Grid.Row="0" IsAnimated="False" Margin="3">
+            <DockPanel>
+                <ScrollViewer DockPanel.Dock="Top" VerticalAlignment="Top">
+                    <TextBlock TextWrapping="Wrap" />
+                </ScrollViewer>
+                <TextBox DockPanel.Dock="Bottom" Height="50" VerticalAlignment="Bottom" />
+            </DockPanel>
+        </suki:GlassCard>
+        <Grid Grid.Column="0" Grid.ColumnSpan="2" Grid.Row="1" ColumnDefinitions="*, *">
+            <suki:GlassCard Grid.Column="0" IsAnimated="False" Margin="3">
+                <TextBlock Text="Graph!" />
+            </suki:GlassCard>
+            <suki:GlassCard Grid.Column="1" IsAnimated="False" Margin="3">
+                <TextBlock Text="Graph 2!" />
+            </suki:GlassCard>
+        </Grid>
+        <suki:GlassCard Grid.Row="0" Grid.Column="1" IsAnimated="False" Margin="3">
+            <ScrollViewer>
+                <Grid RowDefinitions="*,*,*,*,*,*,*">
+                    <suki:GlassCard Classes="Accent" IsAnimated="False" Margin="0,0,0,3">
+                        <Grid ColumnDefinitions="*,*,*">
+                            <Button Grid.Column="0" Content="Start" Classes="Primary" HorizontalAlignment="Center" />
+                            <Button Grid.Column="1" Content="Restart" Classes="Primary" HorizontalAlignment="Center" />
+                            <Button Grid.Column="2" Content="Stop" Classes="Primary" HorizontalAlignment="Center" />
+                        </Grid>
+                    </suki:GlassCard>
+                    <suki:GlassCard Grid.Row="1" Classes="Accent" IsAnimated="False" Margin="0,3,0,0">
+                        <StackPanel Orientation="Vertical" Spacing="2">
+                            <TextBlock Text="Uptime" FontSize="12" VerticalAlignment="Center" />
+                            <TextBlock Text="Offline" FontWeight="Bold" FontSize="16" VerticalAlignment="Center" />
+                        </StackPanel>
+                    </suki:GlassCard>
+                </Grid>
+            </ScrollViewer>
+        </suki:GlassCard>
+    </Grid>
 </UserControl>
