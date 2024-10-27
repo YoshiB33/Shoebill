@@ -2,6 +2,6 @@
 
 namespace Shoebill.Models.Api.Responses;
 
-public record GetServerDetails(string Object, Server Attributes, Meta Meta);
+public abstract record GetServerDetails(string Object, Server Attributes, Meta Meta);
 
-public record Meta(bool IsServerOwner, string[] User_permissions);
+public abstract record Meta(bool IsServerOwner, string[] User_permissions);

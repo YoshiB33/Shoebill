@@ -1,6 +1,6 @@
 ﻿namespace Shoebill.Models.Api.Schemas;
 
-public record Pagination(
+public abstract record Pagination(
     int Total,
     int Count,
     int Per_page,

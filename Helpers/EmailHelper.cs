@@ -3,7 +3,7 @@ using System.Net.Mail;
 
 namespace Shoebill.Helpers;
 
-public class EmailHelper
+public abstract class EmailHelper
 {
     public static bool IsEmailValid(string email)
     {

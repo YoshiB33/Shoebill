@@ -59,7 +59,7 @@ public class CreateAccountViewModel : ViewModelBase
         EnterCommand = ReactiveCommand.Create(Enter);
         CancelCommand = ReactiveCommand.Create(Cancel);
 
-        if (editApiKey != null && editApiKey.Key != null &&
+        if (editApiKey?.Key != null &&
             (editApiKey.ApiType == ApiTypes.Client || editApiKey.ApiType == ApiTypes.Application) &&
             editApiKey.Name != null && editApiKey.ServerAdress != null)
         {

@@ -4,7 +4,7 @@ namespace Shoebill.Models.Api.Schemas;
 
 public record Backup(string Object, Backup_attributes Attributes);
 
-public record Backup_attributes(
+public abstract record Backup_attributes(
     string Uuid,
     string Name,
     List<string> Ignored_files,

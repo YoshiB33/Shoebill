@@ -20,7 +20,7 @@ public interface IApiService
     public Task<GetApiKeys?> GetApiKeysAsync();
     public Task<CreateApiKeyResponse?> CreateApiKeyAsync(string description, IEnumerable allowedIps);
     public Task DeleteApiKeyAsync(string identifier);
-    public Task<GetSSHResponse?> GetSshKeysAsync();
-    public Task<CreateSSHKeyResponse?> CreateSshKeyAsync(string name, string publicKey);
+    public Task<GetSshResponse?> GetSshKeysAsync();
+    public Task<CreateSshKeyResponse?> CreateSshKeyAsync(string name, string publicKey);
     public Task DeleteSshKeyAsync(string fingerprint);
 }
