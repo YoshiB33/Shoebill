@@ -19,8 +19,8 @@ public interface IApiService
     public Task UpdateAccountPasswordAsync(string currentPassword, string newPassword, string passwordConfirmation);
     public Task<GetApiKeys?> GetApiKeysAsync();
     public Task<CreateApiKeyResponse?> CreateApiKeyAsync(string description, IEnumerable allowedIps);
-    public Task DeteteApiKeyAsync(string identifier);
+    public Task DeleteApiKeyAsync(string identifier);
     public Task<GetSSHResponse?> GetSshKeysAsync();
     public Task<CreateSSHKeyResponse?> CreateSshKeyAsync(string name, string publicKey);
-    public Task DeteteSshKeyAsync(string fingerprint);
+    public Task DeleteSshKeyAsync(string fingerprint);
 }

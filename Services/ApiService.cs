@@ -115,7 +115,7 @@ public class ApiService(
             $"https://{ApiKey.ServerAdress}/api/client/account/api-keys", body);
     }
 
-    public async Task DeteteApiKeyAsync(string identifier)
+    public async Task DeleteApiKeyAsync(string identifier)
     {
         if (ApiKey is null || ApiKey.Key is null || ApiKey.Name is null)
         {
@@ -147,7 +147,7 @@ public class ApiService(
             $"https://{ApiKey.ServerAdress}/api/client/account/ssh-keys", body);
     }
 
-    public async Task DeteteSshKeyAsync(string fingerprint)
+    public async Task DeleteSshKeyAsync(string fingerprint)
     {
         if (ApiKey is null || ApiKey.Key is null || ApiKey.Name is null)
         {

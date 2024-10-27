@@ -271,7 +271,7 @@ public class ServerAccountViewModel : ViewModelBase
         Console.WriteLine("Deletes an api key! Key id: {0}", id);
         try
         {
-            await _apiService.DeteteApiKeyAsync(id);
+            await _apiService.DeleteApiKeyAsync(id);
             _toastManager.CreateToast()
                 .WithTitle("Successfully deleted api key")
                 .OfType(NotificationType.Success)
@@ -330,7 +330,7 @@ public class ServerAccountViewModel : ViewModelBase
         Console.WriteLine("Deletes an SSH key! Key fingerprint: {0}", fingerprint);
         try
         {
-            await _apiService.DeteteSshKeyAsync(fingerprint);
+            await _apiService.DeleteSshKeyAsync(fingerprint);
             _toastManager.CreateToast()
                 .WithTitle("Successfully deleted SSH key")
                 .Dismiss().After(TimeSpan.FromSeconds(5))
