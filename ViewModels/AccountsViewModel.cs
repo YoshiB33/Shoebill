@@ -12,16 +12,13 @@ namespace Shoebill.ViewModels;
 
 public class AccountsViewModel : ViewModelBase
 {
-    public ReactiveCommand<Unit, Unit> OpenDialogCommand { get; set; }
-    public ReactiveCommand<string, Unit> EnterOverviewCommand { get; set; }
-    private readonly INavigationService _navigationService;
-    private readonly ISettingsService _settingsService;
     private readonly IApiService _apiService;
     private readonly ISukiDialogManager _dialogManager;
+    private readonly INavigationService _navigationService;
+    private readonly ISettingsService _settingsService;
 
-    public ObservableCollection<ApiKey> ApiKeys { get; set; } = [];
-
-    public AccountsViewModel(INavigationService navigationService, ISettingsService settingsService, IApiService apiService, ISukiDialogManager dialogManager)
+    public AccountsViewModel(INavigationService navigationService, ISettingsService settingsService,
+        IApiService apiService, ISukiDialogManager dialogManager)
     {
         _navigationService = navigationService;
         _settingsService = settingsService;
@@ -33,9 +30,9 @@ public class AccountsViewModel : ViewModelBase
         OpenDialogCommand = ReactiveCommand.Create(AddNewApi);
         EnterOverviewCommand = ReactiveCommand.Create<string>(EnterOverview);
 
-        settingsService.ApiKeyUpdated += (apiKey, KeyUpdatedAction) =>
+        settingsService.ApiKeyUpdated += (apiKey, keyUpdatedAction) =>
         {
-            if (KeyUpdatedAction == KeyUpdatedAction.Added)
+            if (keyUpdatedAction == KeyUpdatedAction.Added)
             {
                 ApiKeys.Add(apiKey);
             }
@@ -46,17 +43,19 @@ public class AccountsViewModel : ViewModelBase
         };
     }
 
+    public ReactiveCommand<Unit, Unit> OpenDialogCommand { get; set; }
+    public ReactiveCommand<string, Unit> EnterOverviewCommand { get; set; }
+
+    public ObservableCollection<ApiKey> ApiKeys { get; set; } = [];
+
     private async void OnNavigatedTo(Type page)
     {
-        if (page == typeof(AccountsViewModel))
-        {
-            ApiKeys.Clear();
-            var keys = await _settingsService.GetAllApiKeysAsync();
-            foreach (var key in keys)
-            {
-                ApiKeys.Add(key);
-            }
-        }
+        if (page != typeof(AccountsViewModel)) return;
+
+        ApiKeys.Clear();
+        var keys = await _settingsService.GetAllApiKeysAsync();
+        if (keys == null) return;
+        foreach (var key in keys) ApiKeys.Add(key);
     }
 
     private void AddNewApi()
@@ -73,7 +72,7 @@ public class AccountsViewModel : ViewModelBase
 
     private void EnterOverview(string name)
     {
-        _apiService.SetApiKey(ApiKeys.Where(x => x.Name == name).First());
+        _apiService.SetApiKey(ApiKeys.First(x => x.Name == name));
         _navigationService.RequestNaviagtion<ServerOverviewViewModel>();
     }
 }

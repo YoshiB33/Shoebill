@@ -14,43 +14,18 @@ namespace Shoebill.ViewModels.Dialogs;
 
 public class CreateApiKeyViewModel : ViewModelBase
 {
-    private string _desctiptionText = string.Empty;
-    private string _ipText = string.Empty;
-    private bool _isBusy = false;
-
-    [StringLength(maximumLength: 500, ErrorMessage = "The description cannot be longer than 500 characters")]
-    public string DesctriptionText
-    {
-        get => _desctiptionText;
-        set => this.RaiseAndSetIfChanged(ref _desctiptionText, value);
-    }
-    [Count('\n', 49, ErrorMessage = "Can't have more than 50 allowed ips")]
-    public string IpText
-    {
-        get => _ipText;
-        set => this.RaiseAndSetIfChanged(ref _ipText, value);
-    }
-    public bool IsBusy
-    {
-        get => _isBusy;
-        set => this.RaiseAndSetIfChanged(ref _isBusy, value);
-    }
-    public bool CanAddKey => _canAddKey.Value;
-
-    private ObservableAsPropertyHelper<bool> _canAddKey;
-
-    public ReactiveCommand<Unit, Unit> SubmitCommand { get; set; }
-    public ReactiveCommand<Unit, Unit> CancelCommand { get; set; }
-
-    private IApiService _apiService { get; set; }
-    private INavigationService _navigationService { get; set; }
+    private readonly ObservableAsPropertyHelper<bool> _canAddKey;
     private readonly ISukiDialog _dialog;
     private readonly ISukiToastManager _toastManager;
+    private string _desctiptionText = string.Empty;
+    private string _ipText = string.Empty;
+    private bool _isBusy;
 
-    public CreateApiKeyViewModel(IApiService apiService, INavigationService navigationService, ISukiDialog sukiDialog, ISukiToastManager toastManager)
+    public CreateApiKeyViewModel(IApiService apiService, INavigationService navigationService, ISukiDialog sukiDialog,
+        ISukiToastManager toastManager)
     {
-        _apiService = apiService;
-        _navigationService = navigationService;
+        ApiService = apiService;
+        NavigationService = navigationService;
         _dialog = sukiDialog;
         _toastManager = toastManager;
 
@@ -61,8 +36,36 @@ public class CreateApiKeyViewModel : ViewModelBase
             (description, ips) =>
                 description.Length <= 500 &&
                 IpText.Count(x => x == '\n') <= 49
-            ).ToProperty(this, x => x.CanAddKey, out _canAddKey);
+        ).ToProperty(this, x => x.CanAddKey, out _canAddKey);
     }
+
+    [StringLength(maximumLength: 500, ErrorMessage = "The description cannot be longer than 500 characters")]
+    public string DesctriptionText
+    {
+        get => _desctiptionText;
+        set => this.RaiseAndSetIfChanged(ref _desctiptionText, value);
+    }
+
+    [Count('\n', 49, ErrorMessage = "Can't have more than 50 allowed ips")]
+    public string IpText
+    {
+        get => _ipText;
+        set => this.RaiseAndSetIfChanged(ref _ipText, value);
+    }
+
+    public bool IsBusy
+    {
+        get => _isBusy;
+        set => this.RaiseAndSetIfChanged(ref _isBusy, value);
+    }
+
+    public bool CanAddKey => _canAddKey.Value;
+
+    public ReactiveCommand<Unit, Unit> SubmitCommand { get; set; }
+    public ReactiveCommand<Unit, Unit> CancelCommand { get; set; }
+
+    private IApiService ApiService { get; }
+    private INavigationService NavigationService { get; }
 
     private async void Submit()
     {
@@ -70,7 +73,7 @@ public class CreateApiKeyViewModel : ViewModelBase
         var ips = IpText.Split(Environment.NewLine).Where(x => !string.IsNullOrWhiteSpace(x));
         try
         {
-            await _apiService.CreateApiKeyAsync(DesctriptionText, ips);
+            await ApiService.CreateApiKeyAsync(DesctriptionText, ips);
         }
         catch (HttpRequestException ex)
         {
@@ -82,10 +85,12 @@ public class CreateApiKeyViewModel : ViewModelBase
                 .Dismiss().ByClicking()
                 .Queue();
         }
-        _navigationService.NavigationRequested?.Invoke(typeof(ServerAccountViewModel));
+
+        NavigationService.NavigationRequested?.Invoke(typeof(ServerAccountViewModel));
         IsBusy = false;
         _dialog.Dismiss();
     }
+
     private void Cancel() =>
         _dialog.Dismiss();
 }

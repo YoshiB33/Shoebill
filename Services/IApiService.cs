@@ -15,12 +15,12 @@ public interface IApiService
     public Task<ListServer?> GetServersAsync();
     public Task<Server?> GetServerAsync();
     public Task<GetAccountDetails?> GetAccountDetailsAsync();
-    public Task UpdateAccountEmailAsync(string Email, string Password);
-    public Task UpdateAccountPasswordAsync(string CurrentPassword, string NewPassword, string PasswordConfirmation);
+    public Task UpdateAccountEmailAsync(string email, string password);
+    public Task UpdateAccountPasswordAsync(string currentPassword, string newPassword, string passwordConfirmation);
     public Task<GetApiKeys?> GetApiKeysAsync();
-    public Task<CreateApiKeyResponse?> CreateApiKeyAsync(string Description, IEnumerable AllowedIps);
-    public Task DeteteApiKeyAsync(string Identifier);
-    public Task<GetSSHResponse?> GetSSHKeysAsync();
-    public Task<CreateSSHKeyResponse?> CreateSSHKeyAsync(string Name, string PublicKey);
-    public Task DeteteSSHKeyAsync(string Fingerprint);
+    public Task<CreateApiKeyResponse?> CreateApiKeyAsync(string description, IEnumerable allowedIps);
+    public Task DeteteApiKeyAsync(string identifier);
+    public Task<GetSSHResponse?> GetSshKeysAsync();
+    public Task<CreateSSHKeyResponse?> CreateSshKeyAsync(string name, string publicKey);
+    public Task DeteteSshKeyAsync(string fingerprint);
 }

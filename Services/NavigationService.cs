@@ -8,13 +8,12 @@ namespace Shoebill.Services;
 
 public class NavigationService() : INavigationService
 {
+    private readonly List<NavigationHistory> _history = [];
+    private int _currentPage;
     public Action<Type>? NavigationRequested { get; set; }
     public Action<Type>? MasterNavigationRequested { get; set; }
-    public bool CanNavigateBack { get; set; } = false;
+    public bool CanNavigateBack { get; private set; }
     public bool CanNavigateForward { get; set; } = false;
-
-    private readonly List<NavigationHistory> _history = [];
-    private int _currentPage = 0;
 
     public void NavigateBack()
     {
@@ -24,6 +23,7 @@ public class NavigationService() : INavigationService
         {
             CanNavigateBack = false;
         }
+
         if (!page.IsMasterPage)
         {
             NavigationRequested?.Invoke(page.Page);
@@ -32,6 +32,7 @@ public class NavigationService() : INavigationService
         {
             MasterNavigationRequested?.Invoke(page.Page);
         }
+
         _currentPage--;
     }
 
@@ -46,6 +47,7 @@ public class NavigationService() : INavigationService
         {
             MasterNavigationRequested?.Invoke(page.Page);
         }
+
         _currentPage++;
     }
 
@@ -56,6 +58,7 @@ public class NavigationService() : INavigationService
         {
             CanNavigateBack = true;
         }
+
         if (!isMasterPage)
         {
             NavigationRequested?.Invoke(typeof(T));
@@ -64,6 +67,7 @@ public class NavigationService() : INavigationService
         {
             MasterNavigationRequested?.Invoke(typeof(T));
         }
+
         _history.Add(new NavigationHistory(typeof(T), isMasterPage));
         _currentPage++;
     }

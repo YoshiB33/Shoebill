@@ -5,22 +5,23 @@
              xmlns:sukiUi="using:SukiUI.Controls"
              xmlns:vm="using:Shoebill.ViewModels.Dialogs"
              mc:Ignorable="d" d:DesignWidth="800" d:DesignHeight="450"
-             x:DataType="vm:CreateSSHKeyViewModel"
+             x:DataType="vm:CreateSshKeyViewModel"
              x:Class="Shoebill.Views.Dialogs.CreateSSHKeyView">
     <sukiUi:BusyArea IsBusy="{Binding IsSubmitting}">
         <StackPanel Orientation="Vertical" Spacing="5">
-            <TextBlock Text="Add an SSH key" FontSize="25" FontWeight="Bold"/>
+            <TextBlock Text="Add an SSH key" FontSize="25" FontWeight="Bold" />
             <StackPanel Spacing="2">
-                <TextBlock Text="Name:"/>
-                <TextBox Text="{Binding Name}"/>
+                <TextBlock Text="Name:" />
+                <TextBox Text="{Binding Name}" />
             </StackPanel>
             <StackPanel Spacing="2">
-                <TextBlock Text="Public key:"/>
-                <TextBox Text="{Binding PublicKey}"/>
+                <TextBlock Text="Public key:" />
+                <TextBox Text="{Binding PublicKey}" />
             </StackPanel>
             <StackPanel Orientation="Horizontal" Spacing="2">
-                <Button Classes="Flat Rounded" Content="Submit" Command="{Binding SubmitCommand}" IsEnabled="{Binding CanSubmit}"/>
-                <Button Content="Cancel" Command="{Binding CancelCommand}"/> 
+                <Button Classes="Flat Rounded" Content="Submit" Command="{Binding SubmitCommand}"
+                        IsEnabled="{Binding CanSubmit}" />
+                <Button Content="Cancel" Command="{Binding CancelCommand}" />
             </StackPanel>
         </StackPanel>
     </sukiUi:BusyArea>
