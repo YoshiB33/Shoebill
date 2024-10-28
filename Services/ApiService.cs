@@ -39,7 +39,8 @@ public class ApiService(
             throw new ArgumentNullException();
         }
 
-        return await StandardGetAsync<ListServer>($"https://{ApiKey.ServerAdress}/api/client");
+        var servers = await StandardGetAsync<ListServer>($"https://{ApiKey.ServerAdress}/api/client");
+        return servers;
     }
 
     public async Task<Server?> GetServerAsync()
@@ -150,9 +151,20 @@ public class ApiService(
             throw new ArgumentException(nameof(ApiKey));
         }
 
-        var client = new HttpClient();
-        await client.PostAsJsonAsync($"https://{ApiKey.ServerAdress}/api/client/account/ssh-keys/remove",
+        await httpClient.PostAsJsonAsync($"https://{ApiKey.ServerAdress}/api/client/account/ssh-keys/remove",
             new DeleteSSHKeyRequest(fingerprint), _jsonSettings);
+    }
+
+    public async Task<GetWebsocketResponse?> GetWebsocketAsync()
+    {
+        if (ApiKey?.Key is null || ApiKey.Name is null)
+            throw new ArgumentException(nameof(ApiKey));
+
+        if (string.IsNullOrWhiteSpace(CurrentServerUuid))
+            throw new ArgumentException(nameof(CurrentServerUuid));
+
+        return await StandardGetAsync<GetWebsocketResponse>(
+            $"https://{ApiKey.ServerAdress}/api/client/{CurrentServerUuid}/websocket");
     }
 
     private async Task<T?> StandardGetAsync<T>(string path)
@@ -164,7 +176,9 @@ public class ApiService(
         httpClient.DefaultRequestHeaders.Authorization = new AuthenticationHeaderValue("Bearer", ApiKey?.Key);
         using var response = await httpClient.GetAsync(path);
         response.EnsureSuccessStatusCode();
-        return await response.Content.ReadFromJsonAsync<T>();
+        var content = await response.Content.ReadAsStringAsync();
+        var test = JsonSerializer.Deserialize<T>(content, _jsonSettings);
+        return test;
     }
 
     private async Task StandardPutAsync(string path, string body)

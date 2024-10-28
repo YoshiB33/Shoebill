@@ -1,6 +1,6 @@
 ﻿namespace Shoebill.Models.Api.Schemas;
 
-public abstract record Allocation(
+public record Allocation(
     int Number,
     string Ip,
     string? Ip_alias,

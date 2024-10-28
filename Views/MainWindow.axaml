@@ -1,33 +1,33 @@
 <sukiUi:SukiWindow xmlns="https://github.com/avaloniaui"
-        xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
-        xmlns:sukiUi="clr-namespace:SukiUI.Controls;assembly=SukiUI"
-        xmlns:theme="clr-namespace:SukiUI.Theme;assembly=SukiUI"
-        xmlns:icons="using:Material.Icons.Avalonia"
-        xmlns:vm="using:Shoebill.ViewModels"
-        xmlns:d="http://schemas.microsoft.com/expression/blend/2008"
-        xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
-        mc:Ignorable="d" d:DesignWidth="800" d:DesignHeight="450"
-        x:Class="Shoebill.Views.MainWindow"
-        x:DataType="vm:MainWindowViewModel"
-        SystemDecorations="None"
-        ExtendClientAreaChromeHints="PreferSystemChrome"
-        Icon="/Assets/avalonia-logo.ico"
-        Title="Shoebill">
+                   xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
+                   xmlns:sukiUi="clr-namespace:SukiUI.Controls;assembly=SukiUI"
+                   xmlns:icons="using:Material.Icons.Avalonia"
+                   xmlns:vm="using:Shoebill.ViewModels"
+                   xmlns:d="http://schemas.microsoft.com/expression/blend/2008"
+                   xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
+                   mc:Ignorable="d" d:DesignWidth="800" d:DesignHeight="450"
+                   x:Class="Shoebill.Views.MainWindow"
+                   x:DataType="vm:MainWindowViewModel"
+                   SystemDecorations="BorderOnly"
+                   ExtendClientAreaChromeHints="PreferSystemChrome"
+                   Icon="/Assets/avalonia-logo.ico"
+                   Title="Shoebill">
     <sukiUi:SukiWindow.Hosts>
-        <sukiUi:SukiDialogHost Manager="{Binding DialogManager}"/>
-        <sukiUi:SukiToastHost Manager="{Binding ToastManager}"/>
+        <sukiUi:SukiDialogHost Manager="{Binding DialogManager}" />
+        <sukiUi:SukiToastHost Manager="{Binding ToastManager}" />
     </sukiUi:SukiWindow.Hosts>
     <sukiUi:SukiWindow.RightWindowTitleBarControls>
         <Button Classes="Classic WindowControlsButton" Command="{Binding NavigateSettingsCommand}">
-            <icons:MaterialIcon Kind="Gear"/>    
+            <icons:MaterialIcon Kind="Gear" />
         </Button>
-        <Button Classes="Classic WindowControlsButton" IsEnabled="{Binding CanGoBack, Mode=TwoWay}" Command="{Binding NavigateBackCommand}">
-            <icons:MaterialIcon Kind="ArrowRight"/>
+        <Button Classes="Classic WindowControlsButton" IsEnabled="{Binding CanGoBack, Mode=TwoWay}"
+                Command="{Binding NavigateBackCommand}">
+            <icons:MaterialIcon Kind="ArrowRight" />
         </Button>
     </sukiUi:SukiWindow.RightWindowTitleBarControls>
     <TransitioningContentControl Content="{Binding ContentViewModel}">
         <TransitioningContentControl.PageTransition>
-            <CrossFade Duration="0:00:00.300"/>
+            <CrossFade Duration="0:00:00.300" />
         </TransitioningContentControl.PageTransition>
     </TransitioningContentControl>
 </sukiUi:SukiWindow>

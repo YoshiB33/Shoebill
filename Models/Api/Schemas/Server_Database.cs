@@ -10,10 +10,10 @@ public record Server_Database(
     DB_Relationships Relationships
 );
 
-public abstract record Server_Database_Host(string Adress, int Port);
+public record Server_Database_Host(string Adress, int Port);
 
-public abstract record DB_Relationships(Password Password);
+public record DB_Relationships(Password Password);
 
-public abstract record Password(string Object, DB_Attributes Attributes);
+public record Password(string Object, DB_Attributes Attributes);
 
-public abstract record DB_Attributes(string Password);
+public record DB_Attributes(string Password);

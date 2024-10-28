@@ -23,4 +23,5 @@ public interface IApiService
     public Task<GetSshResponse?> GetSshKeysAsync();
     public Task<CreateSshKeyResponse?> CreateSshKeyAsync(string name, string publicKey);
     public Task DeleteSshKeyAsync(string fingerprint);
+    public Task<GetWebsocketResponse?> GetWebsocketAsync();
 }

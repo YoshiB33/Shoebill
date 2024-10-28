@@ -67,7 +67,7 @@ public class ServerOverviewViewModel : ViewModelBase
             _navigationService.NavigateBack();
         }
 
-        if (servers is not null)
+        if (servers != null)
         {
             foreach (var server in servers.Data) Servers.Add(server.Attributes);
 

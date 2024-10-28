@@ -3,7 +3,7 @@ using System.Collections.Generic;
 
 namespace Shoebill.Models.Api.Schemas;
 
-public abstract record API_Key(
+public record API_Key(
     string Identifier,
     string Description,
     List<string> Allowed_ips,

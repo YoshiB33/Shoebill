@@ -1,6 +1,6 @@
 ﻿namespace Shoebill.Models.Api.Schemas;
 
-public abstract record Egg_variable(
+public record Egg_variable(
     string Name,
     string Description,
     string Env_variable,
