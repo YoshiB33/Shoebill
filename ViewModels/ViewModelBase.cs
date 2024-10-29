@@ -1,5 +1,4 @@
-﻿
-using ReactiveUI;
+﻿using ReactiveUI;
 
 namespace Shoebill.ViewModels;
 

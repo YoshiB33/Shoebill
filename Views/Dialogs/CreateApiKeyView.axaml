@@ -9,18 +9,19 @@
              x:DataType="vm:CreateApiKeyViewModel">
     <sukiUi:BusyArea IsBusy="{Binding IsBusy}">
         <StackPanel Orientation="Vertical" Spacing="5">
-            <TextBlock Text="Create an api key" FontSize="25" FontWeight="Bold"/>
+            <TextBlock Text="Create an api key" FontSize="25" FontWeight="Bold" />
             <StackPanel Spacing="2">
-                <TextBlock Text="Desctription:"/>
-                <TextBox Text="{Binding DesctriptionText}"/>
+                <TextBlock Text="Desctription:" />
+                <TextBox Text="{Binding DesctriptionText}" />
             </StackPanel>
             <StackPanel Orientation="Vertical" Spacing="2">
-                <TextBlock Text="Allowed IPS: (Leave blank to allow any IP. Provide a new IP on each new line)"/>
-                <TextBox AcceptsReturn="True" Text="{Binding IpText}"/>
+                <TextBlock Text="Allowed IPS: (Leave blank to allow any IP. Provide a new IP on each new line)" />
+                <TextBox AcceptsReturn="True" Text="{Binding IpText}" />
             </StackPanel>
             <StackPanel Orientation="Horizontal" Spacing="2">
-                <Button Classes="Flat Rounded" Content="Submit" Command="{Binding SubmitCommand}" IsEnabled="{Binding CanAddKey}"/>
-                <Button Content="Cancel" Command="{Binding CancelCommand}"/> 
+                <Button Classes="Flat Rounded" Content="Submit" Command="{Binding SubmitCommand}"
+                        IsEnabled="{Binding CanAddKey}" />
+                <Button Content="Cancel" Command="{Binding CancelCommand}" />
             </StackPanel>
         </StackPanel>
     </sukiUi:BusyArea>

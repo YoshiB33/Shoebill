@@ -67,13 +67,9 @@ public class CreateAccountViewModel : ViewModelBase
             ServerName = editApiKey.Name;
             ServerUrl = editApiKey.ServerAdress;
             if (editApiKey.ApiType == ApiTypes.Client)
-            {
                 IsClientSelected = true;
-            }
             else
-            {
                 IsApplicationSelected = true;
-            }
 
             ApiKey = editApiKey;
             Headline = "Edit api key";
@@ -133,14 +129,10 @@ public class CreateAccountViewModel : ViewModelBase
 
     private async void Enter()
     {
-        if (ApiKey is not null)
-        {
-            await _settingsService.RemoveApiAsync(ApiKey);
-        }
+        if (ApiKey is not null) await _settingsService.RemoveApiAsync(ApiKey);
 
         IsEntering = true;
         if (IsClientSelected)
-        {
             await _settingsService.WriteApiKeyAsync(new ApiKey
             {
                 Name = ServerName,
@@ -148,9 +140,7 @@ public class CreateAccountViewModel : ViewModelBase
                 Key = ServerApiKey,
                 ApiType = ApiTypes.Client
             });
-        }
         else
-        {
             await _settingsService.WriteApiKeyAsync(new ApiKey
             {
                 Name = ServerName,
@@ -158,7 +148,6 @@ public class CreateAccountViewModel : ViewModelBase
                 Key = ServerApiKey,
                 ApiType = ApiTypes.Application
             });
-        }
 
         IsEntering = false;
         _dialog.Dismiss();

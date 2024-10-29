@@ -10,7 +10,7 @@ using SukiUI.Toasts;
 
 namespace Shoebill.ViewModels;
 
-public partial class MainWindowViewModel : ViewModelBase
+public class MainWindowViewModel : ViewModelBase
 {
     private readonly IAvaloniaReadOnlyList<ViewModelBase> _pages;
     private bool _canGoBack;
@@ -24,7 +24,7 @@ public partial class MainWindowViewModel : ViewModelBase
         ToastManager = toastManager;
         NavigationService = navigationService;
         navigationService.NavigationRequested += NavigationRequested;
-        navigationService.RequestNaviagtion<AccountsViewModel>();
+        navigationService.RequestNavigation<AccountsViewModel>();
 
         NavigateBackCommand = ReactiveCommand.Create(NavigateBack);
         NavigateSettingsCommand = ReactiveCommand.Create(NavigateSettings);
@@ -63,6 +63,6 @@ public partial class MainWindowViewModel : ViewModelBase
 
     private void NavigateSettings()
     {
-        NavigationService.RequestNaviagtion<SettingsViewModel>();
+        NavigationService.RequestNavigation<SettingsViewModel>();
     }
 }

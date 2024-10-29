@@ -43,10 +43,7 @@ public class ServerMasterViewModel : ViewModelBase
         set
         {
             this.RaiseAndSetIfChanged(ref _currentPage, value);
-            if (value is not null)
-            {
-                _navigationService.MasterNavigationRequested?.Invoke(value.GetType());
-            }
+            if (value is not null) _navigationService.MasterNavigationRequested?.Invoke(value.GetType());
         }
     }
 
@@ -89,6 +86,8 @@ public class ServerMasterViewModel : ViewModelBase
         }
     }
 
-    private void GoBack() =>
+    private void GoBack()
+    {
         _navigationService.NavigateBack();
+    }
 }

@@ -34,10 +34,7 @@ public class ApiService(
 
     public async Task<ListServer?> GetServersAsync()
     {
-        if (ApiKey?.Key is null)
-        {
-            throw new ArgumentNullException();
-        }
+        if (ApiKey?.Key is null) throw new ArgumentNullException();
 
         var servers = await StandardGetAsync<ListServer>($"https://{ApiKey.ServerAdress}/api/client");
         return servers;
@@ -45,10 +42,7 @@ public class ApiService(
 
     public async Task<Server?> GetServerAsync()
     {
-        if (ApiKey?.Key is null)
-        {
-            throw new ArgumentNullException(nameof(ApiKey));
-        }
+        if (ApiKey?.Key is null) throw new ArgumentNullException(nameof(ApiKey));
 
         var response =
             await StandardGetAsync<GetServerDetails>(
@@ -58,20 +52,14 @@ public class ApiService(
 
     public async Task<GetAccountDetails?> GetAccountDetailsAsync()
     {
-        if (ApiKey?.Key is null)
-        {
-            throw new ArgumentNullException(nameof(ApiKey));
-        }
+        if (ApiKey?.Key is null) throw new ArgumentNullException(nameof(ApiKey));
 
         return await StandardGetAsync<GetAccountDetails>($"https://{ApiKey.ServerAdress}/api/client/account");
     }
 
     public async Task UpdateAccountEmailAsync(string email, string password)
     {
-        if (ApiKey?.Key is null || ApiKey.Name is null)
-        {
-            throw new ArgumentException(nameof(ApiKey));
-        }
+        if (ApiKey?.Key is null || ApiKey.Name is null) throw new ArgumentException(nameof(ApiKey));
 
         var body = JsonSerializer.Serialize(new UpdateEmailRequest(email, password), _jsonSettings);
         await StandardPutAsync($"https://{ApiKey.ServerAdress}/api/client/account/email", body);
@@ -80,10 +68,7 @@ public class ApiService(
     public async Task UpdateAccountPasswordAsync(string currentPassword, string newPassword,
         string passwordConfirmation)
     {
-        if (ApiKey?.Key is null || ApiKey.Name is null)
-        {
-            throw new ArgumentException(nameof(ApiKey));
-        }
+        if (ApiKey?.Key is null || ApiKey.Name is null) throw new ArgumentException(nameof(ApiKey));
 
         var body = JsonSerializer.Serialize(
             new UpdatePasswordRequest(currentPassword, newPassword, passwordConfirmation), _jsonSettings);
@@ -92,20 +77,14 @@ public class ApiService(
 
     public async Task<GetApiKeys?> GetApiKeysAsync()
     {
-        if (ApiKey?.Key is null || ApiKey.Name is null)
-        {
-            throw new ArgumentException(nameof(ApiKey));
-        }
+        if (ApiKey?.Key is null || ApiKey.Name is null) throw new ArgumentException(nameof(ApiKey));
 
         return await StandardGetAsync<GetApiKeys>($"https://{ApiKey.ServerAdress}/api/client/account/api-keys");
     }
 
     public async Task<CreateApiKeyResponse?> CreateApiKeyAsync(string description, IEnumerable allowedIps)
     {
-        if (ApiKey?.Key is null || ApiKey.Name is null)
-        {
-            throw new ArgumentException(nameof(ApiKey));
-        }
+        if (ApiKey?.Key is null || ApiKey.Name is null) throw new ArgumentException(nameof(ApiKey));
 
         var body = JsonSerializer.Serialize(new CreateApiKeyRequest(description, allowedIps), _jsonSettings);
         return await StandardPostAsync<CreateApiKeyResponse>(
@@ -114,30 +93,21 @@ public class ApiService(
 
     public async Task DeleteApiKeyAsync(string identifier)
     {
-        if (ApiKey?.Key is null || ApiKey.Name is null)
-        {
-            throw new ArgumentException(nameof(ApiKey));
-        }
+        if (ApiKey?.Key is null || ApiKey.Name is null) throw new ArgumentException(nameof(ApiKey));
 
         await StandardDeleteAsync($"https://{ApiKey.ServerAdress}/api/client/account/api-keys/{identifier}");
     }
 
     public async Task<GetSshResponse?> GetSshKeysAsync()
     {
-        if (ApiKey?.Key is null || ApiKey.Name is null)
-        {
-            throw new ArgumentException(nameof(ApiKey));
-        }
+        if (ApiKey?.Key is null || ApiKey.Name is null) throw new ArgumentException(nameof(ApiKey));
 
         return await StandardGetAsync<GetSshResponse>($"https://{ApiKey.ServerAdress}/api/client/account/ssh-keys");
     }
 
     public async Task<CreateSshKeyResponse?> CreateSshKeyAsync(string name, string publicKey)
     {
-        if (ApiKey?.Key is null || ApiKey.Name is null)
-        {
-            throw new ArgumentException(nameof(ApiKey));
-        }
+        if (ApiKey?.Key is null || ApiKey.Name is null) throw new ArgumentException(nameof(ApiKey));
 
         var body = JsonSerializer.Serialize(new CreateSshKeyRequest(name, publicKey), _jsonSettings);
         return await StandardPostAsync<CreateSshKeyResponse>(
@@ -146,10 +116,7 @@ public class ApiService(
 
     public async Task DeleteSshKeyAsync(string fingerprint)
     {
-        if (ApiKey?.Key is null || ApiKey.Name is null)
-        {
-            throw new ArgumentException(nameof(ApiKey));
-        }
+        if (ApiKey?.Key is null || ApiKey.Name is null) throw new ArgumentException(nameof(ApiKey));
 
         await httpClient.PostAsJsonAsync($"https://{ApiKey.ServerAdress}/api/client/account/ssh-keys/remove",
             new DeleteSSHKeyRequest(fingerprint), _jsonSettings);

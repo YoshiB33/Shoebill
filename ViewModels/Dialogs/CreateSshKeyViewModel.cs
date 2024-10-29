@@ -64,8 +64,10 @@ public class CreateSshKeyViewModel : ViewModelBase
     private IApiService ApiService { get; }
     private INavigationService NavigationService { get; }
 
-    private void Cancel() =>
+    private void Cancel()
+    {
         _dialog.Dismiss();
+    }
 
     private async void Submit()
     {

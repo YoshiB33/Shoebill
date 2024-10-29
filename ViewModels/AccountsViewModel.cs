@@ -33,13 +33,9 @@ public class AccountsViewModel : ViewModelBase
         settingsService.ApiKeyUpdated += (apiKey, keyUpdatedAction) =>
         {
             if (keyUpdatedAction == KeyUpdatedAction.Added)
-            {
                 ApiKeys.Add(apiKey);
-            }
             else
-            {
                 ApiKeys.Remove(apiKey);
-            }
         };
     }
 
@@ -73,6 +69,6 @@ public class AccountsViewModel : ViewModelBase
     private void EnterOverview(string name)
     {
         _apiService.SetApiKey(ApiKeys.First(x => x.Name == name));
-        _navigationService.RequestNaviagtion<ServerOverviewViewModel>();
+        _navigationService.RequestNavigation<ServerOverviewViewModel>();
     }
 }

@@ -35,13 +35,9 @@ public class SettingsViewModel : ViewModelBase
         Themes = _theme.ColorThemes;
         _baseTheme = _theme.ActiveBaseTheme;
         if (_baseTheme != ThemeVariant.Dark)
-        {
             _isThemeDark = true;
-        }
         else
-        {
             _isThemeLight = true;
-        }
 
 #pragma warning disable CS8604 // Possible null reference argument.
         ApiKeys = new ObservableCollection<ApiKey>(settingsService.GetAllApiKeys());
@@ -55,13 +51,9 @@ public class SettingsViewModel : ViewModelBase
         settingsService.ApiKeyUpdated += (key, updateAction) =>
         {
             if (updateAction == KeyUpdatedAction.Added)
-            {
                 ApiKeys.Add(key);
-            }
             else
-            {
                 ApiKeys.Remove(key);
-            }
         };
     }
 
@@ -118,6 +110,8 @@ public class SettingsViewModel : ViewModelBase
             .TryShow();
     }
 
-    private void ToggleBaseTheme() =>
+    private void ToggleBaseTheme()
+    {
         _theme.SwitchBaseTheme();
+    }
 }

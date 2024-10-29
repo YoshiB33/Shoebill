@@ -279,10 +279,7 @@ public class ServerAccountViewModel : ViewModelBase
                 .Dismiss().ByClicking()
                 .Queue();
             var apiKey = ApiKeys.FirstOrDefault(x => x.Identifier == id);
-            if (apiKey is not null)
-            {
-                ApiKeys.Remove(apiKey);
-            }
+            if (apiKey is not null) ApiKeys.Remove(apiKey);
         }
         catch (HttpRequestException ex)
         {
@@ -300,21 +297,17 @@ public class ServerAccountViewModel : ViewModelBase
     {
         var key = ApiKeys.FirstOrDefault(x => x.Identifier == id);
         if (key is not null)
-        {
             _dialogManager.CreateDialog()
                 .WithViewModel(_ => new ApiKeyInfoViewModel(key))
                 .Dismiss().ByClickingBackground()
                 .TryShow();
-        }
         else
-        {
             _toastManager.CreateToast()
-                .WithTitle($"Couldn't display api key info")
+                .WithTitle("Couldn't display api key info")
                 .OfType(NotificationType.Error)
                 .Dismiss().After(TimeSpan.FromSeconds(5))
                 .Dismiss().ByClicking()
                 .Queue();
-        }
     }
 
     private void OpenCreateSshKeyDialog()
@@ -338,10 +331,7 @@ public class ServerAccountViewModel : ViewModelBase
                 .Dismiss().ByClicking()
                 .Queue();
             var sshKey = SshKeys.FirstOrDefault(x => x.Fingerprint == fingerprint);
-            if (sshKey is not null)
-            {
-                SshKeys.Remove(sshKey);
-            }
+            if (sshKey is not null) SshKeys.Remove(sshKey);
         }
         catch (HttpRequestException ex)
         {
@@ -358,20 +348,16 @@ public class ServerAccountViewModel : ViewModelBase
     {
         var key = SshKeys.FirstOrDefault(x => x.Fingerprint == fingerprint);
         if (key is not null)
-        {
             _dialogManager.CreateDialog()
                 .WithViewModel(_ => new SshKeyInfoViewModel(key))
                 .Dismiss().ByClickingBackground()
                 .TryShow();
-        }
         else
-        {
             _toastManager.CreateToast()
-                .WithTitle($"Couldn't display SSH key info")
+                .WithTitle("Couldn't display SSH key info")
                 .OfType(NotificationType.Error)
                 .Dismiss().After(TimeSpan.FromSeconds(5))
                 .Dismiss().ByClicking()
                 .Queue();
-        }
     }
 }

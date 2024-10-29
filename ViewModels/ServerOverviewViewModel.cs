@@ -81,9 +81,11 @@ public class ServerOverviewViewModel : ViewModelBase
     private void NavigateServer(string uuid)
     {
         _apiService.CurrentServerUuid = uuid;
-        _navigationService.RequestNaviagtion<ServerMasterViewModel>();
+        _navigationService.RequestNavigation<ServerMasterViewModel>();
     }
 
-    private void NavigateAccount() =>
-        _navigationService.RequestNaviagtion<ServerAccountViewModel>();
+    private void NavigateAccount()
+    {
+        _navigationService.RequestNavigation<ServerAccountViewModel>();
+    }
 }

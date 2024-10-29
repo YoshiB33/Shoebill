@@ -39,7 +39,7 @@ public class CreateApiKeyViewModel : ViewModelBase
         ).ToProperty(this, x => x.CanAddKey, out _canAddKey);
     }
 
-    [StringLength(maximumLength: 500, ErrorMessage = "The description cannot be longer than 500 characters")]
+    [StringLength(500, ErrorMessage = "The description cannot be longer than 500 characters")]
     public string DesctriptionText
     {
         get => _desctiptionText;
@@ -91,6 +91,8 @@ public class CreateApiKeyViewModel : ViewModelBase
         _dialog.Dismiss();
     }
 
-    private void Cancel() =>
+    private void Cancel()
+    {
         _dialog.Dismiss();
+    }
 }

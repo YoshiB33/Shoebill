@@ -13,10 +13,7 @@ public class SettingsService : ISettingsService
 
     public SettingsService()
     {
-        if (!new FileInfo(SettingsPath).Exists || new FileInfo(SettingsPath).Length <= 0)
-        {
-            WriteEmptySettings();
-        }
+        if (!new FileInfo(SettingsPath).Exists || new FileInfo(SettingsPath).Length <= 0) WriteEmptySettings();
     }
 
     public Action<ApiKey, KeyUpdatedAction>? ApiKeyUpdated { get; set; }
