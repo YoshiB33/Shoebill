@@ -1,5 +1,6 @@
 using System;
 using System.Collections.Concurrent;
+using System.IO;
 using System.Net.WebSockets;
 using System.Text;
 using System.Text.Json;
@@ -136,20 +137,132 @@ public class ApiWsClient : IApiWsClient, IDisposable
         _queue.Add(message);
     }
 
-
-    public void Connect(Uri url, string token)
+    /// <summary>
+    ///     Connects the websocket to the server.
+    /// </summary>
+    /// <param name="url">The url to the server.</param>
+    public void Connect(Uri url)
     {
         _ws.ConnectAsync(url, CancellationToken.None).GetAwaiter().GetResult();
     }
 
-    public async Task ConnectAsync(Uri url, string token, CancellationToken cancellationToken)
+    /// <summary>
+    ///     Connects the websocket to the server. This is the asynchronous version of <see cref="Connect" />.
+    /// </summary>
+    /// <param name="url">Url to the server.</param>
+    /// <param name="cancellationToken">The cancellation token.</param>
+    public async Task ConnectAsync(Uri url, CancellationToken cancellationToken)
     {
         await _ws.ConnectAsync(url, cancellationToken);
     }
 
+    /// <summary>
+    ///     Closes the websocket connection. The <see cref="ApiWsClient" /> is still reusable after closure.
+    /// </summary>
+    public void Close()
+    {
+        _ws.CloseAsync(WebSocketCloseStatus.NormalClosure, string.Empty, CancellationToken.None);
+    }
+
+    /// <summary>
+    ///     Closes the websocket connection. This is the asynchronous version of <see cref="Close" /> The
+    ///     <see cref="ApiWsClient" /> is still reusable after closure.
+    /// </summary>
+    /// <param name="cancellationToken">The cancellation token.</param>
     public async Task CloseAsync(CancellationToken cancellationToken)
     {
         await _ws.CloseAsync(WebSocketCloseStatus.NormalClosure, string.Empty, cancellationToken);
+    }
+
+    /// <summary>
+    ///     Listens to the websocket and invokes any actions that are needed.
+    /// </summary>
+    /// <param name="cancellationToken">The cancellation token.</param>
+    public async Task ReceiveAsync(CancellationToken cancellationToken)
+    {
+        using var ms = new MemoryStream();
+        while (_ws.State == WebSocketState.Open)
+        {
+            WebSocketReceiveResult result;
+
+            do
+            {
+                var buffer = WebSocket.CreateClientBuffer(1024, 16);
+                result = await _ws.ReceiveAsync(buffer, cancellationToken);
+            } while (!result.EndOfMessage);
+
+            if (result.MessageType != WebSocketMessageType.Text) continue;
+
+            var msg = Encoding.UTF8.GetString(ms.ToArray());
+            var message = JsonSerializer.Deserialize<WsMessage>(msg, _jsonOptions);
+            if (message != null)
+                switch (message.Event)
+                {
+                    case "auth success":
+                        AuthSuccess?.Invoke();
+                        break;
+                    case "backup complete":
+                        BackupComplete?.Invoke();
+                        break;
+                    case "backup restore completed":
+                        BackupRestoreCompleted?.Invoke();
+                        break;
+                    case "console output":
+                        ConsoleOutput?.Invoke(message.Args[0]);
+                        break;
+                    case "daemon error":
+                        DaemonError?.Invoke(message.Args[0]);
+                        break;
+                    case "daemon message":
+                        DaemonMessage?.Invoke(message.Args[0]);
+                        break;
+                    case "install completed":
+                        InstallCompleted?.Invoke();
+                        break;
+                    case "install output":
+                        InstallOutput?.Invoke(message.Args[0]);
+                        break;
+                    case "install started":
+                        InstallStarted?.Invoke();
+                        break;
+                    case "jwt error":
+                        JwtError?.Invoke(message.Args[0]);
+                        break;
+                    case "stats":
+                        Stats?.Invoke(message.Args[0]);
+                        break;
+                    case "status":
+                        switch (message.Args[0])
+                        {
+                            case "starting":
+                                Status?.Invoke(PowerStatus.Starting);
+                                break;
+                            case "stopping":
+                                Status?.Invoke(PowerStatus.Stopping);
+                                break;
+                            case "offline":
+                                Status?.Invoke(PowerStatus.Offline);
+                                break;
+                            case "online":
+                                Status?.Invoke(PowerStatus.Online);
+                                break;
+                        }
+
+                        break;
+                    case "token expired":
+                        TokenExpired?.Invoke();
+                        break;
+                    case "token expiring":
+                        TokenExpiring?.Invoke();
+                        break;
+                    case "transfer logs":
+                        TransferLogs?.Invoke(message.Args[0]);
+                        break;
+                    case "transfer status":
+                        TransferStatus?.Invoke(message.Args[0]);
+                        break;
+                }
+        }
     }
 
     private void ReleaseUnmanagedResources()
