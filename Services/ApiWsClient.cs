@@ -75,7 +75,23 @@ public class ApiWsClient : IApiWsClient, IDisposable
 
     public void SetState(PowerAction action)
     {
-        throw new NotImplementedException();
+        switch (action)
+        {
+            case PowerAction.Start:
+                Enqueue(new WsMessage("set state", ["start"]));
+                break;
+            case PowerAction.Stop:
+                Enqueue(new WsMessage("set state", ["stop"]));
+                break;
+            case PowerAction.Restart:
+                Enqueue(new WsMessage("set state", ["restart"]));
+                break;
+            case PowerAction.Kill:
+                Enqueue(new WsMessage("set state", ["kill"]));
+                break;
+            default:
+                throw new ArgumentOutOfRangeException(nameof(action), action, null);
+        }
     }
 
     public void SendCommand(string command)

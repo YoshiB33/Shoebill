@@ -141,6 +141,7 @@ public interface IApiWsClient
     /// </summary>
     /// <param name="action">The power action you want to set.</param>
     /// <seealso href="https://github.com/devnote-dev/ptero-notes/blob/main/wings/websocket.md#events-you-can-send" />
+    /// <exception cref="ArgumentOutOfRangeException">The action parameter is not valid</exception>
     public void SetState(PowerAction action);
 
     /// <summary>
