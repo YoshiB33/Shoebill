@@ -132,6 +132,7 @@ public interface IApiWsClient
     ///     Authenticates the websocket connection.
     /// </summary>
     /// <param name="token">The websocket auth token that you got from <see cref="IApiService.GetWebsocketAsync" /></param>
+    /// <exception cref="ArgumentNullException">The token parameter is null</exception>
     /// <seealso href="https://github.com/devnote-dev/ptero-notes/blob/main/wings/websocket.md#events-you-can-send" />
     public void Auth(string token);
 
