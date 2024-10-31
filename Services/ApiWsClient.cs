@@ -96,17 +96,17 @@ public class ApiWsClient : IApiWsClient, IDisposable
 
     public void SendCommand(string command)
     {
-        throw new NotImplementedException();
+        Enqueue(new WsMessage("send command", [command]));
     }
 
     public void RequestLogs()
     {
-        throw new NotImplementedException();
+        Enqueue(new WsMessage("send logs", []));
     }
 
     public void RequestStats()
     {
-        throw new NotImplementedException();
+        Enqueue(new WsMessage("send stats", []));
     }
 
     public void Dispose()
