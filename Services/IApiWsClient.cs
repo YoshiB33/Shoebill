@@ -1,4 +1,5 @@
 using System;
+using Shoebill.Models.Api.Responses;
 
 namespace Shoebill.Services;
 
@@ -94,7 +95,7 @@ public interface IApiWsClient
     ///     current stats in json format.
     /// </summary>
     /// <seealso href="https://github.com/devnote-dev/ptero-notes/blob/main/wings/websocket.md#events-you-can-recieve" />
-    public event Action<string> Stats;
+    public event Action<StatsWsResponse> Stats;
 
     /// <summary>
     ///     An event for knowing when the websocket receive the <c>status</c> event where the <see cref="PowerStatus" /> is the

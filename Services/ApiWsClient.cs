@@ -6,6 +6,7 @@ using System.Text.Json;
 using System.Threading;
 using System.Threading.Tasks;
 using Shoebill.Models.Api;
+using Shoebill.Models.Api.Responses;
 
 namespace Shoebill.Services;
 
@@ -46,7 +47,7 @@ public class ApiWsClient : IApiWsClient, IDisposable
 
     public event Action<string>? JwtError;
 
-    public event Action<string>? Stats;
+    public event Action<StatsWsResponse>? Stats;
 
     public event Action<PowerStatus>? Status;
 
@@ -273,7 +274,10 @@ public class ApiWsClient : IApiWsClient, IDisposable
                         JwtError?.Invoke(message.Args[0]);
                         break;
                     case "stats":
-                        Stats?.Invoke(message.Args[0]);
+                    {
+                        var deJson = JsonSerializer.Deserialize<StatsWsResponse>(message.Args[0], _jsonOptions);
+                        if (deJson != null) Stats?.Invoke(deJson);
+                    }
                         break;
                     case "status":
                         switch (message.Args[0])
