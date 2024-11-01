@@ -1,5 +1,4 @@
 using System;
-using System.Collections.Concurrent;
 using System.IO;
 using System.Net.WebSockets;
 using System.Text;
@@ -21,19 +20,11 @@ public class ApiWsClient : IApiWsClient, IDisposable
         PropertyNamingPolicy = JsonNamingPolicy.CamelCase
     };
 
-    private readonly BlockingCollection<WsMessage> _queue = new();
-    private readonly ClientWebSocket _ws;
+    private readonly object _lock = new();
 
-    public ApiWsClient()
-    {
-        _ws = new ClientWebSocket();
+    private ClientWebSocket _ws = new();
 
-        var thread = new Thread(Queue)
-        {
-            IsBackground = true
-        };
-        thread.Start();
-    }
+    public WebSocketState State => _ws.State;
 
     public event Action? AuthSuccess;
 
@@ -71,7 +62,12 @@ public class ApiWsClient : IApiWsClient, IDisposable
     {
         if (string.IsNullOrWhiteSpace(token)) throw new ArgumentNullException(nameof(token));
 
-        Enqueue(new WsMessage("auth", [token]));
+        var bin = Encoding.UTF8.GetBytes(FormatMessage(new WsMessage("auth", [token])));
+        var buffer = new ArraySegment<byte>(bin, 0, bin.Length);
+        lock (_lock)
+        {
+            _ws.SendAsync(buffer, WebSocketMessageType.Text, true, CancellationToken.None);
+        }
     }
 
     public void SetState(PowerAction action)
@@ -79,16 +75,44 @@ public class ApiWsClient : IApiWsClient, IDisposable
         switch (action)
         {
             case PowerAction.Start:
-                Enqueue(new WsMessage("set state", ["start"]));
+            {
+                var bin = Encoding.UTF8.GetBytes(FormatMessage(new WsMessage("set state", ["start"])));
+                var buffer = new ArraySegment<byte>(bin, 0, bin.Length);
+                lock (_lock)
+                {
+                    _ws.SendAsync(buffer, WebSocketMessageType.Text, true, CancellationToken.None);
+                }
+            }
                 break;
             case PowerAction.Stop:
-                Enqueue(new WsMessage("set state", ["stop"]));
+            {
+                var bin = Encoding.UTF8.GetBytes(FormatMessage(new WsMessage("set state", ["stop"])));
+                var buffer = new ArraySegment<byte>(bin, 0, bin.Length);
+                lock (_lock)
+                {
+                    _ws.SendAsync(buffer, WebSocketMessageType.Text, true, CancellationToken.None);
+                }
+            }
                 break;
             case PowerAction.Restart:
-                Enqueue(new WsMessage("set state", ["restart"]));
+            {
+                var bin = Encoding.UTF8.GetBytes(FormatMessage(new WsMessage("set state", ["restart"])));
+                var buffer = new ArraySegment<byte>(bin, 0, bin.Length);
+                lock (_lock)
+                {
+                    _ws.SendAsync(buffer, WebSocketMessageType.Text, true, CancellationToken.None);
+                }
+            }
                 break;
             case PowerAction.Kill:
-                Enqueue(new WsMessage("set state", ["kill"]));
+            {
+                var bin = Encoding.UTF8.GetBytes(FormatMessage(new WsMessage("set state", ["kill"])));
+                var buffer = new ArraySegment<byte>(bin, 0, bin.Length);
+                lock (_lock)
+                {
+                    _ws.SendAsync(buffer, WebSocketMessageType.Text, true, CancellationToken.None);
+                }
+            }
                 break;
             default:
                 throw new ArgumentOutOfRangeException(nameof(action), action, null);
@@ -97,17 +121,32 @@ public class ApiWsClient : IApiWsClient, IDisposable
 
     public void SendCommand(string command)
     {
-        Enqueue(new WsMessage("send command", [command]));
+        var bin = Encoding.UTF8.GetBytes(FormatMessage(new WsMessage("send command", [command])));
+        var buffer = new ArraySegment<byte>(bin, 0, bin.Length);
+        lock (_lock)
+        {
+            _ws.SendAsync(buffer, WebSocketMessageType.Text, true, CancellationToken.None);
+        }
     }
 
     public void RequestLogs()
     {
-        Enqueue(new WsMessage("send logs", []));
+        var bin = Encoding.UTF8.GetBytes(FormatMessage(new WsMessage("send logs", [])));
+        var buffer = new ArraySegment<byte>(bin, 0, bin.Length);
+        lock (_lock)
+        {
+            _ws.SendAsync(buffer, WebSocketMessageType.Text, true, CancellationToken.None);
+        }
     }
 
     public void RequestStats()
     {
-        Enqueue(new WsMessage("send stats", []));
+        var bin = Encoding.UTF8.GetBytes(FormatMessage(new WsMessage("send stats", [])));
+        var buffer = new ArraySegment<byte>(bin, 0, bin.Length);
+        lock (_lock)
+        {
+            _ws.SendAsync(buffer, WebSocketMessageType.Text, true, CancellationToken.None);
+        }
     }
 
     public void Dispose()
@@ -121,39 +160,39 @@ public class ApiWsClient : IApiWsClient, IDisposable
         return JsonSerializer.Serialize(message, _jsonOptions);
     }
 
-    private void Queue()
-    {
-        while (!_queue.IsCompleted)
-            foreach (var message in _queue)
-            {
-                var bin = Encoding.UTF8.GetBytes(FormatMessage(message));
-                var buffer = new ArraySegment<byte>(bin, 0, bin.Length);
-                _ws.SendAsync(buffer, WebSocketMessageType.Text, true, CancellationToken.None);
-            }
-    }
-
-    private void Enqueue(WsMessage message)
-    {
-        _queue.Add(message);
-    }
-
     /// <summary>
     ///     Connects the websocket to the server.
     /// </summary>
     /// <param name="url">The url to the server.</param>
-    public void Connect(Uri url)
+    /// <param name="token">The token you got from <see cref="IApiService.GetWebsocketAsync"/></param>
+    public void Connect(Uri url, string token)
     {
+        if (_ws.State == WebSocketState.Aborted || _ws.State == WebSocketState.Closed)
+        {
+            _ws.Dispose();
+            _ws = new ClientWebSocket();
+        }
+
         _ws.ConnectAsync(url, CancellationToken.None).GetAwaiter().GetResult();
+        Auth(token);
     }
 
     /// <summary>
     ///     Connects the websocket to the server. This is the asynchronous version of <see cref="Connect" />.
     /// </summary>
     /// <param name="url">Url to the server.</param>
+    /// <param name="token">The token you got from <see cref="IApiService.GetWebsocketAsync"/></param>
     /// <param name="cancellationToken">The cancellation token.</param>
-    public async Task ConnectAsync(Uri url, CancellationToken cancellationToken)
+    public async Task ConnectAsync(Uri url, string token, CancellationToken cancellationToken)
     {
+        if (_ws.State == WebSocketState.Aborted || _ws.State == WebSocketState.Closed)
+        {
+            _ws.Dispose();
+            _ws = new ClientWebSocket();
+        }
+
         await _ws.ConnectAsync(url, cancellationToken);
+        Auth(token);
     }
 
     /// <summary>
@@ -161,7 +200,8 @@ public class ApiWsClient : IApiWsClient, IDisposable
     /// </summary>
     public void Close()
     {
-        _ws.CloseAsync(WebSocketCloseStatus.NormalClosure, string.Empty, CancellationToken.None);
+        if (_ws.State == WebSocketState.Open)
+            _ws.CloseAsync(WebSocketCloseStatus.NormalClosure, string.Empty, CancellationToken.None);
     }
 
     /// <summary>
@@ -171,7 +211,8 @@ public class ApiWsClient : IApiWsClient, IDisposable
     /// <param name="cancellationToken">The cancellation token.</param>
     public async Task CloseAsync(CancellationToken cancellationToken)
     {
-        await _ws.CloseAsync(WebSocketCloseStatus.NormalClosure, string.Empty, cancellationToken);
+        if (_ws.State == WebSocketState.Open)
+            await _ws.CloseAsync(WebSocketCloseStatus.NormalClosure, string.Empty, cancellationToken);
     }
 
     /// <summary>
@@ -180,20 +221,23 @@ public class ApiWsClient : IApiWsClient, IDisposable
     /// <param name="cancellationToken">The cancellation token.</param>
     public async Task ReceiveAsync(CancellationToken cancellationToken)
     {
-        using var ms = new MemoryStream();
-        while (_ws.State == WebSocketState.Open)
+        while (_ws.State == WebSocketState.Open || cancellationToken.IsCancellationRequested)
         {
             WebSocketReceiveResult result;
 
+            using var ms = new MemoryStream();
             do
             {
                 var buffer = WebSocket.CreateClientBuffer(1024, 16);
                 result = await _ws.ReceiveAsync(buffer, cancellationToken);
+                if (buffer.Array != null) ms.Write(buffer.Array, 0, result.Count);
             } while (!result.EndOfMessage);
 
+            if (result.MessageType == WebSocketMessageType.Close) break;
             if (result.MessageType != WebSocketMessageType.Text) continue;
 
             var msg = Encoding.UTF8.GetString(ms.ToArray());
+            if (string.IsNullOrEmpty(msg)) continue;
             var message = JsonSerializer.Deserialize<WsMessage>(msg, _jsonOptions);
             if (message != null)
                 switch (message.Event)
@@ -267,8 +311,6 @@ public class ApiWsClient : IApiWsClient, IDisposable
 
     private void ReleaseUnmanagedResources()
     {
-        _queue.CompleteAdding();
-        _queue.Dispose();
         if (_ws.State is WebSocketState.Open or WebSocketState.CloseReceived or WebSocketState.CloseSent)
             _ws.Abort();
         else

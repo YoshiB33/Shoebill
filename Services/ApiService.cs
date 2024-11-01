@@ -131,7 +131,7 @@ public class ApiService(
             throw new ArgumentException(nameof(CurrentServerUuid));
 
         return await StandardGetAsync<GetWebsocketResponse>(
-            $"https://{ApiKey.ServerAdress}/api/client/{CurrentServerUuid}/websocket");
+            $"https://{ApiKey.ServerAdress}/api/client/servers/{CurrentServerUuid}/websocket");
     }
 
     private async Task<T?> StandardGetAsync<T>(string path)
