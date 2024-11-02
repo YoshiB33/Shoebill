@@ -2,6 +2,7 @@ using System;
 using System.Net.WebSockets;
 using System.Reactive;
 using System.Threading;
+using ByteSizeLib;
 using Material.Icons;
 using ReactiveUI;
 using Shoebill.Models.Api.Responses;
@@ -14,10 +15,13 @@ public class ServerConsoleViewModel : ServerViewModelBase
     private readonly IApiService _apiService;
 
     private readonly ApiWsClient _ws;
+    private string _cpuText = "NO DATA";
     private bool? _isRestartButtonActive;
     private bool? _isStartButtonActive;
     private bool? _isStopButtonActive;
-    private string? _uptimeText;
+    private string _memoryMText = "NO DATA";
+    private string _memoryUText = "NO DATA";
+    private string _uptimeText = "NO DATA";
 
     public ServerConsoleViewModel(IApiService apiService, INavigationService navigationService)
     {
@@ -43,7 +47,7 @@ public class ServerConsoleViewModel : ServerViewModelBase
     public ReactiveCommand<Unit, Unit> StopServerCommand { get; }
     public ReactiveCommand<Unit, Unit> RestartServerCommand { get; }
 
-    public string? UptimeText
+    public string UptimeText
     {
         get => _uptimeText;
         set => this.RaiseAndSetIfChanged(ref _uptimeText, value);
@@ -65,6 +69,24 @@ public class ServerConsoleViewModel : ServerViewModelBase
     {
         get => _isRestartButtonActive;
         set => this.RaiseAndSetIfChanged(ref _isRestartButtonActive, value);
+    }
+
+    public string CpuText
+    {
+        get => _cpuText;
+        set => this.RaiseAndSetIfChanged(ref _cpuText, value);
+    }
+
+    public string MemoryUText
+    {
+        get => _memoryUText;
+        set => this.RaiseAndSetIfChanged(ref _memoryUText, value);
+    }
+
+    public string MemoryMText
+    {
+        get => _memoryMText;
+        set => this.RaiseAndSetIfChanged(ref _memoryMText, value);
     }
 
     private async void OnNavigated(Type page)
@@ -92,32 +114,64 @@ public class ServerConsoleViewModel : ServerViewModelBase
 
     private void ProcessStats(StatsWsResponse stats)
     {
-        if (stats.State == "running")
+        switch (stats.State)
         {
-            UptimeText = TimeSpan.FromMilliseconds(stats.Uptime).ToString(@"hh\:mm\:ss");
-            IsStartButtonActive = false;
-            IsStopButtonActive = true;
-            IsRestartButtonActive = true;
-        }
-        else
-        {
-            UptimeText = stats.State[..1].ToUpper() + stats.State[1..];
-            IsStopButtonActive = false;
-            IsStartButtonActive = true;
-            _isRestartButtonActive = true;
-        }
+            case "starting":
+                // Code for the state of the status buttons and the uptime box.
+                IsStartButtonActive = false;
+                IsRestartButtonActive = true;
+                IsStopButtonActive = true;
+                UptimeText = stats.State[..1].ToUpper() + stats.State[1..];
 
-        if (stats.State == "starting")
-        {
-            IsStartButtonActive = false;
-            IsRestartButtonActive = true;
-            IsStopButtonActive = true;
-        }
-        else if (stats.State == "stopping")
-        {
-            IsStartButtonActive = true;
-            IsRestartButtonActive = true;
-            IsStopButtonActive = false;
+                // Code for the CPU and memory boxes
+                MemoryUText = ByteSize.FromBytes(stats.Memory_bytes).ToString();
+                MemoryMText = stats.Memory_limit_bytes == 0
+                    ? "\u221e"
+                    : ByteSize.FromBytes(stats.Memory_limit_bytes).ToString();
+                CpuText = $"{Math.Round(stats.Cpu_absolute, 2)}%";
+                break;
+            case "stopping":
+                // Code for the state of the status buttons and the uptime box.
+                IsStartButtonActive = true;
+                IsRestartButtonActive = true;
+                IsStopButtonActive = false;
+                UptimeText = stats.State[..1].ToUpper() + stats.State[1..];
+
+                // Code for the CPU and memory boxes
+                MemoryUText = ByteSize.FromBytes(stats.Memory_bytes).ToString();
+                MemoryMText = stats.Memory_limit_bytes == 0
+                    ? "\u221e"
+                    : ByteSize.FromBytes(stats.Memory_limit_bytes).ToString();
+                CpuText = $"{Math.Round(stats.Cpu_absolute, 2)}%";
+                break;
+            case "offline":
+                // Code for the state of the status buttons and the uptime box.
+                IsStopButtonActive = false;
+                IsStartButtonActive = true;
+                _isRestartButtonActive = true;
+                UptimeText = stats.State[..1].ToUpper() + stats.State[1..];
+
+                // Code for the CPU and memory boxes
+                MemoryUText = "Offline";
+                MemoryMText = stats.Memory_limit_bytes == 0
+                    ? "\u221e"
+                    : ByteSize.FromBytes(stats.Memory_limit_bytes).ToString();
+                CpuText = "Offline";
+                break;
+            case "running":
+                // Code for the state of the status buttons and the uptime box.
+                IsStartButtonActive = false;
+                IsStopButtonActive = true;
+                IsRestartButtonActive = true;
+                UptimeText = TimeSpan.FromMilliseconds(stats.Uptime).ToString(@"hh\:mm\:ss");
+
+                // Code for the CPU and memory boxes
+                MemoryUText = ByteSize.FromBytes(stats.Memory_bytes).ToString();
+                MemoryMText = stats.Memory_limit_bytes == 0
+                    ? "\u221e"
+                    : ByteSize.FromBytes(stats.Memory_limit_bytes).ToString();
+                CpuText = $"{Math.Round(stats.Cpu_absolute, 2)}%";
+                break;
         }
     }
 
