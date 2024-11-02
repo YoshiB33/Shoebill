@@ -16,6 +16,7 @@ public class ServerConsoleViewModel : ServerViewModelBase
 
     private readonly ApiWsClient _ws;
     private string _cpuText = "NO DATA";
+    private string _diskText = "NO DATA";
     private bool? _isRestartButtonActive;
     private bool? _isStartButtonActive;
     private bool? _isStopButtonActive;
@@ -89,6 +90,12 @@ public class ServerConsoleViewModel : ServerViewModelBase
         set => this.RaiseAndSetIfChanged(ref _memoryMText, value);
     }
 
+    public string DiskText
+    {
+        get => _diskText;
+        set => this.RaiseAndSetIfChanged(ref _diskText, value);
+    }
+
     private async void OnNavigated(Type page)
     {
         if (page != typeof(ServerMasterViewModel))
@@ -123,12 +130,13 @@ public class ServerConsoleViewModel : ServerViewModelBase
                 IsStopButtonActive = true;
                 UptimeText = stats.State[..1].ToUpper() + stats.State[1..];
 
-                // Code for the CPU and memory boxes
+                // Code for the CPU, memory and disk boxes
                 MemoryUText = ByteSize.FromBytes(stats.Memory_bytes).ToString();
                 MemoryMText = stats.Memory_limit_bytes == 0
                     ? "\u221e"
                     : ByteSize.FromBytes(stats.Memory_limit_bytes).ToString();
                 CpuText = $"{Math.Round(stats.Cpu_absolute, 2)}%";
+                DiskText = ByteSize.FromBytes(stats.Disk_bytes).ToString();
                 break;
             case "stopping":
                 // Code for the state of the status buttons and the uptime box.
@@ -137,12 +145,13 @@ public class ServerConsoleViewModel : ServerViewModelBase
                 IsStopButtonActive = false;
                 UptimeText = stats.State[..1].ToUpper() + stats.State[1..];
 
-                // Code for the CPU and memory boxes
+                // Code for the CPU, memory and disk boxes
                 MemoryUText = ByteSize.FromBytes(stats.Memory_bytes).ToString();
                 MemoryMText = stats.Memory_limit_bytes == 0
                     ? "\u221e"
                     : ByteSize.FromBytes(stats.Memory_limit_bytes).ToString();
                 CpuText = $"{Math.Round(stats.Cpu_absolute, 2)}%";
+                DiskText = ByteSize.FromBytes(stats.Disk_bytes).ToString();
                 break;
             case "offline":
                 // Code for the state of the status buttons and the uptime box.
@@ -151,12 +160,13 @@ public class ServerConsoleViewModel : ServerViewModelBase
                 _isRestartButtonActive = true;
                 UptimeText = stats.State[..1].ToUpper() + stats.State[1..];
 
-                // Code for the CPU and memory boxes
+                // Code for the CPU, memory and disk boxes
                 MemoryUText = "Offline";
                 MemoryMText = stats.Memory_limit_bytes == 0
                     ? "\u221e"
                     : ByteSize.FromBytes(stats.Memory_limit_bytes).ToString();
                 CpuText = "Offline";
+                DiskText = ByteSize.FromBytes(stats.Disk_bytes).ToString();
                 break;
             case "running":
                 // Code for the state of the status buttons and the uptime box.
@@ -165,12 +175,13 @@ public class ServerConsoleViewModel : ServerViewModelBase
                 IsRestartButtonActive = true;
                 UptimeText = TimeSpan.FromMilliseconds(stats.Uptime).ToString(@"hh\:mm\:ss");
 
-                // Code for the CPU and memory boxes
+                // Code for the CPU, memory and disk boxes
                 MemoryUText = ByteSize.FromBytes(stats.Memory_bytes).ToString();
                 MemoryMText = stats.Memory_limit_bytes == 0
                     ? "\u221e"
                     : ByteSize.FromBytes(stats.Memory_limit_bytes).ToString();
                 CpuText = $"{Math.Round(stats.Cpu_absolute, 2)}%";
+                DiskText = ByteSize.FromBytes(stats.Disk_bytes).ToString();
                 break;
         }
     }
