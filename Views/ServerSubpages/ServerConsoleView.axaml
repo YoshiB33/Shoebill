@@ -67,6 +67,18 @@
                             <TextBlock Text="{Binding DiskText}" FontSize="18" FontWeight="DemiBold" />
                         </StackPanel>
                     </suki:GlassCard>
+                    <suki:GlassCard Grid.Row="5" Classes="Accent" IsAnimated="False" Margin="0,3,0,3">
+                        <StackPanel Orientation="Vertical" Spacing="2">
+                            <TextBlock Text="Network (Inbound)" FontSize="12" VerticalAlignment="Center" />
+                            <TextBlock Text="{Binding NetworkIn}" FontSize="18" FontWeight="DemiBold" />
+                        </StackPanel>
+                    </suki:GlassCard>
+                    <suki:GlassCard Grid.Row="6" Classes="Accent" IsAnimated="False" Margin="0,3,0,0">
+                        <StackPanel Orientation="Vertical" Spacing="2">
+                            <TextBlock Text="Network (Outbound)" FontSize="12" VerticalAlignment="Center" />
+                            <TextBlock Text="{Binding NetworkOut}" FontSize="18" FontWeight="DemiBold" />
+                        </StackPanel>
+                    </suki:GlassCard>
                 </Grid>
             </ScrollViewer>
         </suki:GlassCard>

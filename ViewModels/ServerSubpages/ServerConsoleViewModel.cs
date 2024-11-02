@@ -22,6 +22,8 @@ public class ServerConsoleViewModel : ServerViewModelBase
     private bool? _isStopButtonActive;
     private string _memoryMText = "NO DATA";
     private string _memoryUText = "NO DATA";
+    private string _networkIn = "NO DATA";
+    private string _networkOut = "NO DATA";
     private string _uptimeText = "NO DATA";
 
     public ServerConsoleViewModel(IApiService apiService, INavigationService navigationService)
@@ -96,6 +98,18 @@ public class ServerConsoleViewModel : ServerViewModelBase
         set => this.RaiseAndSetIfChanged(ref _diskText, value);
     }
 
+    public string NetworkIn
+    {
+        get => _networkIn;
+        set => this.RaiseAndSetIfChanged(ref _networkIn, value);
+    }
+
+    public string NetworkOut
+    {
+        get => _networkOut;
+        set => this.RaiseAndSetIfChanged(ref _networkOut, value);
+    }
+
     private async void OnNavigated(Type page)
     {
         if (page != typeof(ServerMasterViewModel))
@@ -137,6 +151,10 @@ public class ServerConsoleViewModel : ServerViewModelBase
                     : ByteSize.FromBytes(stats.Memory_limit_bytes).ToString();
                 CpuText = $"{Math.Round(stats.Cpu_absolute, 2)}%";
                 DiskText = ByteSize.FromBytes(stats.Disk_bytes).ToString();
+
+                // Code for the network
+                NetworkIn = ByteSize.FromBytes(stats.Network.Rx_bytes).ToString();
+                NetworkOut = ByteSize.FromBytes(stats.Network.Tx_bytes).ToString();
                 break;
             case "stopping":
                 // Code for the state of the status buttons and the uptime box.
@@ -152,6 +170,10 @@ public class ServerConsoleViewModel : ServerViewModelBase
                     : ByteSize.FromBytes(stats.Memory_limit_bytes).ToString();
                 CpuText = $"{Math.Round(stats.Cpu_absolute, 2)}%";
                 DiskText = ByteSize.FromBytes(stats.Disk_bytes).ToString();
+
+                // Code for the network
+                NetworkIn = ByteSize.FromBytes(stats.Network.Rx_bytes).ToString();
+                NetworkOut = ByteSize.FromBytes(stats.Network.Tx_bytes).ToString();
                 break;
             case "offline":
                 // Code for the state of the status buttons and the uptime box.
@@ -167,6 +189,10 @@ public class ServerConsoleViewModel : ServerViewModelBase
                     : ByteSize.FromBytes(stats.Memory_limit_bytes).ToString();
                 CpuText = "Offline";
                 DiskText = ByteSize.FromBytes(stats.Disk_bytes).ToString();
+
+                // Code for the network
+                NetworkIn = "Offline";
+                NetworkOut = "Offline";
                 break;
             case "running":
                 // Code for the state of the status buttons and the uptime box.
@@ -182,6 +208,10 @@ public class ServerConsoleViewModel : ServerViewModelBase
                     : ByteSize.FromBytes(stats.Memory_limit_bytes).ToString();
                 CpuText = $"{Math.Round(stats.Cpu_absolute, 2)}%";
                 DiskText = ByteSize.FromBytes(stats.Disk_bytes).ToString();
+
+                // Code for the network
+                NetworkIn = ByteSize.FromBytes(stats.Network.Rx_bytes).ToString();
+                NetworkOut = ByteSize.FromBytes(stats.Network.Tx_bytes).ToString();
                 break;
         }
     }
