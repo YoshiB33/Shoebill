@@ -3,6 +3,7 @@
              xmlns:d="http://schemas.microsoft.com/expression/blend/2008"
              xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
              xmlns:suki="clr-namespace:SukiUI.Controls;assembly=SukiUI"
+             xmlns:lvc="clr-namespace:LiveChartsCore.SkiaSharpView.Avalonia;assembly=LiveChartsCore.SkiaSharpView.Avalonia"
              xmlns:vm="clr-namespace:Shoebill.ViewModels.ServerSubpages"
              mc:Ignorable="d" d:DesignWidth="800" d:DesignHeight="450"
              x:Class="Shoebill.Views.ServerSubpages.ServerConsoleView"
@@ -18,10 +19,13 @@
         </suki:GlassCard>
         <Grid Grid.Column="0" Grid.ColumnSpan="2" Grid.Row="1" ColumnDefinitions="*, *">
             <suki:GlassCard Grid.Column="0" IsAnimated="False" Margin="3">
-                <TextBlock Text="Graph!" />
+                <lvc:CartesianChart Series="{Binding CpuSeries}" YAxes="{Binding CpuAxis}" XAxes="{Binding XAxes}"
+                                    Foreground="{DynamicResource SukiTextColor}" />
             </suki:GlassCard>
             <suki:GlassCard Grid.Column="1" IsAnimated="False" Margin="3">
-                <TextBlock Text="Graph 2!" />
+                <lvc:CartesianChart Series="{Binding MemorySeries}" YAxes="{Binding MemoryAxis}"
+                                    XAxes="{Binding XAxes}"
+                                    Foreground="{DynamicResource SukiTextColor}" />
             </suki:GlassCard>
         </Grid>
         <suki:GlassCard Grid.Row="0" Grid.Column="1" IsAnimated="False" Margin="3">

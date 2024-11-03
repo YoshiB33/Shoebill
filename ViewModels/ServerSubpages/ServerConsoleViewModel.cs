@@ -1,17 +1,28 @@
 using System;
+using System.Collections.ObjectModel;
 using System.Net.WebSockets;
 using System.Reactive;
 using System.Threading;
+using Avalonia.Styling;
 using ByteSizeLib;
+using LiveChartsCore;
+using LiveChartsCore.Defaults;
+using LiveChartsCore.Kernel.Sketches;
+using LiveChartsCore.SkiaSharpView;
+using LiveChartsCore.SkiaSharpView.Painting;
 using Material.Icons;
 using ReactiveUI;
 using Shoebill.Models.Api.Responses;
 using Shoebill.Services;
+using SkiaSharp;
+using SukiUI;
+using static SkiaSharp.SKColor;
 
 namespace Shoebill.ViewModels.ServerSubpages;
 
 public class ServerConsoleViewModel : ServerViewModelBase
 {
+    private static SKColor _textColor;
     private readonly IApiService _apiService;
 
     private readonly ApiWsClient _ws;
@@ -30,6 +41,27 @@ public class ServerConsoleViewModel : ServerViewModelBase
     {
         _ws = new ApiWsClient();
         _apiService = apiService;
+        var theme = SukiTheme.GetInstance();
+        _textColor = SKColors.Honeydew;
+
+        CpuSeries =
+        [
+            new LineSeries<DateTimePoint>(CpuValues)
+            {
+                Fill = null,
+                GeometrySize = 0,
+                LineSmoothness = 0.5
+            }
+        ];
+        MemorySeries =
+        [
+            new LineSeries<DateTimePoint>(MemoryValues)
+            {
+                Fill = null,
+                GeometrySize = 0,
+                LineSmoothness = 0.5
+            }
+        ];
 
         StartServerCommand = ReactiveCommand.Create(StartServer);
         StopServerCommand = ReactiveCommand.Create(StopServer);
@@ -40,6 +72,20 @@ public class ServerConsoleViewModel : ServerViewModelBase
         _ws.TokenExpired += ReAuth;
         _ws.TokenExpiring += ReAuth;
         _ws.Stats += ProcessStats;
+
+        theme.OnBaseThemeChanged += variant =>
+        {
+            if (variant == ThemeVariant.Dark)
+            {
+                var succeeded = TryParse("#edffffff", out var color);
+                if (succeeded) _textColor = color;
+            }
+            else
+            {
+                var succeeded = TryParse("#edffffff", out var color);
+                if (succeeded) _textColor = color;
+            }
+        };
     }
 
     public override MaterialIconKind Icon => MaterialIconKind.Console;
@@ -49,6 +95,36 @@ public class ServerConsoleViewModel : ServerViewModelBase
     public ReactiveCommand<Unit, Unit> StartServerCommand { get; }
     public ReactiveCommand<Unit, Unit> StopServerCommand { get; }
     public ReactiveCommand<Unit, Unit> RestartServerCommand { get; }
+
+    public ObservableCollection<ISeries> CpuSeries { get; set; }
+    public ObservableCollection<ISeries> MemorySeries { get; set; }
+    private ObservableCollection<DateTimePoint> CpuValues { get; } = [];
+    private ObservableCollection<DateTimePoint> MemoryValues { get; } = [];
+
+    public ICartesianAxis[] CpuAxis { get; set; } =
+    [
+        new Axis
+        {
+            Labeler = percentage => percentage.ToString("P1"),
+            Name = "CPU Load",
+            NamePaint = new SolidColorPaint(Parse("#777"))
+        }
+    ];
+
+    public ICartesianAxis[] MemoryAxis { get; set; } =
+    [
+        new Axis
+        {
+            Labeler = byteSize => ByteSize.FromBytes(byteSize).ToString(),
+            Name = "Memory Usage",
+            NamePaint = new SolidColorPaint(Parse("#777"))
+        }
+    ];
+
+    public ICartesianAxis[] XAxes { get; set; } =
+    [
+        new DateTimeAxis(TimeSpan.FromSeconds(1), date => date.ToString("HH:mm:ss"))
+    ];
 
     public string UptimeText
     {
@@ -117,6 +193,9 @@ public class ServerConsoleViewModel : ServerViewModelBase
             if (_ws.State == WebSocketState.Open) await _ws.CloseAsync(CancellationToken.None);
             return;
         }
+
+        CpuValues.Clear();
+        MemoryValues.Clear();
 
         var wsCredentials = await _apiService.GetWebsocketAsync();
         if (wsCredentials == null) return;
@@ -214,6 +293,15 @@ public class ServerConsoleViewModel : ServerViewModelBase
                 NetworkOut = ByteSize.FromBytes(stats.Network.Tx_bytes).ToString();
                 break;
         }
+
+        // Code for the graphs
+        CpuValues.Add(new DateTimePoint { DateTime = DateTime.Now, Value = Math.Round(stats.Cpu_absolute, 2) / 100 });
+        if (CpuValues[0].DateTime <= DateTime.Now - TimeSpan.FromSeconds(90))
+            CpuValues.RemoveAt(0);
+
+        MemoryValues.Add(new DateTimePoint { DateTime = DateTime.Now, Value = stats.Memory_bytes });
+        if (MemoryValues[0].DateTime <= DateTime.Now - TimeSpan.FromSeconds(90))
+            MemoryValues.RemoveAt(0);
     }
 
     private void StartServer()
