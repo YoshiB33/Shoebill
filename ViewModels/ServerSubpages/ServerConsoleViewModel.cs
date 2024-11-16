@@ -3,7 +3,6 @@ using System.Collections.ObjectModel;
 using System.Net.WebSockets;
 using System.Reactive;
 using System.Threading;
-using Avalonia.Styling;
 using ByteSizeLib;
 using LiveChartsCore;
 using LiveChartsCore.Defaults;
@@ -14,15 +13,12 @@ using Material.Icons;
 using ReactiveUI;
 using Shoebill.Models.Api.Responses;
 using Shoebill.Services;
-using SkiaSharp;
-using SukiUI;
 using static SkiaSharp.SKColor;
 
 namespace Shoebill.ViewModels.ServerSubpages;
 
 public class ServerConsoleViewModel : ServerViewModelBase
 {
-    private static SKColor _textColor;
     private readonly IApiService _apiService;
 
     private readonly ApiWsClient _ws;
@@ -41,8 +37,6 @@ public class ServerConsoleViewModel : ServerViewModelBase
     {
         _ws = new ApiWsClient();
         _apiService = apiService;
-        var theme = SukiTheme.GetInstance();
-        _textColor = SKColors.Honeydew;
 
         CpuSeries =
         [
@@ -72,20 +66,6 @@ public class ServerConsoleViewModel : ServerViewModelBase
         _ws.TokenExpired += ReAuth;
         _ws.TokenExpiring += ReAuth;
         _ws.Stats += ProcessStats;
-
-        theme.OnBaseThemeChanged += variant =>
-        {
-            if (variant == ThemeVariant.Dark)
-            {
-                var succeeded = TryParse("#edffffff", out var color);
-                if (succeeded) _textColor = color;
-            }
-            else
-            {
-                var succeeded = TryParse("#edffffff", out var color);
-                if (succeeded) _textColor = color;
-            }
-        };
     }
 
     public override MaterialIconKind Icon => MaterialIconKind.Console;
