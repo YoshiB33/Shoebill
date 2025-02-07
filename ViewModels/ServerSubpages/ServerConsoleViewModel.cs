@@ -22,6 +22,7 @@ public class ServerConsoleViewModel : ServerViewModelBase
     private readonly IApiService _apiService;
 
     private readonly ApiWsClient _ws;
+    private string _consoleText = string.Empty;
     private string _cpuText = "NO DATA";
     private string _diskText = "NO DATA";
     private bool? _isRestartButtonActive;
@@ -62,10 +63,11 @@ public class ServerConsoleViewModel : ServerViewModelBase
         RestartServerCommand = ReactiveCommand.Create(RestartServer);
 
         navigationService.NavigationRequested += OnNavigated;
-        _ws.AuthSuccess += () => { Console.WriteLine("Auth Success"); };
+        _ws.AuthSuccess += () => { };
         _ws.TokenExpired += ReAuth;
         _ws.TokenExpiring += ReAuth;
         _ws.Stats += ProcessStats;
+        _ws.ConsoleOutput += HandleConsoleOutput;
     }
 
     public override MaterialIconKind Icon => MaterialIconKind.Console;
@@ -164,6 +166,12 @@ public class ServerConsoleViewModel : ServerViewModelBase
     {
         get => _networkOut;
         set => this.RaiseAndSetIfChanged(ref _networkOut, value);
+    }
+
+    public string ConsoleText
+    {
+        get => _consoleText;
+        set => this.RaiseAndSetIfChanged(ref _consoleText, value);
     }
 
     private async void OnNavigated(Type page)
@@ -297,6 +305,11 @@ public class ServerConsoleViewModel : ServerViewModelBase
     private void RestartServer()
     {
         _ws.SetState(PowerAction.Restart);
+    }
+
+    private void HandleConsoleOutput(string output)
+    {
+        ConsoleText += output + "\n";
     }
 
     ~ServerConsoleViewModel()

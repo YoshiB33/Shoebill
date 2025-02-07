@@ -5,17 +5,18 @@
              xmlns:suki="clr-namespace:SukiUI.Controls;assembly=SukiUI"
              xmlns:lvc="clr-namespace:LiveChartsCore.SkiaSharpView.Avalonia;assembly=LiveChartsCore.SkiaSharpView.Avalonia"
              xmlns:vm="clr-namespace:Shoebill.ViewModels.ServerSubpages"
+             xmlns:controls="clr-namespace:Shoebill.Controls"
              mc:Ignorable="d" d:DesignWidth="800" d:DesignHeight="450"
              x:Class="Shoebill.Views.ServerSubpages.ServerConsoleView"
              x:DataType="vm:ServerConsoleViewModel">
     <Grid ColumnDefinitions="6*, 2*" RowDefinitions="5*, 2*">
         <suki:GlassCard Grid.Column="0" Grid.Row="0" IsAnimated="False" Margin="3">
-            <DockPanel>
-                <ScrollViewer DockPanel.Dock="Top" VerticalAlignment="Top">
-                    <TextBlock TextWrapping="Wrap" />
+            <Grid RowDefinitions="*, 40">
+                <ScrollViewer VerticalAlignment="Top">
+                    <controls:AnsiTextBlock AnsiText="{Binding ConsoleText}" />
                 </ScrollViewer>
-                <TextBox DockPanel.Dock="Bottom" Height="50" VerticalAlignment="Bottom" />
-            </DockPanel>
+                <TextBox Grid.Row="1" VerticalAlignment="Bottom" Height="40" />
+            </Grid>
         </suki:GlassCard>
         <Grid Grid.Column="0" Grid.ColumnSpan="2" Grid.Row="1" ColumnDefinitions="*, *">
             <suki:GlassCard Grid.Column="0" IsAnimated="False" Margin="3">
