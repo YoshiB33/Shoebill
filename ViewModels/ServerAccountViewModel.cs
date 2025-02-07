@@ -154,8 +154,8 @@ public class ServerAccountViewModel : ViewModelBase
             _navigationService.NavigateBack();
         }
 
-        if (account is not null)
-        {
+        if (account is null) return;
+        
             EmailText = account.Attributes.Email;
             _apiService.CurrentAccount = account.Attributes;
             try
@@ -197,7 +197,7 @@ public class ServerAccountViewModel : ViewModelBase
                     .Dismiss().ByClicking()
                     .Queue();
             }
-        }
+        
     }
 
     private async void UpdateEmail()

@@ -46,12 +46,22 @@ public class AccountsViewModel : ViewModelBase
 
     private async void OnNavigatedTo(Type page)
     {
-        if (page != typeof(AccountsViewModel)) return;
+        try
+        {
+            if (page != typeof(AccountsViewModel)) return;
 
-        ApiKeys.Clear();
-        var keys = await _settingsService.GetAllApiKeysAsync();
-        if (keys == null) return;
-        foreach (var key in keys) ApiKeys.Add(key);
+            ApiKeys.Clear();
+            var keys = await _settingsService.GetAllApiKeysAsync();
+            if (keys == null) return;
+            foreach (var key in keys) ApiKeys.Add(key);
+        }
+        catch (Exception e)
+        {
+            _dialogManager.CreateDialog()
+                .WithTitle($"Error navigation to {nameof(AccountsViewModel)}.")
+                .WithContent(e.Message)
+                .TryShow();
+        }
     }
 
     private void AddNewApi()

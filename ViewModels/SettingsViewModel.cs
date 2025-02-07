@@ -1,7 +1,7 @@
-﻿using System.Collections.ObjectModel;
+﻿using System;
+using System.Collections.ObjectModel;
 using System.Linq;
 using System.Reactive;
-using Avalonia.Collections;
 using Avalonia.Styling;
 using ReactiveUI;
 using Shoebill.Models;
@@ -9,14 +9,12 @@ using Shoebill.Services;
 using Shoebill.ViewModels.Dialogs;
 using SukiUI;
 using SukiUI.Dialogs;
-using SukiUI.Models;
 
 namespace Shoebill.ViewModels;
 
 public class SettingsViewModel : ViewModelBase
 {
     private readonly ISukiDialogManager _dialogManager;
-    private readonly INavigationService _navigationService;
     private readonly ISettingsService _settingsService;
     private readonly SukiTheme _theme;
     private ThemeVariant _baseTheme;
@@ -24,15 +22,13 @@ public class SettingsViewModel : ViewModelBase
     private bool _isThemeLight;
     private bool _showBackButton = true;
 
-    public SettingsViewModel(ISettingsService settingsService, INavigationService navigationService,
+    public SettingsViewModel(ISettingsService settingsService,
         ISukiDialogManager dialogManager)
     {
         _settingsService = settingsService;
-        _navigationService = navigationService;
         _dialogManager = dialogManager;
 
         _theme = SukiTheme.GetInstance();
-        Themes = _theme.ColorThemes;
         _baseTheme = _theme.ActiveBaseTheme;
         if (_baseTheme != ThemeVariant.Dark)
             _isThemeDark = true;
@@ -62,7 +58,6 @@ public class SettingsViewModel : ViewModelBase
     public ReactiveCommand<string, Unit> EditApiCommand { get; set; }
     public ReactiveCommand<Unit, Unit> ToggleBaseThemeCommand { get; set; }
     public ObservableCollection<ApiKey> ApiKeys { get; set; }
-    public IAvaloniaReadOnlyList<SukiColorTheme> Themes { get; set; }
 
     public bool IsThemeDark
     {
@@ -90,7 +85,17 @@ public class SettingsViewModel : ViewModelBase
 
     private async void RemoveApiKey(string name)
     {
-        await _settingsService.RemoveApiAsync(ApiKeys.First(x => x.Name == name));
+        try
+        {
+            await _settingsService.RemoveApiAsync(ApiKeys.First(x => x.Name == name));
+        }
+        catch (Exception e)
+        {
+            _dialogManager.CreateDialog()
+                .WithTitle("Error removing API key.")
+                .WithContent($"Error removing API key: {e.Message}")
+                .TryShow();
+        }
     }
 
     private void AddApiKey()

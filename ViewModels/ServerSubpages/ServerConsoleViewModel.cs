@@ -13,6 +13,7 @@ using Material.Icons;
 using ReactiveUI;
 using Shoebill.Models.Api.Responses;
 using Shoebill.Services;
+using SukiUI.Dialogs;
 using static SkiaSharp.SKColor;
 
 namespace Shoebill.ViewModels.ServerSubpages;
@@ -34,10 +35,11 @@ public class ServerConsoleViewModel : ServerViewModelBase
     private string _networkOut = "NO DATA";
     private string _uptimeText = "NO DATA";
 
-    public ServerConsoleViewModel(IApiService apiService, INavigationService navigationService)
+    public ServerConsoleViewModel(IApiService apiService, INavigationService navigationService, ISukiDialogManager dialogManager)
     {
         _ws = new ApiWsClient();
         _apiService = apiService;
+        _dialogManager = dialogManager;
 
         CpuSeries =
         [
@@ -82,6 +84,8 @@ public class ServerConsoleViewModel : ServerViewModelBase
     public ObservableCollection<ISeries> MemorySeries { get; set; }
     private ObservableCollection<DateTimePoint> CpuValues { get; } = [];
     private ObservableCollection<DateTimePoint> MemoryValues { get; } = [];
+
+    private readonly ISukiDialogManager _dialogManager;
 
     public ICartesianAxis[] CpuAxis { get; set; } =
     [
@@ -176,28 +180,48 @@ public class ServerConsoleViewModel : ServerViewModelBase
 
     private async void OnNavigated(Type page)
     {
-        if (page != typeof(ServerMasterViewModel))
+        try
         {
-            if (_ws.State == WebSocketState.Open) await _ws.CloseAsync(CancellationToken.None);
-            return;
+            if (page != typeof(ServerMasterViewModel))
+            {
+                if (_ws.State == WebSocketState.Open) await _ws.CloseAsync(CancellationToken.None);
+                return;
+            }
+
+            CpuValues.Clear();
+            MemoryValues.Clear();
+
+            var wsCredentials = await _apiService.GetWebsocketAsync();
+            if (wsCredentials == null) return;
+
+            Console.WriteLine("Connected to WS");
+            _ws.Connect(new Uri(wsCredentials.Data.Socket), wsCredentials.Data.Token);
+            await _ws.ReceiveAsync(CancellationToken.None);
         }
-
-        CpuValues.Clear();
-        MemoryValues.Clear();
-
-        var wsCredentials = await _apiService.GetWebsocketAsync();
-        if (wsCredentials == null) return;
-
-        Console.WriteLine("Connected to WS");
-        _ws.Connect(new Uri(wsCredentials.Data.Socket), wsCredentials.Data.Token);
-        await _ws.ReceiveAsync(CancellationToken.None);
+        catch (Exception e)
+        {
+            _dialogManager.CreateDialog()
+                .WithTitle($"Error navigating to {nameof(ServerConsoleViewModel)}.")
+                .WithContent(e.Message)
+                .TryShow();
+        }
     }
 
     private async void ReAuth()
     {
-        var credentials = await _apiService.GetWebsocketAsync();
-        if (credentials == null) return;
-        _ws.Auth(credentials.Data.Token);
+        try
+        {
+            var credentials = await _apiService.GetWebsocketAsync();
+            if (credentials == null) return;
+            _ws.Auth(credentials.Data.Token);
+        }
+        catch (Exception e)
+        {
+            _dialogManager.CreateDialog()
+                .WithTitle("Error authenticating...")
+                .WithContent(e.Message)
+                .TryShow();
+        }
     }
 
     private void ProcessStats(StatsWsResponse stats)

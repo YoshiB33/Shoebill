@@ -79,11 +79,10 @@ public class ServerMasterViewModel : ViewModelBase
             _navigationService.NavigateBack();
         }
 
-        if (currentServer is not null)
-        {
-            ServerName = currentServer.Name;
-            _apiService.CurrentServer = currentServer;
-        }
+        if (currentServer is null) return;
+        
+        ServerName = currentServer.Name;
+        _apiService.CurrentServer = currentServer;
     }
 
     private void GoBack()
