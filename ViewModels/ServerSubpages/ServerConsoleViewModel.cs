@@ -3,6 +3,7 @@ using System.Collections.ObjectModel;
 using System.Net.WebSockets;
 using System.Reactive;
 using System.Threading;
+using Avalonia.Input;
 using ByteSizeLib;
 using LiveChartsCore;
 using LiveChartsCore.Defaults;
@@ -34,6 +35,7 @@ public class ServerConsoleViewModel : ServerViewModelBase
     private string _networkIn = "NO DATA";
     private string _networkOut = "NO DATA";
     private string _uptimeText = "NO DATA";
+    private string _commandContent = string.Empty;
 
     public ServerConsoleViewModel(IApiService apiService, INavigationService navigationService, ISukiDialogManager dialogManager)
     {
@@ -63,6 +65,7 @@ public class ServerConsoleViewModel : ServerViewModelBase
         StartServerCommand = ReactiveCommand.Create(StartServer);
         StopServerCommand = ReactiveCommand.Create(StopServer);
         RestartServerCommand = ReactiveCommand.Create(RestartServer);
+        SendCommandCommand=ReactiveCommand.Create<KeyEventArgs>(SendCommand);
 
         navigationService.NavigationRequested += OnNavigated;
         _ws.AuthSuccess += () => { };
@@ -70,6 +73,11 @@ public class ServerConsoleViewModel : ServerViewModelBase
         _ws.TokenExpiring += ReAuth;
         _ws.Stats += ProcessStats;
         _ws.ConsoleOutput += HandleConsoleOutput;
+        _ws.DaemonMessage += HandleConsoleOutput;
+        _ws.DaemonError += HandleConsoleOutput;
+        _ws.InstallOutput += HandleConsoleOutput;
+        _ws.TransferLogs += HandleConsoleOutput;
+        _ws.TransferStatus += HandleConsoleOutput;
     }
 
     public override MaterialIconKind Icon => MaterialIconKind.Console;
@@ -79,6 +87,7 @@ public class ServerConsoleViewModel : ServerViewModelBase
     public ReactiveCommand<Unit, Unit> StartServerCommand { get; }
     public ReactiveCommand<Unit, Unit> StopServerCommand { get; }
     public ReactiveCommand<Unit, Unit> RestartServerCommand { get; }
+    public ReactiveCommand<KeyEventArgs, Unit> SendCommandCommand { get; }
 
     public ObservableCollection<ISeries> CpuSeries { get; set; }
     public ObservableCollection<ISeries> MemorySeries { get; set; }
@@ -176,6 +185,12 @@ public class ServerConsoleViewModel : ServerViewModelBase
     {
         get => _consoleText;
         set => this.RaiseAndSetIfChanged(ref _consoleText, value);
+    }
+
+    public string CommandContent
+    {
+        get => _commandContent;
+        set => this.RaiseAndSetIfChanged(ref _commandContent, value);
     }
 
     private async void OnNavigated(Type page)
@@ -334,6 +349,24 @@ public class ServerConsoleViewModel : ServerViewModelBase
     private void HandleConsoleOutput(string output)
     {
         ConsoleText += output + "\n";
+    }
+
+    private void SendCommand(KeyEventArgs e)
+    {
+        if (e.Key != Key.Enter) return;
+
+        try
+        {
+            _ws.SendCommand(CommandContent);
+            CommandContent = string.Empty;
+        }
+        catch (Exception ex)
+        {
+            _dialogManager.CreateDialog()
+                .WithTitle("Error sending command")
+                .WithContent(ex.Message)
+                .TryShow();
+        }
     }
 
     ~ServerConsoleViewModel()

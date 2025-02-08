@@ -168,7 +168,7 @@ public class ApiWsClient : IApiWsClient, IDisposable
     /// <param name="token">The token you got from <see cref="IApiService.GetWebsocketAsync"/></param>
     public void Connect(Uri url, string token)
     {
-        if (_ws.State == WebSocketState.Aborted || _ws.State == WebSocketState.Closed)
+        if (_ws.State is WebSocketState.Aborted or WebSocketState.Closed)
         {
             _ws.Dispose();
             _ws = new ClientWebSocket();
@@ -186,7 +186,7 @@ public class ApiWsClient : IApiWsClient, IDisposable
     /// <param name="cancellationToken">The cancellation token.</param>
     public async Task ConnectAsync(Uri url, string token, CancellationToken cancellationToken)
     {
-        if (_ws.State == WebSocketState.Aborted || _ws.State == WebSocketState.Closed)
+        if (_ws.State is WebSocketState.Aborted or WebSocketState.Closed)
         {
             _ws.Dispose();
             _ws = new ClientWebSocket();
