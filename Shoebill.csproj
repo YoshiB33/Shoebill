@@ -1,7 +1,7 @@
 ﻿<Project Sdk="Microsoft.NET.Sdk">
     <PropertyGroup>
         <OutputType>WinExe</OutputType>
-        <TargetFramework>net8.0</TargetFramework>
+        <TargetFramework>net9.0</TargetFramework>
         <Nullable>enable</Nullable>
         <BuiltInComInteropSupport>true</BuiltInComInteropSupport>
         <ApplicationManifest>app.manifest</ApplicationManifest>
@@ -13,24 +13,20 @@
     </ItemGroup>
 
     <ItemGroup>
-        <PackageReference Include="Avalonia" Version="11.2.0-rc1"/>
-        <PackageReference Include="Avalonia.Desktop" Version="11.2.0-rc1"/>
-        <PackageReference Include="Avalonia.Fonts.Inter" Version="11.2.0-rc1"/>
+        <PackageReference Include="Avalonia" Version="11.2.3"/>
+        <PackageReference Include="Avalonia.Desktop" Version="11.2.3"/>
+        <PackageReference Include="Avalonia.Fonts.Inter" Version="11.2.3"/>
         <!--Condition below is needed to remove Avalonia.Diagnostics package from build output in Release configuration.-->
-        <PackageReference Condition="'$(Configuration)' == 'Debug'" Include="Avalonia.Diagnostics" Version="11.2.0-rc1"/>
-        <PackageReference Include="Avalonia.ReactiveUI" Version="11.2.0-rc1"/>
-        <PackageReference Include="Avalonia.Xaml.Interactions" Version="11.1.0.7" />
-        <PackageReference Include="Avalonia.Xaml.Interactivity" Version="11.1.0.7" />
+        <PackageReference Condition="'$(Configuration)' == 'Debug'" Include="Avalonia.Diagnostics" Version="11.2.3"/>
+        <PackageReference Include="Avalonia.ReactiveUI" Version="11.2.3"/>
+        <PackageReference Include="Avalonia.Xaml.Interactions" Version="11.2.0.8"/>
+        <PackageReference Include="Avalonia.Xaml.Interactivity" Version="11.2.0.8"/>
         <PackageReference Include="ByteSize" Version="2.1.2"/>
-        <PackageReference Include="LiveChartsCore.SkiaSharpView.Avalonia" Version="2.0.0-rc4.5"/>
-        <PackageReference Include="Material.Icons.Avalonia" Version="2.1.10"/>
-        <PackageReference Include="Microsoft.Extensions.DependencyInjection" Version="8.0.0"/>
-        <PackageReference Include="Microsoft.Extensions.Http" Version="8.0.0"/>
+        <PackageReference Include="LiveChartsCore.SkiaSharpView.Avalonia" Version="2.0.0-rc5.1"/>
+        <PackageReference Include="Material.Icons.Avalonia" Version="2.2.0"/>
+        <PackageReference Include="Microsoft.Extensions.DependencyInjection" Version="9.0.1"/>
+        <PackageReference Include="Microsoft.Extensions.Http" Version="9.0.1"/>
         <PackageReference Include="ReactiveUI" Version="20.1.63"/>
-        <PackageReference Include="SukiUI" Version="6.0.0-beta8"/>
-    </ItemGroup>
-
-    <ItemGroup>
-      <Folder Include="Controls\" />
+        <PackageReference Include="SukiUI" Version="6.0.0-rc"/>
     </ItemGroup>
 </Project>

@@ -165,7 +165,7 @@ public class ApiWsClient : IApiWsClient, IDisposable
     ///     Connects the websocket to the server.
     /// </summary>
     /// <param name="url">The url to the server.</param>
-    /// <param name="token">The token you got from <see cref="IApiService.GetWebsocketAsync"/></param>
+    /// <param name="token">The token you got from <see cref="IApiService.GetWebsocketAsync" /></param>
     public void Connect(Uri url, string token)
     {
         if (_ws.State is WebSocketState.Aborted or WebSocketState.Closed)
@@ -182,7 +182,7 @@ public class ApiWsClient : IApiWsClient, IDisposable
     ///     Connects the websocket to the server. This is the asynchronous version of <see cref="Connect" />.
     /// </summary>
     /// <param name="url">Url to the server.</param>
-    /// <param name="token">The token you got from <see cref="IApiService.GetWebsocketAsync"/></param>
+    /// <param name="token">The token you got from <see cref="IApiService.GetWebsocketAsync" /></param>
     /// <param name="cancellationToken">The cancellation token.</param>
     public async Task ConnectAsync(Uri url, string token, CancellationToken cancellationToken)
     {

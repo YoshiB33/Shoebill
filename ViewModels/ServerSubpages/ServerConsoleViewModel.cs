@@ -27,7 +27,10 @@ public class ServerConsoleViewModel : ServerViewModelBase
 {
     private readonly IApiService _apiService;
 
+    private readonly ISukiDialogManager _dialogManager;
+
     private readonly ApiWsClient _ws;
+    private string _commandContent = string.Empty;
     private string _consoleText = string.Empty;
     private string _cpuText = "NO DATA";
     private string _diskText = "NO DATA";
@@ -39,9 +42,9 @@ public class ServerConsoleViewModel : ServerViewModelBase
     private string _networkIn = "NO DATA";
     private string _networkOut = "NO DATA";
     private string _uptimeText = "NO DATA";
-    private string _commandContent = string.Empty;
 
-    public ServerConsoleViewModel(IApiService apiService, INavigationService navigationService, ISukiDialogManager dialogManager)
+    public ServerConsoleViewModel(IApiService apiService, INavigationService navigationService,
+        ISukiDialogManager dialogManager)
     {
         _ws = new ApiWsClient();
         _apiService = apiService;
@@ -69,7 +72,7 @@ public class ServerConsoleViewModel : ServerViewModelBase
         StartServerCommand = ReactiveCommand.Create(StartServer);
         StopServerCommand = ReactiveCommand.Create(StopServer);
         RestartServerCommand = ReactiveCommand.Create(RestartServer);
-        SendCommandCommand=ReactiveCommand.Create<KeyEventArgs>(SendCommand);
+        SendCommandCommand = ReactiveCommand.Create<KeyEventArgs>(SendCommand);
 
         navigationService.NavigationRequested += OnNavigated;
         _ws.AuthSuccess += () => { };
@@ -99,8 +102,6 @@ public class ServerConsoleViewModel : ServerViewModelBase
     public ObservableCollection<TextBlock> LogRows { get; set; } = [];
     private ObservableCollection<DateTimePoint> CpuValues { get; } = [];
     private ObservableCollection<DateTimePoint> MemoryValues { get; } = [];
-
-    private readonly ISukiDialogManager _dialogManager;
 
     public ICartesianAxis[] CpuAxis { get; set; } =
     [
@@ -357,7 +358,7 @@ public class ServerConsoleViewModel : ServerViewModelBase
 
     private void HandleConsoleOutput(string output)
     {
-        var textBlock = new TextBlock() {Foreground = Brushes.White};
+        var textBlock = new TextBlock { Foreground = Brushes.White };
         var segments = AnsiHelper.Parse(output);
 
         foreach (var segment in segments)

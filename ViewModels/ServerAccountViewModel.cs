@@ -155,49 +155,48 @@ public class ServerAccountViewModel : ViewModelBase
         }
 
         if (account is null) return;
-        
-            EmailText = account.Attributes.Email;
-            _apiService.CurrentAccount = account.Attributes;
-            try
-            {
-                var keysResponse = await _apiService.GetApiKeysAsync();
-                if (keysResponse is not null)
-                    foreach (var key in keysResponse.Data)
-                        ApiKeys.Add(key.Attributes);
-            }
-            catch (HttpRequestException ex)
-            {
-                Console.WriteLine(ex.Message);
-                Console.WriteLine(ex.StackTrace);
-                _toastManager.CreateToast()
-                    .WithTitle($"Couldn't get api keys ({(int?)ex.StatusCode})")
-                    .WithContent(ex.Message)
-                    .OfType(NotificationType.Error)
-                    .Dismiss().After(TimeSpan.FromSeconds(5))
-                    .Dismiss().ByClicking()
-                    .Queue();
-            }
 
-            try
-            {
-                var sshKeys = await _apiService.GetSshKeysAsync();
-                if (sshKeys is not null)
-                    foreach (var key in sshKeys.Data)
-                        SshKeys.Add(key.Attributes);
-            }
-            catch (HttpRequestException ex)
-            {
-                Console.WriteLine(ex.Message);
-                Console.WriteLine(ex.StackTrace);
-                _toastManager.CreateToast()
-                    .WithTitle("Couldn't get SSH keys")
-                    .WithContent(ex.Message)
-                    .OfType(NotificationType.Error)
-                    .Dismiss().After(TimeSpan.FromSeconds(5))
-                    .Dismiss().ByClicking()
-                    .Queue();
-            }
-        
+        EmailText = account.Attributes.Email;
+        _apiService.CurrentAccount = account.Attributes;
+        try
+        {
+            var keysResponse = await _apiService.GetApiKeysAsync();
+            if (keysResponse is not null)
+                foreach (var key in keysResponse.Data)
+                    ApiKeys.Add(key.Attributes);
+        }
+        catch (HttpRequestException ex)
+        {
+            Console.WriteLine(ex.Message);
+            Console.WriteLine(ex.StackTrace);
+            _toastManager.CreateToast()
+                .WithTitle($"Couldn't get api keys ({(int?)ex.StatusCode})")
+                .WithContent(ex.Message)
+                .OfType(NotificationType.Error)
+                .Dismiss().After(TimeSpan.FromSeconds(5))
+                .Dismiss().ByClicking()
+                .Queue();
+        }
+
+        try
+        {
+            var sshKeys = await _apiService.GetSshKeysAsync();
+            if (sshKeys is not null)
+                foreach (var key in sshKeys.Data)
+                    SshKeys.Add(key.Attributes);
+        }
+        catch (HttpRequestException ex)
+        {
+            Console.WriteLine(ex.Message);
+            Console.WriteLine(ex.StackTrace);
+            _toastManager.CreateToast()
+                .WithTitle("Couldn't get SSH keys")
+                .WithContent(ex.Message)
+                .OfType(NotificationType.Error)
+                .Dismiss().After(TimeSpan.FromSeconds(5))
+                .Dismiss().ByClicking()
+                .Queue();
+        }
     }
 
     private async void UpdateEmail()
