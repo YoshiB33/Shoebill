@@ -60,6 +60,7 @@ public class AccountsViewModel : ViewModelBase
             _dialogManager.CreateDialog()
                 .WithTitle($"Error navigation to {nameof(AccountsViewModel)}.")
                 .WithContent(e.Message)
+                .Dismiss().ByClickingBackground()
                 .TryShow();
         }
     }
@@ -69,10 +70,6 @@ public class AccountsViewModel : ViewModelBase
         _dialogManager.CreateDialog()
             .WithViewModel(dialog => new CreateAccountViewModel(_settingsService, dialog))
             .Dismiss().ByClickingBackground()
-            .TryShow();
-        _dialogManager.CreateDialog()
-            .WithTitle("Multi Option Dialog")
-            .WithContent("Select any one of the below options:")
             .TryShow();
     }
 

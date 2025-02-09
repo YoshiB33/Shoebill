@@ -1,4 +1,5 @@
 ﻿using System;
+using System.Collections.Generic;
 using System.Collections.ObjectModel;
 using System.Linq;
 using System.Reactive;
@@ -35,9 +36,7 @@ public class SettingsViewModel : ViewModelBase
         else
             _isThemeLight = true;
 
-#pragma warning disable CS8604 // Possible null reference argument.
-        ApiKeys = new ObservableCollection<ApiKey>(settingsService.GetAllApiKeys());
-#pragma warning restore CS8604 // Possible null reference argument.
+        ApiKeys = new ObservableCollection<ApiKey>(settingsService.GetAllApiKeys() ?? []);
 
         RemoveApiCommand = ReactiveCommand.Create<string>(RemoveApiKey);
         AddApiCommand = ReactiveCommand.Create(AddApiKey);
@@ -94,6 +93,7 @@ public class SettingsViewModel : ViewModelBase
             _dialogManager.CreateDialog()
                 .WithTitle("Error removing API key.")
                 .WithContent($"Error removing API key: {e.Message}")
+                .Dismiss().ByClickingBackground()
                 .TryShow();
         }
     }

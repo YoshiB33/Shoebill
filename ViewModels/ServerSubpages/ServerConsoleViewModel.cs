@@ -243,6 +243,7 @@ public class ServerConsoleViewModel : ServerViewModelBase
             _dialogManager.CreateDialog()
                 .WithTitle("Error authenticating...")
                 .WithContent(e.Message)
+                .Dismiss().ByClickingBackground()
                 .TryShow();
         }
     }
@@ -382,6 +383,7 @@ public class ServerConsoleViewModel : ServerViewModelBase
             _dialogManager.CreateDialog()
                 .WithTitle("Error sending command")
                 .WithContent(ex.Message)
+                .Dismiss().ByClickingBackground()
                 .TryShow();
         }
     }
