@@ -1,0 +1,15 @@
+<UserControl xmlns="https://github.com/avaloniaui"
+             xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
+             xmlns:d="http://schemas.microsoft.com/expression/blend/2008"
+             xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
+             xmlns:vm="using:Shoebill.ViewModels.Dialogs"
+             mc:Ignorable="d" d:DesignWidth="800" d:DesignHeight="450"
+             x:DataType="vm:SshKeyInfoViewModel"
+             x:Class="Shoebill.Views.Dialogs.SshKeyInfoView">
+    <StackPanel Orientation="Vertical" Spacing="5">
+        <TextBlock Text="{Binding Name, StringFormat='Key: {0}'}" Classes="h3" />
+        <TextBlock Text="{Binding Fingerprint, StringFormat='Fingerprint: {0}'}" FontWeight="Medium" FontSize="16" />
+        <TextBlock Text="{Binding CreatedAt, StringFormat='Created at: {0}'}" Margin="0,5,0,0" />
+        <TextBlock Text="{Binding PublicKey, StringFormat='Public key: {0}'}" />
+    </StackPanel>
+</UserControl>

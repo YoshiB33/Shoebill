@@ -2,4 +2,11 @@
 
 public record GetAccountDetails(string Object, GetAccountAttributes Attributes);
 
-public record GetAccountAttributes(int Id, bool Admin, string Username, string Email, string First_Name, string Last_Name, string Language);
+public record GetAccountAttributes(
+    int Id,
+    bool Admin,
+    string Username,
+    string Email,
+    string FirstName,
+    string LastName,
+    string Language);

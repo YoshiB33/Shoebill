@@ -10,50 +10,59 @@ using SukiUI.Toasts;
 
 namespace Shoebill.ViewModels;
 
-public partial class MainWindowViewModel : ViewModelBase
+public class MainWindowViewModel : ViewModelBase
 {
-    private bool _canGoBack = false;
-    public bool CanGoBack
-    {
-        get => _canGoBack;
-        set => this.RaiseAndSetIfChanged(ref _canGoBack, value);
-    }
-    public ReactiveCommand<Unit, Unit> NavigateBackCommand { get; set; }
-    public ReactiveCommand<Unit, Unit> NavigateSettingsCommand { get; set; }
-    public ISukiDialogManager DialogManager { get; }
-    public ISukiToastManager ToastManager { get; }
-    public IAvaloniaReadOnlyList<ViewModelBase> Pages;
-    public INavigationService _navigationService { get; set; }
+    private readonly IAvaloniaReadOnlyList<ViewModelBase> _pages;
+    private bool _canGoBack;
     private ViewModelBase _contentViewModel = new();
-    public ViewModelBase ContentViewModel
+
+    public MainWindowViewModel(INavigationService navigationService, IEnumerable<ViewModelBase> pages,
+        ISukiDialogManager dialogManager, ISukiToastManager toastManager)
     {
-        get => _contentViewModel;
-        private set => this.RaiseAndSetIfChanged(ref _contentViewModel, value);
-    }
-    public MainWindowViewModel(INavigationService navigationService, IEnumerable<ViewModelBase> pages, ISukiDialogManager dialogManager, ISukiToastManager toastManager)
-    {
-        Pages = new AvaloniaList<ViewModelBase>(pages);
+        _pages = new AvaloniaList<ViewModelBase>(pages);
         DialogManager = dialogManager;
         ToastManager = toastManager;
-        _navigationService = navigationService;
-        navigationService.NavigationRequested += NaviagtionRequested;
-        navigationService.RequestNaviagtion<AccountsViewModel>();
+        NavigationService = navigationService;
+        navigationService.NavigationRequested += NavigationRequested;
+        navigationService.RequestNavigation<AccountsViewModel>();
 
         NavigateBackCommand = ReactiveCommand.Create(NavigateBack);
         NavigateSettingsCommand = ReactiveCommand.Create(NavigateSettings);
     }
 
-    private void NaviagtionRequested(Type pageType)
+    public bool CanGoBack
     {
-        CanGoBack = _navigationService.CanNavigateBack;
-        var page = Pages.FirstOrDefault(x => x.GetType() == pageType);
+        get => _canGoBack;
+        set => this.RaiseAndSetIfChanged(ref _canGoBack, value);
+    }
+
+    public ReactiveCommand<Unit, Unit> NavigateBackCommand { get; set; }
+    public ReactiveCommand<Unit, Unit> NavigateSettingsCommand { get; set; }
+    public ISukiDialogManager DialogManager { get; }
+    public ISukiToastManager ToastManager { get; }
+    private INavigationService NavigationService { get; }
+
+    public ViewModelBase ContentViewModel
+    {
+        get => _contentViewModel;
+        private set => this.RaiseAndSetIfChanged(ref _contentViewModel, value);
+    }
+
+    private void NavigationRequested(Type pageType)
+    {
+        CanGoBack = NavigationService.CanNavigateBack;
+        var page = _pages.FirstOrDefault(x => x.GetType() == pageType);
         if (page == null || ContentViewModel.GetType() == pageType) return;
         ContentViewModel = page;
     }
 
     private void NavigateBack()
-        => _navigationService.NavigateBack();
+    {
+        NavigationService.NavigateBack();
+    }
 
     private void NavigateSettings()
-        => _navigationService.RequestNaviagtion<SettingsViewModel>();
+    {
+        NavigationService.RequestNavigation<SettingsViewModel>();
+    }
 }

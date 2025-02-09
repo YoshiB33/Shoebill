@@ -9,12 +9,32 @@ using SukiUI.Toasts;
 
 namespace Shoebill.ViewModels.Dialogs;
 
-public class CreateSSHKeyViewModel : ViewModelBase
+public class CreateSshKeyViewModel : ViewModelBase
 {
+    private readonly ObservableAsPropertyHelper<bool> _canSubmit;
+    private readonly ISukiDialog _dialog;
+    private readonly ISukiToastManager _toastManager;
+    private bool _isSubmitting;
     private string _name = string.Empty;
     private string _publicKey = string.Empty;
-    private bool _isSubmitting = false;
-    private readonly ObservableAsPropertyHelper<bool> _canSubmit;
+
+    public CreateSshKeyViewModel(IApiService apiService, INavigationService navigationService, ISukiDialog dialog,
+        ISukiToastManager toastManager)
+    {
+        ApiService = apiService;
+        NavigationService = navigationService;
+        _dialog = dialog;
+        _toastManager = toastManager;
+
+        this.WhenAnyValue(x => x.Name, x => x.PublicKey,
+            (name, key) =>
+                !string.IsNullOrWhiteSpace(Name) &&
+                !string.IsNullOrWhiteSpace(PublicKey)
+        ).ToProperty(this, x => x.CanSubmit, out _canSubmit);
+
+        CancelCommand = ReactiveCommand.Create(Cancel);
+        SubmitCommand = ReactiveCommand.Create(Submit);
+    }
 
     [Required(ErrorMessage = "You must enter a name")]
     public string Name
@@ -29,46 +49,32 @@ public class CreateSSHKeyViewModel : ViewModelBase
         get => _publicKey;
         set => this.RaiseAndSetIfChanged(ref _publicKey, value);
     }
+
     public bool IsSubmitting
     {
         get => _isSubmitting;
         set => this.RaiseAndSetIfChanged(ref _isSubmitting, value);
     }
+
     public bool CanSubmit => _canSubmit.Value;
 
     public ReactiveCommand<Unit, Unit> CancelCommand { get; set; }
     public ReactiveCommand<Unit, Unit> SubmitCommand { get; set; }
 
-    private IApiService _apiService { get; set; }
-    private INavigationService _navigationService { get; set; }
-    private readonly ISukiDialog _dialog;
-    private readonly ISukiToastManager _toastManager;
+    private IApiService ApiService { get; }
+    private INavigationService NavigationService { get; }
 
-    public CreateSSHKeyViewModel(IApiService apiService, INavigationService navigationService, ISukiDialog dialog, ISukiToastManager toastManager)
+    private void Cancel()
     {
-        _apiService = apiService;
-        _navigationService = navigationService;
-        _dialog = dialog;
-        _toastManager = toastManager;
-
-        this.WhenAnyValue(x => x.Name, x => x.PublicKey,
-            (name, key) =>
-                !string.IsNullOrWhiteSpace(Name) &&
-                !string.IsNullOrWhiteSpace(PublicKey)
-            ).ToProperty(this, x => x.CanSubmit, out _canSubmit);
-
-        CancelCommand = ReactiveCommand.Create(Cancel);
-        SubmitCommand = ReactiveCommand.Create(Submit);
+        _dialog.Dismiss();
     }
 
-    private void Cancel() =>
-        _dialog.Dismiss();
     private async void Submit()
     {
         IsSubmitting = true;
         try
         {
-            await _apiService.CreateSSHKeyAsync(Name, PublicKey);
+            await ApiService.CreateSshKeyAsync(Name, PublicKey);
         }
         catch (HttpRequestException ex)
         {
@@ -78,7 +84,8 @@ public class CreateSSHKeyViewModel : ViewModelBase
                 .Dismiss().ByClicking()
                 .Queue();
         }
-        _navigationService.NavigationRequested?.Invoke(typeof(ServerAccountViewModel));
+
+        NavigationService.NavigationRequested?.Invoke(typeof(ServerAccountViewModel));
         IsSubmitting = false;
         _dialog.Dismiss();
     }

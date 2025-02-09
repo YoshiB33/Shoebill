@@ -1,29 +1,29 @@
 <UserControl xmlns="https://github.com/avaloniaui"
-            xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
-            xmlns:d="http://schemas.microsoft.com/expression/blend/2008"
-            xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
-            xmlns:vm="using:Shoebill.ViewModels"
-            xmlns:suki="using:SukiUI.Controls"
-            xmlns:icons="using:Material.Icons.Avalonia"
-            mc:Ignorable="d" d:DesignWidth="800" d:DesignHeight="450"
-            x:DataType="vm:ServerMasterViewModel"
-            x:Class="Shoebill.Views.ServerMasterView">
+             xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
+             xmlns:d="http://schemas.microsoft.com/expression/blend/2008"
+             xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
+             xmlns:vm="using:Shoebill.ViewModels"
+             xmlns:suki="using:SukiUI.Controls"
+             xmlns:icons="using:Material.Icons.Avalonia"
+             mc:Ignorable="d" d:DesignWidth="800" d:DesignHeight="450"
+             x:DataType="vm:ServerMasterViewModel"
+             x:Class="Shoebill.Views.ServerMasterView">
     <suki:SukiSideMenu SelectedItem="{Binding CurrentPage}" ItemsSource="{Binding Pages}">
         <suki:SukiSideMenu.ItemTemplate>
             <DataTemplate>
                 <suki:SukiSideMenuItem Header="{Binding DisplayName}">
                     <suki:SukiSideMenuItem.Icon>
-                        <icons:MaterialIcon Kind="{Binding Icon}"/>
-                    </suki:SukiSideMenuItem.Icon>    
-                </suki:SukiSideMenuItem>    
+                        <icons:MaterialIcon Kind="{Binding Icon}" />
+                    </suki:SukiSideMenuItem.Icon>
+                </suki:SukiSideMenuItem>
             </DataTemplate>
         </suki:SukiSideMenu.ItemTemplate>
         <suki:SukiSideMenu.HeaderContent>
-            <TextBlock Text="{Binding ServerName}" HorizontalAlignment="Center" FontSize="20" Grid.Column="1"/>
+            <TextBlock Text="{Binding ServerName}" HorizontalAlignment="Center" FontSize="20" Grid.Column="1" />
         </suki:SukiSideMenu.HeaderContent>
         <suki:SukiSideMenu.FooterContent>
-            <Button Command="{Binding GoBackCommand}"  Classes="Basic" ToolTip.Tip="Go back">
-                <icons:MaterialIcon Kind="ChevronLeft" Width="25" Height="25"/>
+            <Button Command="{Binding GoBackCommand}" Classes="Basic" ToolTip.Tip="Go back">
+                <icons:MaterialIcon Kind="ChevronLeft" Width="25" Height="25" />
             </Button>
         </suki:SukiSideMenu.FooterContent>
     </suki:SukiSideMenu>

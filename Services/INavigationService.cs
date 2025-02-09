@@ -1,4 +1,5 @@
 ﻿using System;
+using Shoebill.ViewModels;
 
 namespace Shoebill.Services;
 
@@ -10,5 +11,5 @@ public interface INavigationService
     public bool CanNavigateForward { get; set; }
     public void NavigateForward();
     public void NavigateBack();
-    public void RequestNaviagtion<T>() where T : ViewModels.ViewModelBase;
+    public void RequestNavigation<T>() where T : ViewModelBase;
 }

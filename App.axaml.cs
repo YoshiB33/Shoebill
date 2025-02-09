@@ -8,7 +8,7 @@ using Shoebill.Views;
 
 namespace Shoebill;
 
-public partial class App : Application
+public class App : Application
 {
     public override void Initialize()
     {
@@ -26,19 +26,15 @@ public partial class App : Application
 
         var vm = services.GetRequiredService<MainWindowViewModel>();
         if (ApplicationLifetime is IClassicDesktopStyleApplicationLifetime desktop)
-        {
             desktop.MainWindow = new MainWindow
             {
                 DataContext = vm
             };
-        }
         else if (ApplicationLifetime is ISingleViewApplicationLifetime singleViewPlatform)
-        {
             singleViewPlatform.MainView = new MainWindow
             {
                 DataContext = vm
             };
-        }
 
         base.OnFrameworkInitializationCompleted();
     }
