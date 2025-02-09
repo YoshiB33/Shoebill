@@ -80,7 +80,7 @@ public class ServerMasterViewModel : ViewModelBase
         }
 
         if (currentServer is null) return;
-        
+
         ServerName = currentServer.Name;
         _apiService.CurrentServer = currentServer;
     }

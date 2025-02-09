@@ -13,12 +13,13 @@
             <Grid RowDefinitions="*, 40">
                 <ScrollViewer VerticalAlignment="Top">
                     <!--TODO: Change ItemsControl to a virtualized control-->
-                    <ItemsControl ItemsSource="{Binding LogRows}" Focusable="False" IsTabStop="False"/>
+                    <ItemsControl ItemsSource="{Binding LogRows}" Focusable="False" IsTabStop="False" />
                 </ScrollViewer>
-                <TextBox Grid.Row="1" VerticalAlignment="Bottom" Height="40" AcceptsReturn="False" Name="CommandTextBox" Text="{Binding CommandContent}">
+                <TextBox Grid.Row="1" VerticalAlignment="Bottom" Height="40" AcceptsReturn="False"
+                         Name="CommandTextBox" Text="{Binding CommandContent}">
                     <Interaction.Behaviors>
                         <EventTriggerBehavior EventName="KeyUp" SourceObject="CommandTextBox">
-                            <InvokeCommandAction PassEventArgsToCommand="True" Command="{Binding SendCommandCommand}"/>
+                            <InvokeCommandAction PassEventArgsToCommand="True" Command="{Binding SendCommandCommand}" />
                         </EventTriggerBehavior>
                     </Interaction.Behaviors>
                 </TextBox>
