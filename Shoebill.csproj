@@ -29,4 +29,8 @@
         <PackageReference Include="ReactiveUI" Version="20.1.63"/>
         <PackageReference Include="SukiUI" Version="6.0.0-beta8"/>
     </ItemGroup>
+
+    <ItemGroup>
+      <Folder Include="Controls\" />
+    </ItemGroup>
 </Project>

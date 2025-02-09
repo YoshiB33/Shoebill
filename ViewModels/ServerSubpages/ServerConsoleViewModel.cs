@@ -3,7 +3,10 @@ using System.Collections.ObjectModel;
 using System.Net.WebSockets;
 using System.Reactive;
 using System.Threading;
+using Avalonia.Controls;
+using Avalonia.Controls.Documents;
 using Avalonia.Input;
+using Avalonia.Media;
 using ByteSizeLib;
 using LiveChartsCore;
 using LiveChartsCore.Defaults;
@@ -12,6 +15,7 @@ using LiveChartsCore.SkiaSharpView;
 using LiveChartsCore.SkiaSharpView.Painting;
 using Material.Icons;
 using ReactiveUI;
+using Shoebill.Helpers;
 using Shoebill.Models.Api.Responses;
 using Shoebill.Services;
 using SukiUI.Dialogs;
@@ -91,6 +95,8 @@ public class ServerConsoleViewModel : ServerViewModelBase
 
     public ObservableCollection<ISeries> CpuSeries { get; set; }
     public ObservableCollection<ISeries> MemorySeries { get; set; }
+
+    public ObservableCollection<TextBlock> LogRows { get; set; } = [];
     private ObservableCollection<DateTimePoint> CpuValues { get; } = [];
     private ObservableCollection<DateTimePoint> MemoryValues { get; } = [];
 
@@ -205,6 +211,7 @@ public class ServerConsoleViewModel : ServerViewModelBase
 
             CpuValues.Clear();
             MemoryValues.Clear();
+            LogRows.Clear();
 
             var wsCredentials = await _apiService.GetWebsocketAsync();
             if (wsCredentials == null) return;
@@ -218,6 +225,7 @@ public class ServerConsoleViewModel : ServerViewModelBase
             _dialogManager.CreateDialog()
                 .WithTitle($"Error navigating to {nameof(ServerConsoleViewModel)}.")
                 .WithContent(e.Message)
+                .Dismiss().ByClickingBackground()
                 .TryShow();
         }
     }
@@ -348,7 +356,16 @@ public class ServerConsoleViewModel : ServerViewModelBase
 
     private void HandleConsoleOutput(string output)
     {
-        ConsoleText += output + "\n";
+        var textBlock = new TextBlock() {Foreground = Brushes.White};
+        var segments = AnsiHelper.Parse(output);
+
+        foreach (var segment in segments)
+        {
+            textBlock.Inlines ??= new InlineCollection();
+            textBlock.Inlines.Add(new Run(segment.Text) { Foreground = segment.Foreground });
+        }
+
+        LogRows.Add(textBlock);
     }
 
     private void SendCommand(KeyEventArgs e)
