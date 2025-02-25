@@ -43,6 +43,7 @@ public class ApiService(
     public async Task<Server?> GetServerAsync()
     {
         if (ApiKey?.Key is null) throw new ArgumentNullException(nameof(ApiKey));
+        if (CurrentServerUuid is null) throw new ArgumentNullException(nameof(CurrentServerUuid));
 
         var response =
             await StandardGetAsync<GetServerDetails>(
