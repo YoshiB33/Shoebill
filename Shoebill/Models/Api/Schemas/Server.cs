@@ -9,7 +9,7 @@ public record Server(
     string Uuid,
     string Name,
     string Node,
-    SFPT_details SFPT_Details,
+    SFPT_details SFTP_Details,
     string Description,
     Server_Limits Limits,
     string Invocation,
@@ -38,8 +38,8 @@ public record Server_Feature_limits(int Databases, int Allocations, int Backups)
 public record Server_relationships(
     Allocations Allocations,
     Variables Variables,
-    Egg Egg,
-    SubUsers SubUsers
+    Egg? Egg,
+    SubUsers? SubUsers
 );
 
 public record Allocations(string Object, List<Allocation_Data> Data);

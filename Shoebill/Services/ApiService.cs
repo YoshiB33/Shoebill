@@ -46,7 +46,7 @@ public class ApiService(
         if (CurrentServerUuid is null) throw new ArgumentNullException(nameof(CurrentServerUuid));
 
         var response =
-            await StandardGetAsync<GetServerDetails>(
+            await StandardGetAsync<GetServerDetailsResponse>(
                 $"https://{ApiKey.ServerAdress}/api/client/servers/{CurrentServerUuid}");
         return response?.Attributes;
     }
