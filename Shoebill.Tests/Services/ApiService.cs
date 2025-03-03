@@ -11,13 +11,6 @@ namespace Shoebill.Tests.Services;
 
 public class ApiService
 {
-    private readonly ITestOutputHelper _testOutputHelper;
-
-    public ApiService(ITestOutputHelper testOutputHelper)
-    {
-        _testOutputHelper = testOutputHelper;
-    }
-
     // The three following test are testing the GetServersAsync() function.
     [Fact]
     public async Task GetServersAsync_Returns_Error_If_ApiKey_Is_Null()
@@ -171,105 +164,7 @@ public class ApiService
         var response = new HttpResponseMessage
         {
             StatusCode = HttpStatusCode.BadRequest,
-            Content = new StringContent("""
-                                        {
-                                          "object": "server",
-                                          "attributes": {
-                                            "server_owner": false,
-                                            "identifier": "4b43467c",
-                                            "internal_id": 60,
-                                            "uuid": "4b43467c-6d78-411c-8018-3f2a75ccf6b3",
-                                            "name": "Vanilla minecraft",
-                                            "node": "Node 4",
-                                            "sftp_details": {
-                                              "ip": "local.wings",
-                                              "port": 2022
-                                            },
-                                            "description": "",
-                                            "limits": {
-                                              "memory": 4096,
-                                              "swap": 0,
-                                              "disk": 12700,
-                                              "io": 500,
-                                              "cpu": 0,
-                                              "threads": null,
-                                              "oom_disabled": true
-                                            },
-                                            "invocation": "java -Xms128M -Xmx4096M -jar server.jar",
-                                            "docker_image": "ghcr.io/pterodactyl/yolks:java_8",
-                                            "egg_features": [
-                                              "eula",
-                                              "java_version",
-                                              "pid_limit"
-                                            ],
-                                            "feature_limits": {
-                                              "databases": 0,
-                                              "allocations": 0,
-                                              "backups": 2
-                                            },
-                                            "status": null,
-                                            "is_suspended": false,
-                                            "is_installing": false,
-                                            "is_transferring": false,
-                                            "relationships": {
-                                              "allocations": {
-                                                "object": "list",
-                                                "data": [
-                                                  {
-                                                    "object": "allocation",
-                                                    "attributes": {
-                                                      "id": 23,
-                                                      "ip": "127.0.0.1",
-                                                      "ip_alias": null,
-                                                      "port": 25668,
-                                                      "notes": null,
-                                                      "is_default": true
-                                                    }
-                                                  }
-                                                ]
-                                              },
-                                              "variables": {
-                                                "object": "list",
-                                                "data": [
-                                                  {
-                                                    "object": "egg_variable",
-                                                    "attributes": {
-                                                      "name": "Server Jar File",
-                                                      "description": "The name of the server jarfile to run the server with.",
-                                                      "env_variable": "SERVER_JARFILE",
-                                                      "default_value": "server.jar",
-                                                      "server_value": "server.jar",
-                                                      "is_editable": true,
-                                                      "rules": "required|regex:/^([\\w\\d._-]+)(\\.jar)$/"
-                                                    }
-                                                  },
-                                                  {
-                                                    "object": "egg_variable",
-                                                    "attributes": {
-                                                      "name": "Server Version",
-                                                      "description": "The version of Minecraft Vanilla to install. Use \"latest\" to install the latest version, or use \"snapshot\" to install the latest snapshot. Go to Settings > Reinstall Server to apply.",
-                                                      "env_variable": "VANILLA_VERSION",
-                                                      "default_value": "latest",
-                                                      "server_value": "latest",
-                                                      "is_editable": true,
-                                                      "rules": "required|string|between:3,15"
-                                                    }
-                                                  }
-                                                ]
-                                              }
-                                            }
-                                          },
-                                          "meta": {
-                                            "is_server_owner": false,
-                                            "user_permissions": [
-                                              "*",
-                                              "admin.websocket.errors",
-                                              "admin.websocket.install",
-                                              "admin.websocket.transfer"
-                                            ]
-                                          }
-                                        }
-                                        """)
+            Content = new StringContent("{\"object\":\"server\",\"attributes\":{\"server_owner\":false,\"identifier\":\"4b43467c\",\"internal_id\":60,\"uuid\":\"4b43467c-6d78-411c-8018-3f2a75ccf6b3\",\"name\":\"Vanilla minecraft\",\"node\":\"Node 4\",\"sftp_details\":{\"ip\":\"local.wings\",\"port\":2022},\"description\":\"\",\"limits\":{\"memory\":4096,\"swap\":0,\"disk\":12700,\"io\":500,\"cpu\":0,\"threads\":null,\"oom_disabled\":true},\"invocation\":\"java -Xms128M -Xmx4096M -jar server.jar\",\"docker_image\":\"ghcr.io/pterodactyl/yolks:java_8\",\"egg_features\":[\"eula\",\"java_version\",\"pid_limit\"],\"feature_limits\":{\"databases\":0,\"allocations\":0,\"backups\":2},\"status\":null,\"is_suspended\":false,\"is_installing\":false,\"is_transferring\":false,\"relationships\":{\"allocations\":{\"object\":\"list\",\"data\":[{\"object\":\"allocation\",\"attributes\":{\"id\":23,\"ip\":\"127.0.0.1\",\"ip_alias\":null,\"port\":25668,\"notes\":null,\"is_default\":true}}]},\"variables\":{\"object\":\"list\",\"data\":[{\"object\":\"egg_variable\",\"attributes\":{\"name\":\"Server Jar File\",\"description\":\"The name of the server jarfile to run the server with.\",\"env_variable\":\"SERVER_JARFILE\",\"default_value\":\"server.jar\",\"server_value\":\"server.jar\",\"is_editable\":true,\"rules\":\"required|regex:/^([\\\\w\\\\d._-]+)(\\\\.jar)$/\"}},{\"object\":\"egg_variable\",\"attributes\":{\"name\":\"Server Version\",\"description\":\"The version of Minecraft Vanilla to install. Use \\\"latest\\\" to install the latest version, or use \\\"snapshot\\\" to install the latest snapshot. Go to Settings > Reinstall Server to apply.\",\"env_variable\":\"VANILLA_VERSION\",\"default_value\":\"latest\",\"server_value\":\"latest\",\"is_editable\":true,\"rules\":\"required|string|between:3,15\"}}]}}},\"meta\":{\"is_server_owner\":false,\"user_permissions\":[\"*\",\"admin.websocket.errors\",\"admin.websocket.install\",\"admin.websocket.transfer\"]}}")
         };
 
         handlerMock
@@ -288,5 +183,72 @@ public class ApiService
         service.CurrentServerUuid = "00000000-0000-0000-0000-000000000001";
 
         await Assert.ThrowsAsync<HttpRequestException>(service.GetServerAsync);
+    }
+    
+    // The following row tests the GetAccountDetailsAsync()
+    [Fact]
+    public async Task GetAccountDetailsAsync_If_ApiKey_Is_Null()
+    {
+        var service = new Shoebill.Services.ApiService(new HttpClient());
+
+        await Assert.ThrowsAsync<ArgumentNullException>(service.GetAccountDetailsAsync);
+    }
+
+    [Fact]
+    public async Task GetAccountDetailsAsync_Success()
+    {
+        var handlerMock = new Mock<HttpMessageHandler>();
+
+        var response = new HttpResponseMessage
+        {
+            StatusCode = HttpStatusCode.OK,
+            Content = new StringContent("""{"object":"user","attributes":{"id":1,"admin":true,"username":"Pterodactyl","email":"Pterodactyl@pterodactyl.io","first_name":"Perry","last_name":"Dactyl","language":"en"}}""")
+        };
+
+        var expectedResult = new GetAccountDetails("user", new GetAccountAttributes(
+            1, true, "Pterodactyl", "Pterodactyl@pterodactyl.io", "Perry", "Dactyl", "en"));
+
+        handlerMock.Protected()
+            .Setup<Task<HttpResponseMessage>>(
+                "SendAsync",
+                ItExpr.IsAny<HttpRequestMessage>(),
+                ItExpr.IsAny<CancellationToken>())
+            .ReturnsAsync(response);
+        
+        var service = new Shoebill.Services.ApiService(new HttpClient(handlerMock.Object));
+        service.SetApiKey(new ApiKey { Key = "A random key", ServerAdress = "127.0.0.1" });
+        service.CurrentServerUuid = "00000000-0000-0000-0000-000000000001";
+        var actualResult = await service.GetAccountDetailsAsync();
+
+        Assert.Equivalent(expectedResult, actualResult);
+    }
+
+    [Fact]
+    public async Task GetAccountDetailsAsync_If_Without_Permission()
+    {
+        var handlerMock = new Mock<HttpMessageHandler>();
+
+        var response = new HttpResponseMessage
+        {
+            StatusCode = HttpStatusCode.Unauthorized,
+            Content = new StringContent("""{"object":"user","attributes":{"id":1,"admin":true,"username":"Pterodactyl","email":"Pterodactyl@pterodactyl.io","first_name":"Perry","last_name":"Dactyl","language":"en"}}""")
+        };
+
+        handlerMock
+            .Protected()
+            .Setup<Task<HttpResponseMessage>>(
+                "SendAsync",
+                ItExpr.IsAny<HttpRequestMessage>(),
+                ItExpr.IsAny<CancellationToken>())
+            .ReturnsAsync(response);
+        var service = new Shoebill.Services.ApiService(new HttpClient(handlerMock.Object));
+        service.SetApiKey(new ApiKey
+        {
+            Key = "Random bad key", Name = "Random name",
+            ServerAdress = "127.0.0.1" /*An example of an ApiKey that in this case is bad.*/
+        });
+        service.CurrentServerUuid = "00000000-0000-0000-0000-000000000001";
+
+        await Assert.ThrowsAsync<HttpRequestException>(service.GetAccountDetailsAsync);
     }
 }
