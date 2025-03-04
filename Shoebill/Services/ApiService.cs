@@ -60,7 +60,7 @@ public class ApiService(
 
     public async Task UpdateAccountEmailAsync(string email, string password)
     {
-        if (ApiKey?.Key is null || ApiKey.Name is null) throw new ArgumentException(nameof(ApiKey));
+        if (ApiKey?.Key is null) throw new ArgumentException(nameof(ApiKey));
 
         var body = JsonSerializer.Serialize(new UpdateEmailRequest(email, password), _jsonSettings);
         await StandardPutAsync($"https://{ApiKey.ServerAdress}/api/client/account/email", body);
